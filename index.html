@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Sinh Viên Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #09090b;
+            --panel-bg: #18181b;
+            --border-color: #27272a;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --neon-blue: #0ea5e9;
+            --neon-purple: #8b5cf6;
+            --neon-red: #ef4444;
+            --neon-green: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Animations */
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--panel-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            animation: slideInLeft 0.5s ease-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-muted);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--neon-blue);
+            box-shadow: inset 4px 0 0 var(--neon-blue);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .stat-card {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+        }
+        .stat-card.blue::before { background: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); }
+        .stat-card.purple::before { background: var(--neon-purple); box-shadow: 0 0 15px var(--neon-purple); }
+
+        .chart-container {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            height: 300px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Table Area */
+        .table-section {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        button.btn-primary {
+            background: var(--neon-blue);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.4);
+        }
+
+        button.btn-primary:hover {
+            background: #0284c7;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.6);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.good { background: rgba(16, 185, 129, 0.2); color: var(--neon-green); }
+        .status.bad { background: rgba(239, 68, 68, 0.2); color: var(--neon-red); }
+
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            margin-right: 10px;
+            transition: 0.3s;
+        }
+        .action-btn:hover.delete { color: var(--neon-red); }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            width: 400px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: var(--neon-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">EDU Admin</div>
+        <div class="nav-item active"><i class="fas fa-home"></i> Tổng Quan</div>
+        <div class="nav-item"><i class="fas fa-users"></i> Sinh Viên</div>
+        <div class="nav-item"><i class="fas fa-chart-bar"></i> Điểm Số</div>
+        <div class="nav-item"><i class="fas fa-cog"></i> Cài Đặt</div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Dashboard</h2>
+            <div class="user-profile">Admin</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <h3>Tổng Sinh Viên</h3>
+                <h1 id="totalStudents">0</h1>
+            </div>
+            <div class="stat-card purple">
+                <h3>Điểm Trung Bình (Toàn Trường)</h3>
+                <h1 id="avgScore">0.0</h1>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="gradeChart"></canvas>
+        </div>
+
+        <div class="table-section">
+            <div class="table-header">
+                <h3>Danh sách Sinh viên mới cập nhật</h3>
+                <button class="btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Thêm Sinh Viên</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã SV</th>
+                        <th>Họ và Tên</th>
+                        <th>Chuyên Ngành</th>
+                        <th>Điểm TB</th>
+                        <th>Học Lực</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px;">Thêm Sinh Viên Mới</h3>
+            <div class="form-group">
+                <label>Mã Sinh Viên</label>
+                <input type="text" id="svId" placeholder="VD: SV001">
+            </div>
+            <div class="form-group">
+                <label>Họ và Tên</label>
+                <input type="text" id="svName" placeholder="Nhập tên...">
+            </div>
+            <div class="form-group">
+                <label>Chuyên Ngành</label>
+                <input type="text" id="svMajor" placeholder="VD: CNTT">
+            </div>
+            <div class="form-group">
+                <label>Điểm Trung Bình</label>
+                <input type="number" step="0.1" id="svScore" placeholder="0.0 - 10.0">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-primary" onclick="addStudent()" style="flex: 1;">Lưu Lại</button>
+                <button class="btn-primary" onclick="closeModal()" style="flex: 1; background: #3f3f46; box-shadow: none;">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fake Data DB
+        let students = [
+            { id: 'SV001', name: 'Nguyễn Văn A', major: 'CNTT', score: 8.5 },
+            { id: 'SV002', name: 'Trần Thị B', major: 'Thiết kế', score: 4.5 },
+            { id: 'SV003', name: 'Lê Văn C', major: 'CNTT', score: 9.0 }
+        ];
+
+        let gradeChartInstance;
+
+        // Init Chart.js
+        function initChart() {
+            const ctx = document.getElementById('gradeChart').getContext('2d');
+            Chart.defaults.color = '#a1a1aa';
+            
+            gradeChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: students.map(s => s.id),
+                    datasets: [{
+                        label: 'Điểm Sinh Viên',
+                        data: students.map(s => s.score),
+                        borderColor: '#0ea5e9',
+                        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4 // Làm cong đường line
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            max: 10,
+                            grid: { color: '#27272a' } 
+                        },
+                        x: { 
+                            grid: { display: false } 
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render Bảng và Cập nhật Thống kê
+        function renderApp() {
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = '';
+            
+            let totalScore = 0;
+
+            students.forEach((student, index) => {
+                totalScore += student.score;
+                let rankClass = student.score >= 5.0 ? 'good' : 'bad';
+                let rankText = student.score >= 8.0 ? 'Giỏi' : (student.score >= 5.0 ? 'Khá' : 'Yếu');
+
+                let tr = document.createElement('tr');
+                tr.style.animation = `fadeIn 0.3s ease-out ${index * 0.1}s forwards`;
+                tr.style.opacity = '0';
+                
+                tr.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.major}</td>
+                    <td style="color: var(--neon-blue); font-weight: bold;">${student.score}</td>
+                    <td><span class="status ${rankClass}">${rankText}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="editStudent('${student.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete" onclick="deleteStudent('${student.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update Stats
+            document.getElementById('totalStudents').innerText = students.length;
+            let avg = students.length > 0 ? (totalScore / students.length).toFixed(1) : 0;
+            document.getElementById('avgScore').innerText = avg;
+
+            // Update Chart
+            if(gradeChartInstance) {
+                gradeChartInstance.data.labels = students.map(s => s.id);
+                gradeChartInstance.data.datasets[0].data = students.map(s => s.score);
+                gradeChartInstance.update();
+            }
+        }
+
+        // Logic Modal
+        function openModal() {
+            document.getElementById('addModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').style.display = 'none';
+            // Clear input
+            document.getElementById('svId').value = '';
+            document.getElementById('svName').value = '';
+            document.getElementById('svMajor').value = '';
+            document.getElementById('svScore').value = '';
+        }
+
+        // Logic Thêm Sinh Viên
+        function addStudent() {
+            const id = document.getElementById('svId').value;
+            const name = document.getElementById('svName').value;
+            const major = document.getElementById('svMajor').value;
+            const score = parseFloat(document.getElementById('svScore').value);
+
+            if(!id || !name || isNaN(score)) {
+                alert("Vui lòng nhập đầy đủ thông tin hợp lệ!");
+                return;
+            }
+
+            students.push({ id, name, major, score });
+            renderApp();
+            closeModal();
+        }
+
+        // Logic Xóa Sinh Viên
+        function deleteStudent(id) {
+            if(confirm("Bạn có chắc chắn muốn xóa sinh viên " + id + "?")) {
+                students = students.filter(s => s.id !== id);
+                renderApp();
+            }
+        }
+
+        // Khởi chạy App
+        window.onload = () => {
+            initChart();
+            renderApp();
+        };
+    </script>
+</body>
+</html>
