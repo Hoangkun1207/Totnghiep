@@ -466,5 +466,12 @@
             renderApp();
         };
     </script>
+
+    <script src="auth.js"></script>
+    <script>
+        // Chặn truy cập trái phép
+        appAuth.checkAuth(false);
+    </script>
+    
 </body>
 </html>
