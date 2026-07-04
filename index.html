@@ -323,21 +323,38 @@
                 <h3 class="text-xl font-bold text-white" id="modalTitle">Thêm Sinh Viên</h3>
                 <button onclick="uiManager.closeModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <form id="studentForm" onsubmit="uiManager.submitForm(event)">
-                <input type="hidden" id="formMode" value="add">
-                <input type="text" id="svId" placeholder="Mã SV" required class="w-full mb-4 bg-black/50 border border-zinc-700 p-3 rounded-xl text-white uppercase focus:border-cyan-500 outline-none transition-all">
-                <input type="text" id="svName" placeholder="Họ Tên" required class="w-full mb-4 bg-black/50 border border-zinc-700 p-3 rounded-xl text-white focus:border-cyan-500 outline-none transition-all">
-                <select id="svMajor" class="w-full mb-4 bg-black/50 border border-zinc-700 p-3 rounded-xl text-white focus:border-cyan-500 outline-none transition-all">
-                    <option value="CNTT">Công nghệ thông tin</option>
-                    <option value="Thiết kế đồ hoạ">Thiết kế đồ hoạ</option>
-                    <option value="Kinh tế quốc tế">Kinh tế quốc tế</option>
-                </select>
-                <input type="number" id="svScore" step="0.1" max="10" placeholder="Điểm Trung Bình (0-10)" required class="w-full mb-8 bg-black/50 border border-zinc-700 p-3 rounded-xl text-white focus:border-cyan-500 outline-none transition-all">
-                <div class="flex gap-3">
-                    <button type="button" onclick="uiManager.closeModal()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white p-3 rounded-xl transition-all">Huỷ bỏ</button>
-                    <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-black font-bold p-3 rounded-xl shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-all">Lưu Dữ Liệu</button>
-                </div>
-            </form>
+          <form id="studentForm" onsubmit="uiManager.submitForm(event)">
+    <input type="hidden" id="formMode" value="add">
+    
+    <div class="cyber-input-group">
+        <input type="text" id="svId" required class="cyber-input uppercase" autocomplete="off">
+        <label class="cyber-label">Mã Sinh Viên</label>
+    </div>
+
+    <div class="cyber-input-group">
+        <input type="text" id="svName" required class="cyber-input" autocomplete="off">
+        <label class="cyber-label">Họ và Tên</label>
+    </div>
+
+    <div class="cyber-input-group">
+        <select id="svMajor" required class="cyber-input">
+            <option value="CNTT">Công nghệ thông tin</option>
+            <option value="Thiết kế đồ hoạ">Thiết kế đồ hoạ</option>
+            <option value="Kinh tế quốc tế">Kinh tế quốc tế</option>
+        </select>
+        <label class="cyber-label">Chuyên Ngành</label>
+    </div>
+
+    <div class="cyber-input-group">
+        <input type="number" id="svScore" step="0.1" max="10" required class="cyber-input">
+        <label class="cyber-label">Điểm Trung Bình (0-10)</label>
+    </div>
+
+    <div class="flex gap-3 mt-8">
+        <button type="button" onclick="uiManager.closeModal()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white p-3 rounded-xl transition-all">Huỷ bỏ</button>
+        <button type="submit" class="btn-cyber flex-1">Lưu Dữ Liệu</button>
+    </div>
+</form>
         </div>
     </div>
 
