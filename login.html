@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập hệ thống | SMS 4.0</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#09090b',
+                        panelBg: '#18181b',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: radial-gradient(circle at center, #1e1b4b, #09090b 100%);
+            color: #f4f4f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Vòng tròn Background Animtion */
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        .shape-1 { background: rgba(14, 165, 233, 0.3); width: 400px; height: 400px; top: -10%; left: -10%; }
+        .shape-2 { background: rgba(139, 92, 246, 0.3); width: 500px; height: 500px; bottom: -20%; right: -10%; animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
+
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            z-index: 10;
+        }
+
+        /* Input Styles */
+        .input-group { position: relative; margin-bottom: 1.5rem; }
+        .input-group input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 14px 14px 45px;
+            border-radius: 12px;
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .input-group input:focus { border-color: #0ea5e9; box-shadow: 0 0 15px rgba(14, 165, 233, 0.3); }
+        .input-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #71717a; transition: color 0.3s ease; }
+        .input-group input:focus + i { color: #0ea5e9; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <div class="glass-panel w-full max-w-md p-10 rounded-3xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></div>
+
+        <div class="text-center mb-10">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white text-3xl font-bold shadow-[0_0_20px_rgba(14,165,233,0.5)] mx-auto mb-4">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-white tracking-wide">HỆ THỐNG QUẢN TRỊ</h1>
+            <p class="text-zinc-400 text-sm mt-2">Đăng nhập để truy cập Dashboard 4.0</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Tên đăng nhập (Thử: admin)" required autocomplete="off">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Mật khẩu (Thử: 123456)" required>
+                <i class="fa-solid fa-lock"></i>
+            </div>
+
+            <div class="flex items-center justify-between mb-8 text-sm">
+                <label class="flex items-center gap-2 cursor-pointer text-zinc-400 hover:text-zinc-200 transition">
+                    <input type="checkbox" class="rounded bg-zinc-800 border-zinc-700 text-cyan-500 focus:ring-cyan-500">
+                    Ghi nhớ đăng nhập
+                </label>
+                <a href="#" class="text-cyan-500 hover:text-cyan-400 transition">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] flex items-center justify-center gap-2">
+                <i class="fa-solid fa-right-to-bracket"></i> XÁC NHẬN ĐĂNG NHẬP
+            </button>
+        </form>
+
+        <script>
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault(); // Ngăn load lại trang
+                const user = document.getElementById('username').value;
+                const pass = document.getElementById('password').value;
+
+                // Xử lý logic cứng tạm thời (Sau này sẽ chuyển vào js/auth.js)
+                if(user === 'admin' && pass === '123456') {
+                    // Lưu trạng thái đăng nhập vào LocalStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    // Chuyển hướng sang trang index
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Sai tài khoản hoặc mật khẩu! Vui lòng thử: admin / 123456');
+                }
+            });
+        </script>
+    </div>
+
+</body>
+</html>
