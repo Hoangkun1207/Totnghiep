@@ -115,23 +115,24 @@
             </button>
         </form>
 
-        <script>
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
-                e.preventDefault(); // Ngăn load lại trang
-                const user = document.getElementById('username').value;
-                const pass = document.getElementById('password').value;
+      <script src="js/auth.js"></script>
+    <script>
+        // Kiểm tra xem đã đăng nhập chưa, nếu rồi thì đá thẳng sang index, không cho ở lại login
+        appAuth.checkAuth(true);
 
-                // Xử lý logic cứng tạm thời (Sau này sẽ chuyển vào js/auth.js)
-                if(user === 'admin' && pass === '123456') {
-                    // Lưu trạng thái đăng nhập vào LocalStorage
-                    localStorage.setItem('isLoggedIn', 'true');
-                    // Chuyển hướng sang trang index
-                    window.location.href = 'index.html';
-                } else {
-                    alert('Sai tài khoản hoặc mật khẩu! Vui lòng thử: admin / 123456');
-                }
-            });
-        </script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // Sử dụng hàm login từ appAuth
+            if(appAuth.login(user, pass)) {
+                window.location.href = 'index.html';
+            } else {
+                alert('Sai tài khoản hoặc mật khẩu! Vui lòng thử: admin / 123456');
+            }
+        });
+    </script>
     </div>
 
 </body>
