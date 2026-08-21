@@ -197,7 +197,7 @@
             <div class="coordinates">SEC: 001 // TRÁI ĐẤT</div>
             <div class="text-mask"><h1 class="glow-text">BƯỚC VÀO</h1></div>
             <div class="text-mask"><h1>V Ũ   T R Ụ</h1></div>
-            <p>Trải nghiệm mô phỏng không gian vô tận. Hệ thống đã sẵn sàng kích hoạt động cơ bước nhảy. Hãy cuộn chuột để bắt đầu hành trình.</p>
+            <p>Trải nghiệm mô phỏng không gian chân thực. Hệ thống đã sẵn sàng kích hoạt động cơ bước nhảy. Hãy cuộn chuột để bắt đầu hành trình.</p>
             
             <div class="hud-indicator">
                 <div class="hud-text">KÍCH HOẠT BƯỚC NHẢY (SCROLL)</div>
@@ -217,7 +217,7 @@
         <div class="section right-align" id="sec-3">
             <div class="coordinates">SEC: 888 // HỆ MẶT TRỜI CHẾT</div>
             <div class="text-mask"><h2>HÀNH TINH<br>BỊ LÃNG QUÊN</h2></div>
-            <p>Phát hiện một hành tinh khổng lồ với vành đai tiểu hành tinh bao quanh. Cấu trúc vật chất cho thấy sự tồn tại của nền văn minh cổ đại.</p>
+            <p>Phát hiện một hành tinh khổng lồ với vành đai bụi đá bao quanh. Khí quyển vẫn đang phản xạ lại ánh sáng mờ ảo từ một ngôi sao xa xăm.</p>
             <button class="btn-warp hover-target">PHÂN TÍCH QUẶNG</button>
         </div>
 
@@ -225,7 +225,7 @@
         <div class="section center-align" id="sec-4">
             <div class="coordinates">SEC: 999 // VƯỢT GIỚI HẠN</div>
             <div class="text-mask"><h2>CHIỀU KHÔNG GIAN<br>THỨ TƯ</h2></div>
-            <p style="margin: 20px auto 0;">Hệ thống định vị mất tín hiệu. Bạn đã trôi dạt vào tận cùng của vũ trụ đồ họa.</p>
+            <p style="margin: 20px auto 0;">Hệ thống định vị mất tín hiệu. Bạn đã trôi dạt vào tận cùng của vũ trụ.</p>
             <button class="btn-warp hover-target" style="margin-top: 40px;" onclick="window.scrollTo(0,0)">TRỞ VỀ TRÁI ĐẤT</button>
         </div>
 
@@ -253,7 +253,7 @@
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
 
-        // Chuột Custom ngầu đét
+        // Chuột Custom
         const cursorDot = document.getElementById('cursor-dot');
         const cursorOutline = document.getElementById('cursor-outline');
         window.addEventListener('mousemove', (e) => {
@@ -280,7 +280,6 @@
                 clearInterval(bootInterval);
                 progressData.innerText = `SYS.MEM: ${mem}% [OVERRIDE READY]`;
                 setTimeout(() => {
-                    // Zoom xuyên qua màn hình load
                     preloader.style.transform = 'scale(2) translateZ(100px)';
                     preloader.style.opacity = '0';
                     setTimeout(() => { 
@@ -290,12 +289,10 @@
                 }, 800);
             } else {
                 progressData.innerText = `SYS.MEM: ${mem}%`;
-                // Ký tự nhấp nháy cho giống hack
                 if(Math.random() > 0.5) progressData.innerText += ' _';
             }
         }, 150);
 
-        // Animation UI hiện lên
         function initUIAnimation() {
             const tl = gsap.timeline();
             tl.to('#sec-1 .coordinates', { opacity: 1, duration: 1 })
@@ -304,7 +301,6 @@
               .to('.hud-indicator', { opacity: 1, duration: 1 }, "-=0.5");
         }
 
-        // Setup scroll animation cho text các section khác
         document.querySelectorAll('.section:not(#sec-1)').forEach(sec => {
             const coor = sec.querySelector('.coordinates');
             const titles = sec.querySelectorAll('h2');
@@ -319,49 +315,45 @@
         });
 
         // ==========================================
-        // VŨ TRỤ 3D BẰNG THREE.JS (TÂM HUYẾT NHẤT)
+        // VŨ TRỤ 3D CHÂN THỰC CỰC MẠNH
         // ==========================================
         const canvas = document.querySelector('#universe-canvas');
         const scene = new THREE.Scene();
-        // Sương mù xanh thẳm của vũ trụ
-        scene.fog = new THREE.FogExp2(0x010105, 0.0015);
+        scene.fog = new THREE.FogExp2(0x010105, 0.0012); // Sương mù vũ trụ sâu
 
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 5000);
-        camera.position.set(0, 0, 800); // Đứng ở rất xa
+        camera.position.set(0, 0, 800);
 
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        // Cho màu blend sáng hơn
         renderer.setClearColor(0x010105, 1);
 
-        // --- 1. TẠO DẢI NGÂN HÀ (STARFIELD) CỰC KHỦNG ---
-        const starCount = 20000;
+        // Nạp Texture (Ảnh bề mặt thực tế)
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.setCrossOrigin('anonymous'); // Đảm bảo không lỗi chặn ảnh
+
+        // --- 1. DẢI NGÂN HÀ CHÂN THỰC ---
+        const starCount = 15000;
         const starGeo = new THREE.BufferGeometry();
         const starPos = new Float32Array(starCount * 3);
         const starColors = new Float32Array(starCount * 3);
         const c = new THREE.Color();
 
         for(let i = 0; i < starCount; i++) {
-            // Rải sao trong một không gian hình cầu khổng lồ
-            const r = 200 + Math.random() * 2000;
+            const r = 300 + Math.random() * 2500;
             const theta = 2 * Math.PI * Math.random();
             const phi = Math.acos(2 * Math.random() - 1);
             
-            const x = r * Math.sin(phi) * Math.cos(theta);
-            const y = r * Math.sin(phi) * Math.sin(theta);
-            const z = r * Math.cos(phi) - 500; // Đẩy sâu vào trong
+            starPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
+            starPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+            starPos[i*3+2] = r * Math.cos(phi) - 400;
 
-            starPos[i*3] = x;
-            starPos[i*3+1] = y;
-            starPos[i*3+2] = z;
-
-            // Đổ màu sao: trắng, lục nhạt, xanh dương, tím
+            // Đổ màu sao thực tế (Trắng, Vàng nhạt, Xanh dương)
             const mix = Math.random();
-            if(mix < 0.3) c.setHex(0xffffff);
-            else if(mix < 0.6) c.setHex(0x00ffff); // Cyan
-            else if(mix < 0.8) c.setHex(0x0055ff); // Blue
-            else c.setHex(0xaa00ff); // Purple
+            if(mix < 0.6) c.setHex(0xffffff);
+            else if(mix < 0.8) c.setHex(0xaaccff); // Sao trẻ nóng
+            else c.setHex(0xffddaa); // Sao già lạnh
 
             starColors[i*3] = c.r;
             starColors[i*3+1] = c.g;
@@ -371,14 +363,13 @@
         starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
         starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
 
-        // Texture hạt sáng chói
         const createStarTexture = () => {
             const cvs = document.createElement('canvas');
             cvs.width = 16; cvs.height = 16;
             const ctx = cvs.getContext('2d');
             const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
             grad.addColorStop(0, 'rgba(255,255,255,1)');
-            grad.addColorStop(0.2, 'rgba(0,255,255,0.8)');
+            grad.addColorStop(0.3, 'rgba(255,255,255,0.6)');
             grad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = grad;
             ctx.beginPath(); ctx.arc(8, 8, 8, 0, Math.PI * 2); ctx.fill();
@@ -386,53 +377,79 @@
         };
 
         const starMat = new THREE.PointsMaterial({
-            size: 2.5, map: createStarTexture(),
+            size: 2, map: createStarTexture(),
             vertexColors: true, transparent: true,
             blending: THREE.AdditiveBlending, depthWrite: false
         });
         const stars = new THREE.Points(starGeo, starMat);
         scene.add(stars);
 
-        // --- 2. TẠO HÀNH TINH BÍ ẨN ---
+        // --- 2. HÀNH TINH NHƯ THẬT (REALISTIC PLANET) ---
         const planetGroup = new THREE.Group();
-        // Tâm hành tinh
+        
         const pGeo = new THREE.SphereGeometry(60, 64, 64);
+        
+        // Sử dụng ảnh bề mặt trái đất phân giải cao từ CDN
         const pMat = new THREE.MeshStandardMaterial({
-            color: 0x051020, // Đen xanh sẫm
-            roughness: 0.8,
-            metalness: 0.2
+            map: textureLoader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg'),
+            bumpMap: textureLoader.load('https://unpkg.com/three-globe/example/img/earth-topology.png'),
+            bumpScale: 2, // Độ lồi lõm của núi non
+            roughness: 0.6,
+            metalness: 0.1
         });
         const planet = new THREE.Mesh(pGeo, pMat);
-        
-        // Khí quyển (Glow/Wireframe layer)
-        const atmGeo = new THREE.SphereGeometry(62, 32, 32);
-        const atmMat = new THREE.MeshBasicMaterial({
-            color: 0x00ffff, wireframe: true,
-            transparent: true, opacity: 0.15,
-            blending: THREE.AdditiveBlending
-        });
-        const atmosphere = new THREE.Mesh(atmGeo, atmMat);
-        
         planetGroup.add(planet);
+
+        // --- 3. KHÍ QUYỂN (ATMOSPHERE GLOW SHADER) ---
+        // Dùng custom shader để tạo lớp viền sáng chân thực bọc ngoài hành tinh
+        const vertexShader = `
+            varying vec3 vNormal;
+            void main() {
+                vNormal = normalize(normalMatrix * normal);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+        const fragmentShader = `
+            varying vec3 vNormal;
+            void main() {
+                // Tính toán góc nhìn để tán xạ ánh sáng ở rìa
+                float intensity = pow(0.6 - dot(vNormal, vec3(0, 0, 1.0)), 3.0);
+                // Màu xanh lơ của khí quyển
+                gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity;
+            }
+        `;
+        const atmMat = new THREE.ShaderMaterial({
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            blending: THREE.AdditiveBlending,
+            side: THREE.BackSide,
+            transparent: true
+        });
+        const atmosphere = new THREE.Mesh(pGeo, atmMat);
+        atmosphere.scale.set(1.15, 1.15, 1.15); // Khí quyển to hơn lõi một chút
         planetGroup.add(atmosphere);
 
-        // --- 3. VÀNH ĐAI TIỂU HÀNH TINH (RINGS) ---
-        const ringCount = 5000;
+        // --- 4. VÀNH ĐAI BỤI ĐÁ (DUST RINGS) ---
+        const ringCount = 15000;
         const ringGeo = new THREE.BufferGeometry();
         const ringPos = new Float32Array(ringCount * 3);
         const ringColors = new Float32Array(ringCount * 3);
 
         for(let i=0; i<ringCount; i++) {
-            // Tạo thành hình vành đai dẹp (Torus rỗng)
-            const r = 90 + Math.random() * 60; // Khoảng cách từ tâm
+            // Vành đai mỏng và dẹp
+            const r = 85 + Math.random() * 50; 
             const theta = Math.random() * Math.PI * 2;
             
             ringPos[i*3] = Math.cos(theta) * r;
-            ringPos[i*3+1] = (Math.random() - 0.5) * 5; // Độ dày vành đai rất mỏng
+            ringPos[i*3+1] = (Math.random() - 0.5) * 1.5; // Cực kỳ dẹt
             ringPos[i*3+2] = Math.sin(theta) * r;
 
-            // Màu của vành đai
-            c.setHex(Math.random() > 0.5 ? 0x00ffff : 0xff00aa);
+            // Màu bụi thực tế: Xám, Nâu nhạt, Trắng băng
+            const mix = Math.random();
+            if(mix > 0.8) c.setHex(0xffffff); // Băng
+            else if(mix > 0.3) c.setHex(0xaaaaaa); // Đá xám
+            else c.setHex(0x887766); // Bụi mịn
+            
             ringColors[i*3] = c.r;
             ringColors[i*3+1] = c.g;
             ringColors[i*3+2] = c.b;
@@ -441,39 +458,33 @@
         ringGeo.setAttribute('color', new THREE.BufferAttribute(ringColors, 3));
         
         const ringMat = new THREE.PointsMaterial({
-            size: 1.5, vertexColors: true, transparent: true,
-            blending: THREE.AdditiveBlending, depthWrite: false
+            size: 0.6, // Hạt li ti
+            vertexColors: true, transparent: true, opacity: 0.7,
+            sizeAttenuation: true
         });
         const rings = new THREE.Points(ringGeo, ringMat);
         
-        // Nghiêng vành đai một chút cho ngầu
-        rings.rotation.x = Math.PI / 3;
-        rings.rotation.y = Math.PI / 8;
+        rings.rotation.x = Math.PI / 2.2;
+        rings.rotation.y = Math.PI / 10;
         planetGroup.add(rings);
 
-        // Đặt hành tinh ở sâu bên phải ban đầu
         planetGroup.position.set(150, -50, -600);
         scene.add(planetGroup);
 
-        // --- 4. ÁNH SÁNG ---
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        // --- 5. ÁNH SÁNG MẶT TRỜI CHÂN THỰC ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.05); // Tối om
         scene.add(ambientLight);
-        // Nguồn sáng từ mặt trời giả định chiếu vào hành tinh
-        const sunLight = new THREE.DirectionalLight(0x00ffff, 2);
-        sunLight.position.set(-200, 100, -200);
+        
+        // Mặt trời chiếu từ một bên tạo bóng râm (Shadow) rất ngầu
+        const sunLight = new THREE.DirectionalLight(0xffffee, 2.5);
+        sunLight.position.set(-200, 100, 50);
         scene.add(sunLight);
-        // Thêm đèn màu tím chiếu từ dưới lên
-        const purpleLight = new THREE.PointLight(0xff00aa, 5, 500);
-        purpleLight.position.set(100, -100, -500);
-        scene.add(purpleLight);
 
         // ==========================================
-        // LIÊN KẾT SCROLL VỚI VŨ TRỤ (CHỈNH CAMERA & PLANET)
+        // LIÊN KẾT SCROLL VỚI VŨ TRỤ
         // ==========================================
-        
-        // 1. Bay xuyên qua dải ngân hà (Từ Sec 1 -> Cuối)
         gsap.to(camera.position, {
-            z: -1200, // Bay sâu tít tắp vào trong
+            z: -1200,
             ease: "power1.inOut",
             scrollTrigger: {
                 trigger: ".scroll-container",
@@ -482,24 +493,22 @@
             }
         });
 
-        // 2. Hành tinh xuất hiện, bay từ phải qua tâm màn hình
         const tlSpace = gsap.timeline({
             scrollTrigger: {
                 trigger: "#sec-3",
                 start: "top 120%", end: "bottom top",
-                scrub: 2 // mượt mà trôi nổi
+                scrub: 2
             }
         });
         tlSpace.to(planetGroup.position, { x: -80, y: 0, z: -800, duration: 1 }, 0)
-               .to(planetGroup.rotation, { y: Math.PI, x: 0.2, duration: 1 }, 0);
+               .to(planetGroup.rotation, { y: Math.PI * 1.2, x: 0.1, duration: 1 }, 0);
 
         // ==========================================
-        // VÒNG LẶP RENDER (ANIMATION CHẠY NỀN TỰ ĐỘNG)
+        // VÒNG LẶP RENDER MƯỢT MÀ
         // ==========================================
         const clock = new THREE.Clock();
         let mouseX = 0, mouseY = 0;
         
-        // Hiệu ứng Parallax khi rà chuột
         document.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
             mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
@@ -508,19 +517,15 @@
         function animate() {
             const time = clock.getElapsedTime();
 
-            // Sao tự động xoay thật chậm (Vũ trụ đang quay)
-            stars.rotation.y = time * 0.02;
-            stars.rotation.z = time * 0.01;
+            stars.rotation.y = time * 0.01;
+            
+            // Hành tinh tự quay
+            planet.rotation.y = time * 0.05;
+            // Khí quyển bồng bềnh
+            atmosphere.rotation.y = time * 0.06;
+            // Vành đai xoay tròn
+            rings.rotation.z = time * 0.1;
 
-            // Hành tinh tự quay quanh trục
-            planet.rotation.y = time * 0.1;
-            // Bầu khí quyển quay ngược chiều
-            atmosphere.rotation.y = -time * 0.15;
-            atmosphere.rotation.x = time * 0.05;
-            // Vành đai quay mượt mà
-            rings.rotation.z = time * 0.2;
-
-            // Parallax camera (Camera lắc lư theo chuột nhẹ)
             camera.position.x += (mouseX - camera.position.x) * 0.05;
             camera.position.y += (-mouseY - camera.position.y) * 0.05;
             camera.lookAt(0, 0, camera.position.z - 500);
@@ -530,13 +535,11 @@
         }
         animate();
 
-        // Responsive
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
-
     </script>
 </body>
 </html>
