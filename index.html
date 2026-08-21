@@ -3,508 +3,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GALAXY - Không Gian Vũ Trụ Bao La</title>
-    <!-- Import font chữ mang phong cách viễn tưởng và điện ảnh -->
+    <title>HOANGKUN MULTIVERSE - Đa Hành Tinh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@200;300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* ========================================= */
-        /* RESET & THIẾT LẬP CƠ BẢN */
-        /* ========================================= */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #010105; /* Đen thẳm của vũ trụ */
+            background-color: #030305;
             color: #ffffff;
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            cursor: none; /* Dùng chuột custom */
+            cursor: none;
         }
 
-        /* ========================================= */
-        /* GIAO DIỆN KHỞI ĐỘNG (PRELOADER TÀU VŨ TRỤ) */
-        /* ========================================= */
+        /* Loading */
         #preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: #010105; z-index: 9999;
+            background-color: #030305; z-index: 9999;
             display: flex; justify-content: center; align-items: center; flex-direction: column;
-            transition: opacity 2s ease-out, transform 2s ease-out;
+            transition: opacity 1.5s ease-out, visibility 1.5s;
         }
-        .radar {
-            width: 100px; height: 100px;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 50%;
-            position: relative; overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        .orbit-loader {
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative; animation: spin 4s linear infinite;
         }
-        .radar::before {
-            content: ''; position: absolute;
-            top: 50%; left: 50%; width: 50%; height: 50%;
-            background: linear-gradient(45deg, rgba(0, 255, 255, 0) 0%, rgba(0, 255, 255, 0.8) 100%);
-            transform-origin: 0% 0%;
-            animation: scan 2s linear infinite;
+        .orbit-loader::before {
+            content: ''; position: absolute; top: -5px; left: 45px;
+            width: 10px; height: 10px; background: #00ffff;
+            border-radius: 50%; box-shadow: 0 0 10px #00ffff;
         }
-        @keyframes scan { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .system-text {
-            margin-top: 30px; font-family: 'Cinzel', serif; font-size: 1rem;
-            letter-spacing: 0.5em; color: #0ff; text-shadow: 0 0 10px rgba(0,255,255,0.5);
-            animation: blink 1s infinite alternate;
+        .orbit-loader::after {
+            content: ''; position: absolute; bottom: -5px; left: 45px;
+            width: 15px; height: 15px; background: #ff3366;
+            border-radius: 50%; box-shadow: 0 0 15px #ff3366;
         }
-        @keyframes blink { 0% { opacity: 0.5; } 100% { opacity: 1; } }
-        
-        .progress-data {
-            font-family: monospace; font-size: 0.8rem; color: #555;
-            margin-top: 10px; letter-spacing: 0.2em;
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-text { margin-top: 30px; font-family: 'Cinzel', serif; letter-spacing: 0.3em; }
 
-        /* ========================================= */
-        /* CUSTOM CURSOR (TÂM NGẮM) */
-        /* ========================================= */
+        /* Cursor */
         .cursor-dot {
-            width: 4px; height: 4px; background-color: #0ff;
-            border-radius: 50%; position: fixed;
-            pointer-events: none; z-index: 10000;
+            width: 6px; height: 6px; background-color: #fff;
+            border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px #0ff;
         }
-        .cursor-outline {
-            width: 50px; height: 50px;
-            border: 1px dashed rgba(0, 255, 255, 0.5);
-            border-radius: 50%; position: fixed;
-            pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, border-color 0.3s;
-            animation: rotateCursor 10s linear infinite;
-        }
-        @keyframes rotateCursor { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-        .cursor-hover .cursor-outline {
-            width: 70px; height: 70px; border: 1px solid #0ff;
-            background-color: rgba(0, 255, 255, 0.1);
+        .cursor-ring {
+            width: 35px; height: 35px; border: 1px dashed rgba(255,255,255,0.5);
+            border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%); transition: all 0.1s ease-out;
+            animation: spin 10s linear infinite;
         }
 
-        /* ========================================= */
-        /* THREE.JS CANVAS */
-        /* ========================================= */
-        #universe-canvas {
+        /* WebGL */
+        #webgl-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1; pointer-events: none;
         }
 
-        /* ========================================= */
-        /* BỐ CỤC NỘI DUNG SCROLL */
-        /* ========================================= */
+        /* Scroll Layout */
         .scroll-container { position: relative; z-index: 1; }
-        
         .section {
             min-height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; padding: 0 8vw; position: relative;
+            justify-content: center; padding: 0 10vw; position: relative;
         }
         .center-align { align-items: center; text-align: center; }
         .left-align { align-items: flex-start; text-align: left; }
         .right-align { align-items: flex-end; text-align: right; }
 
-        /* Typography Vũ Trụ */
-        .text-mask { overflow: hidden; margin-bottom: 10px; }
-        h1, h2 {
-            font-family: 'Cinzel', serif; font-weight: 700; color: #fff;
-            text-shadow: 0 0 40px rgba(0, 150, 255, 0.6);
-            transform: translateY(120%); opacity: 0; /* Cho GSAP Reveal */
-        }
-        h1 { font-size: 7vw; letter-spacing: 0.1em; line-height: 1; margin-bottom: 20px;}
-        h2 { font-size: 4.5vw; letter-spacing: 0.05em; line-height: 1.1; }
+        /* Typography */
+        .overflow-hidden { overflow: hidden; margin-bottom: 10px; }
+        h1, h2 { font-family: 'Cinzel', serif; font-weight: 700; transform: translateY(100%); opacity: 0; }
+        h1 { font-size: 5vw; letter-spacing: 0.15em; text-shadow: 0 0 30px rgba(255,255,255,0.3); }
+        h2 { font-size: 4vw; letter-spacing: 0.1em; }
         
-        .coordinates {
-            font-family: monospace; font-size: 1vw; color: #0ff;
-            letter-spacing: 0.3em; margin-bottom: 15px; opacity: 0;
-            border-left: 2px solid #0ff; padding-left: 10px;
+        /* Đổi màu chữ theo từng hành tinh */
+        .color-fire { color: #ff5500; text-shadow: 0 0 20px rgba(255,85,0,0.5); }
+        .color-ice { color: #00ffff; text-shadow: 0 0 20px rgba(0,255,255,0.5); }
+        .color-earth { color: #55ff55; text-shadow: 0 0 20px rgba(85,255,85,0.5); }
+        .color-sun { color: #ffaa00; text-shadow: 0 0 40px rgba(255,170,0,0.8); }
+
+        .planet-info {
+            font-family: monospace; font-size: 0.9rem; letter-spacing: 0.2em;
+            color: #888; margin-bottom: 20px; opacity: 0;
+            border-left: 2px solid #fff; padding-left: 10px;
         }
 
         p {
-            font-weight: 300; font-size: 1.1rem; letter-spacing: 0.05em;
-            line-height: 1.8; color: #c0d0f0; max-width: 450px;
-            opacity: 0; margin-top: 20px;
-            background: rgba(0, 0, 0, 0.3); padding: 20px;
-            border-radius: 10px; backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.05);
+            font-weight: 300; font-size: 1.1rem; letter-spacing: 0.05em; line-height: 1.8;
+            color: #ccc; max-width: 450px; opacity: 0;
+            background: rgba(0,0,0,0.4); padding: 20px; border-radius: 8px;
+            backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* Nút viễn tưởng */
-        .btn-warp {
-            margin-top: 40px; padding: 15px 50px;
-            border: 1px solid rgba(0, 255, 255, 0.5);
-            background: rgba(0, 255, 255, 0.05); color: #0ff;
-            font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem;
-            letter-spacing: 0.3em; text-transform: uppercase;
-            cursor: pointer; position: relative; overflow: hidden;
-            opacity: 0; transition: all 0.3s;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2) inset;
+        .scroll-indicator {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; opacity: 0;
         }
-        .btn-warp:hover {
-            background: rgba(0, 255, 255, 0.2); box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
-            text-shadow: 0 0 10px #fff;
+        .scroll-line {
+            width: 1px; height: 60px; background: rgba(255,255,255,0.2);
+            position: relative; overflow: hidden; margin-top: 10px;
         }
-
-        /* Chỉ báo HUD */
-        .hud-indicator {
-            position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center; gap: 15px; opacity: 0;
+        .scroll-dot {
+            width: 3px; height: 15px; background: #fff;
+            position: absolute; top: -15px; left: -1px;
+            animation: scrolldown 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
         }
-        .hud-text {
-            font-family: monospace; font-size: 0.7rem; letter-spacing: 0.5em; color: #0ff;
-        }
-        .hud-line {
-            width: 1px; height: 80px; background-color: rgba(0,255,255,0.2);
-            position: relative; overflow: hidden;
-        }
-        .hud-dot {
-            width: 3px; height: 15px; background-color: #0ff;
-            position: absolute; top: -20px; left: -1px;
-            animation: warpDrop 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-            box-shadow: 0 0 10px #0ff;
-        }
-        @keyframes warpDrop {
-            0% { top: -20px; opacity: 1; }
-            100% { top: 80px; opacity: 0; }
-        }
-        
-        /* Hiệu ứng mờ biên cho text */
-        .glow-text { color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.5); }
+        @keyframes scrolldown { 100% { top: 60px; opacity: 0; } }
 
     </style>
 </head>
 <body>
 
-    <!-- PRELOADER -->
     <div id="preloader">
-        <div class="radar"></div>
-        <div class="system-text">ESTABLISHING UPLINK</div>
-        <div class="progress-data" id="progress-data">SYS.MEM: 0%</div>
+        <div class="orbit-loader"></div>
+        <div class="loader-text">ĐANG QUÉT HỆ THIÊN HÀ...</div>
     </div>
 
-    <!-- TÂM NGẮM (CURSOR) -->
     <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-outline" id="cursor-outline"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
 
-    <!-- KHÔNG GIAN 3D -->
-    <canvas id="universe-canvas"></canvas>
+    <canvas id="webgl-canvas"></canvas>
 
-    <!-- HÀNH TRÌNH SCROLL -->
     <div class="scroll-container">
         
         <!-- TRẠM XUẤT PHÁT -->
         <div class="section center-align" id="sec-1">
-            <div class="coordinates">SEC: 001 // TRÁI ĐẤT</div>
-            <div class="text-mask"><h1 class="glow-text">BƯỚC VÀO</h1></div>
-            <div class="text-mask"><h1>V Ũ   T R Ụ</h1></div>
-            <p>Trải nghiệm mô phỏng không gian chân thực. Hệ thống đã sẵn sàng kích hoạt động cơ bước nhảy. Hãy cuộn chuột để bắt đầu hành trình.</p>
-            
-            <div class="hud-indicator">
-                <div class="hud-text">KÍCH HOẠT BƯỚC NHẢY (SCROLL)</div>
-                <div class="hud-line"><div class="hud-dot"></div></div>
+            <div class="planet-info">TỌA ĐỘ: KHÔNG GIAN SÂU</div>
+            <div class="overflow-hidden"><h1>HÀNH TRÌNH</h1></div>
+            <div class="overflow-hidden"><h1>ĐA HÀNH TINH</h1></div>
+            <p style="margin-top: 20px; text-align: center;">Cuộn chuột để kích hoạt động cơ. Tàu vũ trụ sẽ lần lượt bay ngang qua các hành tinh trong hệ mặt trời chưa được khám phá này.</p>
+            <div class="scroll-indicator">
+                <span style="font-size: 0.7rem; letter-spacing: 0.3em;">BẮT ĐẦU</span>
+                <div class="scroll-line"><div class="scroll-dot"></div></div>
             </div>
         </div>
 
-        <!-- BAY XUYÊN TỐC ĐỘ ÁNH SÁNG -->
-        <div class="section left-align" id="sec-2">
-            <div class="coordinates">SEC: 042 // DẢI NGÂN HÀ XA XÔI</div>
-            <div class="text-mask"><h2>TỐC ĐỘ<br>ÁNH SÁNG</h2></div>
-            <p>Xuyên qua hàng triệu vì sao vô danh. Lực hấp dẫn đang bị bẻ cong bởi vận tốc di chuyển. Bạn đang tiến vào vùng không gian chưa được khám phá.</p>
-            <button class="btn-warp hover-target">QUÉT TÍN HIỆU</button>
+        <!-- HÀNH TINH LỬA (Bên phải) -->
+        <div class="section right-align" id="sec-2">
+            <div class="planet-info" style="border-color: #ff5500;">HÀNH TINH 01 // IGNIS</div>
+            <div class="overflow-hidden"><h2 class="color-fire">HỎA NGỤC</h2></div>
+            <p>Bề mặt bị bao phủ bởi dung nham sôi sục. Bức xạ nhiệt ở đây đủ sức nung chảy mọi kim loại. Hãy giữ khoảng cách an toàn.</p>
         </div>
 
-        <!-- GẶP HÀNH TINH KHỔNG LỒ & VÀNH ĐAI CẢN -->
-        <div class="section right-align" id="sec-3">
-            <div class="coordinates">SEC: 888 // HỆ MẶT TRỜI CHẾT</div>
-            <div class="text-mask"><h2>HÀNH TINH<br>BỊ LÃNG QUÊN</h2></div>
-            <p>Phát hiện một hành tinh khổng lồ với vành đai bụi đá bao quanh. Khí quyển vẫn đang phản xạ lại ánh sáng mờ ảo từ một ngôi sao xa xăm.</p>
-            <button class="btn-warp hover-target">PHÂN TÍCH QUẶNG</button>
+        <!-- HÀNH TINH VÀNH ĐAI BĂNG (Bên trái) -->
+        <div class="section left-align" id="sec-3">
+            <div class="planet-info" style="border-color: #00ffff;">HÀNH TINH 02 // GLACIES</div>
+            <div class="overflow-hidden"><h2 class="color-ice">VÀNH ĐAI BĂNG</h2></div>
+            <p>Một hành tinh khí khổng lồ với vành đai tạo thành từ hàng tỷ mảnh tinh thể băng. Nhiệt độ cực thấp, tĩnh lặng và đẹp đến mê hồn.</p>
         </div>
 
-        <!-- XUYÊN QUA VÀNH ĐAI - KẾT THÚC -->
-        <div class="section center-align" id="sec-4">
-            <div class="coordinates">SEC: 999 // VƯỢT GIỚI HẠN</div>
-            <div class="text-mask"><h2>CHIỀU KHÔNG GIAN<br>THỨ TƯ</h2></div>
-            <p style="margin: 20px auto 0;">Hệ thống định vị mất tín hiệu. Bạn đã trôi dạt vào tận cùng của vũ trụ.</p>
-            <button class="btn-warp hover-target" style="margin-top: 40px;" onclick="window.scrollTo(0,0)">TRỞ VỀ TRÁI ĐẤT</button>
+        <!-- HÀNH TINH SINH THÁI (Bên phải) -->
+        <div class="section right-align" id="sec-4">
+            <div class="planet-info" style="border-color: #55ff55;">HÀNH TINH 03 // TERRA-X</div>
+            <div class="overflow-hidden"><h2 class="color-earth">SỰ SỐNG MỚI</h2></div>
+            <p>Phát hiện bầu khí quyển có oxy và nước lỏng. Kiến trúc sinh học trên bề mặt cho thấy nơi này có thể tồn tại nền văn minh.</p>
+        </div>
+
+        <!-- MẶT TRỜI / TÂM HỆ (Giữa) -->
+        <div class="section center-align" id="sec-5">
+            <div class="planet-info" style="border-color: #ffaa00; border-left: none; border-bottom: 2px solid #ffaa00; padding: 0 0 10px 0;">TRUNG TÂM HỆ SAO</div>
+            <div class="overflow-hidden"><h2 class="color-sun">NGÔI SAO MẸ</h2></div>
+            <p style="margin: 0 auto; text-align: center;">Nguồn năng lượng khổng lồ nuôi dưỡng toàn bộ các hành tinh. Hành trình bay kết thúc tại đây.</p>
         </div>
 
     </div>
 
-    <!-- THƯ VIỆN BẮT BUỘC -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
 
     <script>
-        // ==========================================
-        // CẤU HÌNH CƠ BẢN
-        // ==========================================
         gsap.registerPlugin(ScrollTrigger);
 
-        // Cuộn mượt với Lenis
-        const lenis = new Lenis({
-            duration: 2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smooth: true,
-        });
+        // --- LENIS SMOOTH SCROLL ---
+        const lenis = new Lenis({ duration: 2, smooth: true });
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
 
-        // Chuột Custom
-        const cursorDot = document.getElementById('cursor-dot');
-        const cursorOutline = document.getElementById('cursor-outline');
+        // --- CUSTOM CURSOR ---
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
         window.addEventListener('mousemove', (e) => {
-            cursorDot.style.left = e.clientX + 'px';
-            cursorDot.style.top = e.clientY + 'px';
-            gsap.to(cursorOutline, { x: e.clientX, y: e.clientY, duration: 0.2, ease: "power2.out" });
-        });
-        document.querySelectorAll('.hover-target').forEach(el => {
-            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+            gsap.to(ring, { x: e.clientX, y: e.clientY, duration: 0.15 });
         });
 
-        // ==========================================
-        // KHỞI ĐỘNG HỆ THỐNG (PRELOADER)
-        // ==========================================
-        const progressData = document.getElementById('progress-data');
-        const preloader = document.getElementById('preloader');
-        let mem = 0;
-        
-        const bootInterval = setInterval(() => {
-            mem += Math.floor(Math.random() * 15) + 5;
-            if(mem >= 100) {
-                mem = 100;
-                clearInterval(bootInterval);
-                progressData.innerText = `SYS.MEM: ${mem}% [OVERRIDE READY]`;
-                setTimeout(() => {
-                    preloader.style.transform = 'scale(2) translateZ(100px)';
-                    preloader.style.opacity = '0';
-                    setTimeout(() => { 
-                        preloader.style.display = 'none'; 
-                        initUIAnimation();
-                    }, 1500);
-                }, 800);
-            } else {
-                progressData.innerText = `SYS.MEM: ${mem}%`;
-                if(Math.random() > 0.5) progressData.innerText += ' _';
-            }
-        }, 150);
+        // --- PRELOADER & UI ANIMATION ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                setTimeout(() => { preloader.style.display = 'none'; initUI(); }, 1500);
+            }, 1000);
+        });
 
-        function initUIAnimation() {
+        function initUI() {
             const tl = gsap.timeline();
-            tl.to('#sec-1 .coordinates', { opacity: 1, duration: 1 })
-              .to('#sec-1 h1', { y: 0, opacity: 1, duration: 1.5, stagger: 0.2, ease: "expo.out" }, "-=0.5")
-              .to('#sec-1 p', { opacity: 1, y: -20, duration: 1 }, "-=1")
-              .to('.hud-indicator', { opacity: 1, duration: 1 }, "-=0.5");
+            tl.to('#sec-1 .planet-info', { opacity: 1, duration: 1 })
+              .to('#sec-1 h1', { y: 0, opacity: 1, duration: 1.2, stagger: 0.1, ease: "power4.out" }, "-=0.5")
+              .to('#sec-1 p', { opacity: 1, duration: 1 }, "-=0.5")
+              .to('.scroll-indicator', { opacity: 1, duration: 1 }, "-=0.5");
         }
 
         document.querySelectorAll('.section:not(#sec-1)').forEach(sec => {
-            const coor = sec.querySelector('.coordinates');
+            const info = sec.querySelector('.planet-info');
             const titles = sec.querySelectorAll('h2');
             const p = sec.querySelector('p');
-            const btn = sec.querySelector('.btn-warp');
 
-            const st = gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 65%" } });
-            if(coor) st.to(coor, { opacity: 1, duration: 1 });
-            if(titles.length) st.to(titles, { y: 0, opacity: 1, duration: 1.2, ease: "power4.out" }, "-=0.5");
-            if(p) st.to(p, { opacity: 1, y: -10, duration: 1 }, "-=0.8");
-            if(btn) st.to(btn, { opacity: 1, y: -10, duration: 0.5 }, "-=0.5");
+            const st = gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 60%" } });
+            if(info) st.to(info, { opacity: 1, duration: 1 });
+            if(titles.length) st.to(titles, { y: 0, opacity: 1, duration: 1, ease: "power4.out" }, "-=0.8");
+            if(p) st.to(p, { opacity: 1, duration: 1 }, "-=0.5");
         });
 
         // ==========================================
-        // VŨ TRỤ 3D CHÂN THỰC CỰC MẠNH
+        // THREE.JS - HỆ ĐA HÀNH TINH (MULTIPLE PLANETS)
         // ==========================================
-        const canvas = document.querySelector('#universe-canvas');
+        const canvas = document.querySelector('#webgl-canvas');
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x010105, 0.0012); // Sương mù vũ trụ sâu
+        scene.fog = new THREE.FogExp2(0x030305, 0.0008); // Sương mù vũ trụ
 
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 5000);
-        camera.position.set(0, 0, 800);
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 5000);
+        camera.position.set(0, 0, 200); // Vị trí xuất phát
 
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setClearColor(0x010105, 1);
 
-        // Nạp Texture (Ảnh bề mặt thực tế)
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.setCrossOrigin('anonymous'); // Đảm bảo không lỗi chặn ảnh
-
-        // --- 1. DẢI NGÂN HÀ CHÂN THỰC ---
-        const starCount = 15000;
-        const starGeo = new THREE.BufferGeometry();
-        const starPos = new Float32Array(starCount * 3);
-        const starColors = new Float32Array(starCount * 3);
+        // --- 0. BẦU TRỜI SAO (STARFIELD) ---
+        const starsGeo = new THREE.BufferGeometry();
+        const starsCount = 15000;
+        const starsPos = new Float32Array(starsCount * 3);
+        const starsColor = new Float32Array(starsCount * 3);
         const c = new THREE.Color();
 
-        for(let i = 0; i < starCount; i++) {
-            const r = 300 + Math.random() * 2500;
-            const theta = 2 * Math.PI * Math.random();
-            const phi = Math.acos(2 * Math.random() - 1);
-            
-            starPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
-            starPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
-            starPos[i*3+2] = r * Math.cos(phi) - 400;
+        for(let i=0; i<starsCount; i++) {
+            starsPos[i*3] = (Math.random() - 0.5) * 3000;
+            starsPos[i*3+1] = (Math.random() - 0.5) * 3000;
+            starsPos[i*3+2] = 200 - Math.random() * 4000; // Trải dài từ trước ra tít phía sau
 
-            // Đổ màu sao thực tế (Trắng, Vàng nhạt, Xanh dương)
             const mix = Math.random();
-            if(mix < 0.6) c.setHex(0xffffff);
-            else if(mix < 0.8) c.setHex(0xaaccff); // Sao trẻ nóng
-            else c.setHex(0xffddaa); // Sao già lạnh
-
-            starColors[i*3] = c.r;
-            starColors[i*3+1] = c.g;
-            starColors[i*3+2] = c.b;
+            if(mix < 0.5) c.setHex(0xffffff);
+            else if(mix < 0.7) c.setHex(0xaaccff);
+            else c.setHex(0xffccaa);
+            starsColor[i*3] = c.r; starsColor[i*3+1] = c.g; starsColor[i*3+2] = c.b;
         }
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+        starsGeo.setAttribute('color', new THREE.BufferAttribute(starsColor, 3));
+        const starsMat = new THREE.PointsMaterial({ size: 1.2, vertexColors: true, transparent: true, opacity: 0.8 });
+        const starField = new THREE.Points(starsGeo, starsMat);
+        scene.add(starField);
 
-        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-        starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
-
-        const createStarTexture = () => {
+        // --- HÀM TẠO TEXTURE PROCEDURAL CHO HÀNH TINH (Không cần load ảnh ngoài) ---
+        const createPlanetTexture = (color1, color2) => {
             const cvs = document.createElement('canvas');
-            cvs.width = 16; cvs.height = 16;
+            cvs.width = 512; cvs.height = 512;
             const ctx = cvs.getContext('2d');
-            const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
-            grad.addColorStop(0, 'rgba(255,255,255,1)');
-            grad.addColorStop(0.3, 'rgba(255,255,255,0.6)');
-            grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad;
-            ctx.beginPath(); ctx.arc(8, 8, 8, 0, Math.PI * 2); ctx.fill();
-            return new THREE.Texture(cvs);
+            // Tạo noise giả
+            for(let i=0; i<512; i+=4) {
+                for(let j=0; j<512; j+=4) {
+                    ctx.fillStyle = Math.random() > 0.5 ? color1 : color2;
+                    ctx.globalAlpha = Math.random();
+                    ctx.fillRect(i, j, 4, 4);
+                }
+            }
+            return new THREE.CanvasTexture(cvs);
         };
 
-        const starMat = new THREE.PointsMaterial({
-            size: 2, map: createStarTexture(),
-            vertexColors: true, transparent: true,
-            blending: THREE.AdditiveBlending, depthWrite: false
+        // --- 1. HÀNH TINH LỬA (IGNIS) ---
+        const p1Group = new THREE.Group();
+        const p1Geo = new THREE.IcosahedronGeometry(40, 4); // Cầu lồi lõm
+        const p1Mat = new THREE.MeshStandardMaterial({ 
+            color: 0xff3300, emissive: 0xaa1100, roughness: 0.8,
+            wireframe: true // Dạng lưới dung nham
         });
-        const stars = new THREE.Points(starGeo, starMat);
-        scene.add(stars);
+        const planet1 = new THREE.Mesh(p1Geo, p1Mat);
+        p1Group.add(planet1);
+        // Quầng lửa
+        const p1AuraGeo = new THREE.SphereGeometry(45, 32, 32);
+        const p1AuraMat = new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending });
+        p1Group.add(new THREE.Mesh(p1AuraGeo, p1AuraMat));
+        
+        p1Group.position.set(70, -10, -300); // Nằm bên phải, chiều sâu -300
+        scene.add(p1Group);
 
-        // --- 2. HÀNH TINH NHƯ THẬT (REALISTIC PLANET) ---
-        const planetGroup = new THREE.Group();
-        
-        const pGeo = new THREE.SphereGeometry(60, 64, 64);
-        
-        // Sử dụng ảnh bề mặt trái đất phân giải cao từ CDN
-        const pMat = new THREE.MeshStandardMaterial({
-            map: textureLoader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg'),
-            bumpMap: textureLoader.load('https://unpkg.com/three-globe/example/img/earth-topology.png'),
-            bumpScale: 2, // Độ lồi lõm của núi non
-            roughness: 0.6,
-            metalness: 0.1
+        // --- 2. HÀNH TINH BĂNG CÓ VÀNH ĐAI (GLACIES) ---
+        const p2Group = new THREE.Group();
+        const p2Geo = new THREE.SphereGeometry(50, 64, 64);
+        const p2Mat = new THREE.MeshStandardMaterial({ 
+            color: 0x0044ff, roughness: 0.1, metalness: 0.5,
+            map: createPlanetTexture('#0088ff', '#0022aa')
         });
-        const planet = new THREE.Mesh(pGeo, pMat);
-        planetGroup.add(planet);
+        const planet2 = new THREE.Mesh(p2Geo, p2Mat);
+        p2Group.add(planet2);
 
-        // --- 3. KHÍ QUYỂN (ATMOSPHERE GLOW SHADER) ---
-        // Dùng custom shader để tạo lớp viền sáng chân thực bọc ngoài hành tinh
-        const vertexShader = `
-            varying vec3 vNormal;
-            void main() {
-                vNormal = normalize(normalMatrix * normal);
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-        `;
-        const fragmentShader = `
-            varying vec3 vNormal;
-            void main() {
-                // Tính toán góc nhìn để tán xạ ánh sáng ở rìa
-                float intensity = pow(0.6 - dot(vNormal, vec3(0, 0, 1.0)), 3.0);
-                // Màu xanh lơ của khí quyển
-                gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity;
-            }
-        `;
-        const atmMat = new THREE.ShaderMaterial({
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            blending: THREE.AdditiveBlending,
-            side: THREE.BackSide,
-            transparent: true
+        // Vành đai băng (Ring)
+        const ringGeo = new THREE.RingGeometry(65, 100, 64);
+        const ringMat = new THREE.MeshBasicMaterial({ 
+            color: 0x00ffff, side: THREE.DoubleSide, transparent: true, opacity: 0.5,
+            wireframe: true 
         });
-        const atmosphere = new THREE.Mesh(pGeo, atmMat);
-        atmosphere.scale.set(1.15, 1.15, 1.15); // Khí quyển to hơn lõi một chút
-        planetGroup.add(atmosphere);
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 1.8;
+        ring.rotation.y = Math.PI / 8;
+        p2Group.add(ring);
 
-        // --- 4. VÀNH ĐAI BỤI ĐÁ (DUST RINGS) ---
-        const ringCount = 15000;
-        const ringGeo = new THREE.BufferGeometry();
-        const ringPos = new Float32Array(ringCount * 3);
-        const ringColors = new Float32Array(ringCount * 3);
+        p2Group.position.set(-90, 20, -900); // Nằm bên trái, xa hơn
+        scene.add(p2Group);
 
-        for(let i=0; i<ringCount; i++) {
-            // Vành đai mỏng và dẹp
-            const r = 85 + Math.random() * 50; 
-            const theta = Math.random() * Math.PI * 2;
-            
-            ringPos[i*3] = Math.cos(theta) * r;
-            ringPos[i*3+1] = (Math.random() - 0.5) * 1.5; // Cực kỳ dẹt
-            ringPos[i*3+2] = Math.sin(theta) * r;
-
-            // Màu bụi thực tế: Xám, Nâu nhạt, Trắng băng
-            const mix = Math.random();
-            if(mix > 0.8) c.setHex(0xffffff); // Băng
-            else if(mix > 0.3) c.setHex(0xaaaaaa); // Đá xám
-            else c.setHex(0x887766); // Bụi mịn
-            
-            ringColors[i*3] = c.r;
-            ringColors[i*3+1] = c.g;
-            ringColors[i*3+2] = c.b;
-        }
-        ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPos, 3));
-        ringGeo.setAttribute('color', new THREE.BufferAttribute(ringColors, 3));
-        
-        const ringMat = new THREE.PointsMaterial({
-            size: 0.6, // Hạt li ti
-            vertexColors: true, transparent: true, opacity: 0.7,
-            sizeAttenuation: true
+        // --- 3. HÀNH TINH SINH THÁI (TERRA-X) ---
+        const p3Group = new THREE.Group();
+        const p3Geo = new THREE.SphereGeometry(45, 64, 64);
+        const p3Mat = new THREE.MeshStandardMaterial({ 
+            color: 0x00ffaa, roughness: 0.6, metalness: 0.2,
+            map: createPlanetTexture('#22aa55', '#004422')
         });
-        const rings = new THREE.Points(ringGeo, ringMat);
+        const planet3 = new THREE.Mesh(p3Geo, p3Mat);
+        p3Group.add(planet3);
+        // Khí quyển xanh lá mờ
+        const p3AtmGeo = new THREE.SphereGeometry(48, 32, 32);
+        const p3AtmMat = new THREE.MeshBasicMaterial({ color: 0x55ff55, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending });
+        p3Group.add(new THREE.Mesh(p3AtmGeo, p3AtmMat));
+
+        p3Group.position.set(80, -30, -1500); // Nằm bên phải, xa tít
+        scene.add(p3Group);
+
+        // --- 4. NGÔI SAO MẸ (SUN / CORE) ---
+        const sunGroup = new THREE.Group();
+        const sunGeo = new THREE.SphereGeometry(120, 64, 64);
+        const sunMat = new THREE.MeshBasicMaterial({ color: 0xffdd88 }); // Tự phát sáng
+        const sun = new THREE.Mesh(sunGeo, sunMat);
+        sunGroup.add(sun);
         
-        rings.rotation.x = Math.PI / 2.2;
-        rings.rotation.y = Math.PI / 10;
-        planetGroup.add(rings);
+        // Vầng hào quang (Glow)
+        const sunGlowGeo = new THREE.SphereGeometry(140, 64, 64);
+        const sunGlowMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
+        sunGroup.add(new THREE.Mesh(sunGlowGeo, sunGlowMat));
+        const sunGlowOut = new THREE.SphereGeometry(180, 64, 64);
+        const sunGlowOutMat = new THREE.MeshBasicMaterial({ color: 0xff6600, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending });
+        sunGroup.add(new THREE.Mesh(sunGlowOut, sunGlowOutMat));
 
-        planetGroup.position.set(150, -50, -600);
-        scene.add(planetGroup);
+        sunGroup.position.set(0, 0, -2400); // Nằm chính giữa, xa nhất
+        scene.add(sunGroup);
 
-        // --- 5. ÁNH SÁNG MẶT TRỜI CHÂN THỰC ---
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.05); // Tối om
+        // --- ÁNH SÁNG ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
         scene.add(ambientLight);
-        
-        // Mặt trời chiếu từ một bên tạo bóng râm (Shadow) rất ngầu
-        const sunLight = new THREE.DirectionalLight(0xffffee, 2.5);
-        sunLight.position.set(-200, 100, 50);
-        scene.add(sunLight);
+        // Đèn chiếu từ Ngôi Sao Mẹ hắt ngược lại các hành tinh
+        const pointLight = new THREE.PointLight(0xffdd88, 3, 3000);
+        pointLight.position.set(0, 0, -2200);
+        scene.add(pointLight);
+        // Đèn phụ soi từ camera
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        dirLight.position.set(0, 0, 100);
+        scene.add(dirLight);
 
         // ==========================================
-        // LIÊN KẾT SCROLL VỚI VŨ TRỤ
+        // LIÊN KẾT CUỘN CHUỘT -> DI CHUYỂN CAMERA FLY-BY
         // ==========================================
+        // Camera sẽ bay dọc theo trục Z, xuyên qua các hành tinh
         gsap.to(camera.position, {
-            z: -1200,
-            ease: "power1.inOut",
+            z: -2100, // Bay từ 200 đến sát mặt trời (-2100)
+            ease: "none",
             scrollTrigger: {
                 trigger: ".scroll-container",
                 start: "top top", end: "bottom bottom",
-                scrub: 1.5
+                scrub: 1.5 // Cuộn mượt
             }
         });
-
-        const tlSpace = gsap.timeline({
-            scrollTrigger: {
-                trigger: "#sec-3",
-                start: "top 120%", end: "bottom top",
-                scrub: 2
-            }
-        });
-        tlSpace.to(planetGroup.position, { x: -80, y: 0, z: -800, duration: 1 }, 0)
-               .to(planetGroup.rotation, { y: Math.PI * 1.2, x: 0.1, duration: 1 }, 0);
 
         // ==========================================
-        // VÒNG LẶP RENDER MƯỢT MÀ
+        // RENDER LOOP
         // ==========================================
         const clock = new THREE.Clock();
         let mouseX = 0, mouseY = 0;
@@ -517,24 +391,38 @@
         function animate() {
             const time = clock.getElapsedTime();
 
-            stars.rotation.y = time * 0.01;
+            // Các hành tinh tự xoay quanh trục
+            p1Group.rotation.y = time * 0.2;
+            p1Group.rotation.x = time * 0.1;
             
-            // Hành tinh tự quay
-            planet.rotation.y = time * 0.05;
-            // Khí quyển bồng bềnh
-            atmosphere.rotation.y = time * 0.06;
-            // Vành đai xoay tròn
-            rings.rotation.z = time * 0.1;
+            planet2.rotation.y = time * 0.1;
+            ring.rotation.z = time * 0.05;
 
+            p3Group.rotation.y = time * 0.15;
+
+            // Mặt trời bập bùng nhẹ
+            sunGroup.scale.set(
+                1 + Math.sin(time * 2) * 0.02,
+                1 + Math.cos(time * 2) * 0.02,
+                1 + Math.sin(time * 2.5) * 0.02
+            );
+
+            // Parallax camera (lắc lư nhẹ theo chuột khi đang bay)
+            // Lưu trữ vị trí z do GSAP quản lý
+            const currentZ = camera.position.z;
             camera.position.x += (mouseX - camera.position.x) * 0.05;
             camera.position.y += (-mouseY - camera.position.y) * 0.05;
-            camera.lookAt(0, 0, camera.position.z - 500);
+            // Ép Z trở lại để không bị Parallax làm hỏng chiều sâu
+            camera.position.z = currentZ; 
+            
+            camera.lookAt(0, 0, currentZ - 500); // Luôn nhìn thẳng về phía trước
 
             renderer.render(scene, camera);
             requestAnimationFrame(animate);
         }
         animate();
 
+        // Responsive
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
