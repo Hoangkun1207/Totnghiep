@@ -1,176 +1,269 @@
-<!DOCTYPE html>
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write("""<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOANGKUN MULTIVERSE - Đa Hành Tinh</title>
+    <title>CYBER CORE - Digital Assets & Source Code</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@200;300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
+        /* ========================================= */
+        /* BASE RESET & CYBERPUNK THEME */
+        /* ========================================= */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff00ea;
+            --dark-bg: #050505;
+        }
         body {
-            background-color: #030305;
-            color: #ffffff;
-            font-family: 'Montserrat', sans-serif;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            cursor: none;
+            background-color: var(--dark-bg); color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden; -webkit-font-smoothing: antialiased;
+            cursor: none; /* Dùng chuột Cyber */
         }
 
-        /* Loading */
+        /* ========================================= */
+        /* SYSTEM BOOT (PRELOADER) */
+        /* ========================================= */
         #preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: #030305; z-index: 9999;
+            background-color: #000; z-index: 9999;
             display: flex; justify-content: center; align-items: center; flex-direction: column;
-            transition: opacity 1.5s ease-out, visibility 1.5s;
+            transition: opacity 1s ease, transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        .orbit-loader {
-            width: 100px; height: 100px; border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.1);
-            position: relative; animation: spin 4s linear infinite;
+        .boot-screen {
+            width: 80%; max-width: 600px;
+            border: 1px solid var(--neon-cyan); padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2) inset;
+            position: relative; overflow: hidden;
         }
-        .orbit-loader::before {
-            content: ''; position: absolute; top: -5px; left: 45px;
-            width: 10px; height: 10px; background: #00ffff;
-            border-radius: 50%; box-shadow: 0 0 10px #00ffff;
+        .boot-screen::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(transparent, rgba(0,243,255,0.1), transparent);
+            transform: translateY(-100%); animation: scanline 3s linear infinite;
         }
-        .orbit-loader::after {
-            content: ''; position: absolute; bottom: -5px; left: 45px;
-            width: 15px; height: 15px; background: #ff3366;
-            border-radius: 50%; box-shadow: 0 0 15px #ff3366;
+        @keyframes scanline { 100% { transform: translateY(100%); } }
+        
+        .sys-title {
+            font-family: 'Orbitron', sans-serif; color: var(--neon-cyan);
+            font-size: 2rem; margin-bottom: 15px; letter-spacing: 5px;
+            text-shadow: 0 0 10px var(--neon-cyan);
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-text { margin-top: 30px; font-family: 'Cinzel', serif; letter-spacing: 0.3em; }
+        .log-list { font-family: monospace; color: #0f0; font-size: 0.9rem; list-style: none; }
+        .log-item { margin-bottom: 5px; opacity: 0; }
+        .progress-bar-container {
+            width: 100%; height: 10px; background: #111; margin-top: 20px;
+            border: 1px solid #333; position: relative;
+        }
+        .progress-bar { height: 100%; width: 0%; background: var(--neon-pink); transition: width 0.1s; }
 
-        /* Cursor */
-        .cursor-dot {
-            width: 6px; height: 6px; background-color: #fff;
-            border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000;
+        /* ========================================= */
+        /* HUD & CURSOR */
+        /* ========================================= */
+        .cursor-crosshair {
+            width: 20px; height: 20px;
+            position: fixed; pointer-events: none; z-index: 10000;
             transform: translate(-50%, -50%);
         }
-        .cursor-ring {
-            width: 35px; height: 35px; border: 1px dashed rgba(255,255,255,0.5);
-            border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); transition: all 0.1s ease-out;
-            animation: spin 10s linear infinite;
+        .cursor-crosshair::before, .cursor-crosshair::after {
+            content: ''; position: absolute; background: var(--neon-cyan);
+        }
+        .cursor-crosshair::before { top: 50%; left: 0; width: 100%; height: 2px; transform: translateY(-50%); }
+        .cursor-crosshair::after { left: 50%; top: 0; height: 100%; width: 2px; transform: translateX(-50%); }
+
+        .cursor-frame {
+            width: 50px; height: 50px; border: 1px solid rgba(0, 243, 255, 0.5);
+            position: fixed; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, transform 0.1s;
+        }
+        .cursor-frame::before {
+            content: 'TARGET'; position: absolute; top: -15px; left: 5px;
+            font-family: monospace; font-size: 8px; color: var(--neon-cyan);
         }
 
-        /* WebGL */
+        /* Overlay HUD cố định */
+        .hud-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 10;
+            border: 2px solid rgba(0,243,255,0.1);
+        }
+        .hud-corner {
+            position: absolute; width: 30px; height: 30px;
+            border: 2px solid var(--neon-cyan);
+        }
+        .hc-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+        .hc-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+        .hc-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+        .hc-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+
+        /* ========================================= */
+        /* WEBGL CANVAS */
+        /* ========================================= */
         #webgl-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; pointer-events: none;
+            z-index: -1; outline: none;
         }
 
-        /* Scroll Layout */
-        .scroll-container { position: relative; z-index: 1; }
+        /* ========================================= */
+        /* SCROLL CONTENT */
+        /* ========================================= */
+        .scroll-wrapper { position: relative; z-index: 5; }
+        
         .section {
             min-height: 100vh; display: flex; flex-direction: column;
             justify-content: center; padding: 0 10vw; position: relative;
         }
-        .center-align { align-items: center; text-align: center; }
-        .left-align { align-items: flex-start; text-align: left; }
-        .right-align { align-items: flex-end; text-align: right; }
+        .flex-right { align-items: flex-end; text-align: right; }
+        .flex-left { align-items: flex-start; text-align: left; }
+        .flex-center { align-items: center; text-align: center; }
 
         /* Typography */
-        .overflow-hidden { overflow: hidden; margin-bottom: 10px; }
-        h1, h2 { font-family: 'Cinzel', serif; font-weight: 700; transform: translateY(100%); opacity: 0; }
-        h1 { font-size: 5vw; letter-spacing: 0.15em; text-shadow: 0 0 30px rgba(255,255,255,0.3); }
-        h2 { font-size: 4vw; letter-spacing: 0.1em; }
+        .glitch-wrapper { position: relative; margin-bottom: 10px; overflow: hidden; }
+        h1, h2 {
+            font-family: 'Orbitron', sans-serif; font-weight: 900;
+            text-transform: uppercase; line-height: 1.1;
+            transform: translateY(120%); opacity: 0; /* GSAP Reveal */
+        }
+        h1 { font-size: 6vw; color: #fff; text-shadow: 2px 2px 0px var(--neon-pink), -2px -2px 0px var(--neon-cyan); }
+        h2 { font-size: 4vw; color: var(--neon-cyan); }
         
-        /* Đổi màu chữ theo từng hành tinh */
-        .color-fire { color: #ff5500; text-shadow: 0 0 20px rgba(255,85,0,0.5); }
-        .color-ice { color: #00ffff; text-shadow: 0 0 20px rgba(0,255,255,0.5); }
-        .color-earth { color: #55ff55; text-shadow: 0 0 20px rgba(85,255,85,0.5); }
-        .color-sun { color: #ffaa00; text-shadow: 0 0 40px rgba(255,170,0,0.8); }
-
-        .planet-info {
-            font-family: monospace; font-size: 0.9rem; letter-spacing: 0.2em;
-            color: #888; margin-bottom: 20px; opacity: 0;
-            border-left: 2px solid #fff; padding-left: 10px;
+        .badge {
+            display: inline-block; padding: 5px 15px; background: rgba(0, 243, 255, 0.1);
+            border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
+            font-family: monospace; font-size: 1rem; letter-spacing: 2px;
+            margin-bottom: 20px; opacity: 0;
         }
 
         p {
-            font-weight: 300; font-size: 1.1rem; letter-spacing: 0.05em; line-height: 1.8;
-            color: #ccc; max-width: 450px; opacity: 0;
-            background: rgba(0,0,0,0.4); padding: 20px; border-radius: 8px;
-            backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.05);
+            font-size: 1.2rem; font-weight: 500; letter-spacing: 1px; line-height: 1.6;
+            color: #b0c4de; max-width: 500px; opacity: 0;
+            background: rgba(0, 0, 0, 0.6); padding: 20px;
+            border-left: 4px solid var(--neon-pink);
+            backdrop-filter: blur(10px);
         }
 
-        .scroll-indicator {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center; opacity: 0;
+        /* Nút công nghệ */
+        .cyber-btn {
+            margin-top: 30px; padding: 15px 40px;
+            background: transparent; border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan); font-family: 'Orbitron', sans-serif;
+            font-size: 1rem; font-weight: 700; letter-spacing: 3px;
+            text-transform: uppercase; cursor: pointer;
+            position: relative; overflow: hidden; opacity: 0;
+            transition: 0.3s; box-shadow: 0 0 10px rgba(0,243,255,0.2) inset;
         }
-        .scroll-line {
-            width: 1px; height: 60px; background: rgba(255,255,255,0.2);
-            position: relative; overflow: hidden; margin-top: 10px;
+        .cyber-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%; background: var(--neon-cyan);
+            transition: left 0.3s; z-index: -1;
         }
-        .scroll-dot {
-            width: 3px; height: 15px; background: #fff;
-            position: absolute; top: -15px; left: -1px;
-            animation: scrolldown 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+        .cyber-btn:hover { color: #000; box-shadow: 0 0 20px var(--neon-cyan); }
+        .cyber-btn:hover::before { left: 0; }
+
+        /* Mã code chạy dọc (Trang trí) */
+        .matrix-bg {
+            position: absolute; top: 0; right: 5%; width: 300px; height: 100%;
+            font-family: monospace; font-size: 14px; color: rgba(0,255,0,0.1);
+            word-break: break-all; overflow: hidden; pointer-events: none; z-index: -1;
+            mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
         }
-        @keyframes scrolldown { 100% { top: 60px; opacity: 0; } }
 
     </style>
 </head>
 <body>
 
+    <!-- MÀN HÌNH KHỞI ĐỘNG HỆ THỐNG -->
     <div id="preloader">
-        <div class="orbit-loader"></div>
-        <div class="loader-text">ĐANG QUÉT HỆ THIÊN HÀ...</div>
-    </div>
-
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-ring" id="cursor-ring"></div>
-
-    <canvas id="webgl-canvas"></canvas>
-
-    <div class="scroll-container">
-        
-        <!-- TRẠM XUẤT PHÁT -->
-        <div class="section center-align" id="sec-1">
-            <div class="planet-info">TỌA ĐỘ: KHÔNG GIAN SÂU</div>
-            <div class="overflow-hidden"><h1>HÀNH TRÌNH</h1></div>
-            <div class="overflow-hidden"><h1>ĐA HÀNH TINH</h1></div>
-            <p style="margin-top: 20px; text-align: center;">Cuộn chuột để kích hoạt động cơ. Tàu vũ trụ sẽ lần lượt bay ngang qua các hành tinh trong hệ mặt trời chưa được khám phá này.</p>
-            <div class="scroll-indicator">
-                <span style="font-size: 0.7rem; letter-spacing: 0.3em;">BẮT ĐẦU</span>
-                <div class="scroll-line"><div class="scroll-dot"></div></div>
+        <div class="boot-screen">
+            <div class="sys-title">SYSTEM INITIALIZATION</div>
+            <ul class="log-list" id="log-list">
+                <li class="log-item">Loading Core Modules...</li>
+                <li class="log-item">Establishing Secure Connection...</li>
+                <li class="log-item">Decrypting Digital Assets...</li>
+                <li class="log-item">Mounting WebGL Render Engine...</li>
+                <li class="log-item" style="color: var(--neon-cyan);">ACCESS GRANTED</li>
+            </ul>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
             </div>
         </div>
+    </div>
 
-        <!-- HÀNH TINH LỬA (Bên phải) -->
-        <div class="section right-align" id="sec-2">
-            <div class="planet-info" style="border-color: #ff5500;">HÀNH TINH 01 // IGNIS</div>
-            <div class="overflow-hidden"><h2 class="color-fire">HỎA NGỤC</h2></div>
-            <p>Bề mặt bị bao phủ bởi dung nham sôi sục. Bức xạ nhiệt ở đây đủ sức nung chảy mọi kim loại. Hãy giữ khoảng cách an toàn.</p>
+    <!-- CHUỘT CROSSHAIR -->
+    <div class="cursor-crosshair" id="cursor-dot"></div>
+    <div class="cursor-frame" id="cursor-frame"></div>
+
+    <!-- HUD OVERLAY (Hiển thị góc màn hình) -->
+    <div class="hud-overlay">
+        <div class="hud-corner hc-tl"></div>
+        <div class="hud-corner hc-tr"></div>
+        <div class="hud-corner hc-bl"></div>
+        <div class="hud-corner hc-br"></div>
+    </div>
+
+    <!-- CANVAS 3D -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- NỘI DUNG CUỘN -->
+    <div class="scroll-wrapper">
+        
+        <!-- SECTION 1 -->
+        <div class="section flex-center" id="sec-1">
+            <div class="badge">V1.0.0 // ONLINE</div>
+            <div class="glitch-wrapper"><h1>LÕI DỮ LIỆU</h1></div>
+            <div class="glitch-wrapper"><h1>SỐ HÓA</h1></div>
+            <p style="margin: 20px auto 0; text-align: center; border-left: none; border-bottom: 4px solid var(--neon-cyan);">Hệ thống lưu trữ và phân phối mã nguồn tự động. Trải nghiệm không gian thực tế ảo dành cho sản phẩm kỹ thuật số.</p>
         </div>
 
-        <!-- HÀNH TINH VÀNH ĐAI BĂNG (Bên trái) -->
-        <div class="section left-align" id="sec-3">
-            <div class="planet-info" style="border-color: #00ffff;">HÀNH TINH 02 // GLACIES</div>
-            <div class="overflow-hidden"><h2 class="color-ice">VÀNH ĐAI BĂNG</h2></div>
-            <p>Một hành tinh khí khổng lồ với vành đai tạo thành từ hàng tỷ mảnh tinh thể băng. Nhiệt độ cực thấp, tĩnh lặng và đẹp đến mê hồn.</p>
+        <!-- SECTION 2 -->
+        <div class="section flex-left" id="sec-2">
+            <div class="matrix-bg" id="matrix-code"></div>
+            <div class="badge">01 // KHO LƯU TRỮ</div>
+            <div class="glitch-wrapper"><h2>MÃ NGUỒN<br>& HIỆU ỨNG</h2></div>
+            <p>Hàng ngàn dòng code được tối ưu hóa. Tích hợp trực tiếp các hiệu ứng WebGL, GSAP mượt mà nhất vào dự án của bạn chỉ với một cú click.</p>
+            <button class="cyber-btn hover-target">TRUY XUẤT NGAY</button>
         </div>
 
-        <!-- HÀNH TINH SINH THÁI (Bên phải) -->
-        <div class="section right-align" id="sec-4">
-            <div class="planet-info" style="border-color: #55ff55;">HÀNH TINH 03 // TERRA-X</div>
-            <div class="overflow-hidden"><h2 class="color-earth">SỰ SỐNG MỚI</h2></div>
-            <p>Phát hiện bầu khí quyển có oxy và nước lỏng. Kiến trúc sinh học trên bề mặt cho thấy nơi này có thể tồn tại nền văn minh.</p>
+        <!-- SECTION 3 -->
+        <div class="section flex-right" id="sec-3">
+            <div class="badge">02 // KẾT NỐI</div>
+            <div class="glitch-wrapper"><h2 style="color: var(--neon-pink);">ĐỒNG BỘ<br>DỮ LIỆU</h2></div>
+            <p style="border-left: none; border-right: 4px solid var(--neon-cyan);">Hệ thống API tự động xử lý và kiểm tra giao dịch nhanh chóng. Tích hợp cổng thanh toán bảo mật tuyệt đối.</p>
+            <button class="cyber-btn hover-target" style="border-color: var(--neon-pink); color: var(--neon-pink);">XÁC THỰC</button>
         </div>
 
-        <!-- MẶT TRỜI / TÂM HỆ (Giữa) -->
-        <div class="section center-align" id="sec-5">
-            <div class="planet-info" style="border-color: #ffaa00; border-left: none; border-bottom: 2px solid #ffaa00; padding: 0 0 10px 0;">TRUNG TÂM HỆ SAO</div>
-            <div class="overflow-hidden"><h2 class="color-sun">NGÔI SAO MẸ</h2></div>
-            <p style="margin: 0 auto; text-align: center;">Nguồn năng lượng khổng lồ nuôi dưỡng toàn bộ các hành tinh. Hành trình bay kết thúc tại đây.</p>
+        <!-- SECTION 4 -->
+        <div class="section flex-center" id="sec-4">
+            <div class="badge">03 // ĐIỂM ĐẾN</div>
+            <div class="glitch-wrapper"><h2>HOÀN TẤT<br>QUY TRÌNH</h2></div>
+            <p style="margin: 0 auto; text-align: center; border-left: none; border-top: 4px solid var(--neon-pink);">Bạn đã đi đến trung tâm của lõi dữ liệu. Kết nối thành công.</p>
+            <button class="cyber-btn hover-target" style="margin-top: 40px;" onclick="window.scrollTo(0,0)">KHỞI ĐỘNG LẠI</button>
         </div>
 
     </div>
 
+    <!-- ========================================== -->
+    <!-- IMPORTS THƯ VIỆN BẰNG CDN (Không cần cài đặt npm) -->
+    <!-- ========================================== -->
+    <!-- 1. Three.js Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- 2. Post-Processing (Hiệu ứng phát sáng & Glitch) -->
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    
+    <!-- Custom Glitch / RGB Shift Shader -->
+    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/RGBShiftShader.js"></script>
+
+    <!-- 3. GSAP & Lenis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
@@ -178,202 +271,227 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // --- LENIS SMOOTH SCROLL ---
-        const lenis = new Lenis({ duration: 2, smooth: true });
+        // ==========================================
+        // TẠO CHUỖI CODE MA TRẬN TRANG TRÍ
+        // ==========================================
+        const matrixDiv = document.getElementById('matrix-code');
+        let codeContent = '';
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+        for(let i=0; i<2000; i++) { codeContent += chars.charAt(Math.floor(Math.random() * chars.length)); }
+        matrixDiv.innerText = codeContent;
+        setInterval(() => {
+            const randomSpot = Math.floor(Math.random() * 2000);
+            const newChar = chars.charAt(Math.floor(Math.random() * chars.length));
+            codeContent = codeContent.substring(0, randomSpot) + newChar + codeContent.substring(randomSpot + 1);
+            matrixDiv.innerText = codeContent;
+        }, 50);
+
+        // ==========================================
+        // LENIS SMOOTH SCROLL
+        // ==========================================
+        const lenis = new Lenis({ duration: 1.2, smooth: true });
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
 
-        // --- CUSTOM CURSOR ---
-        const dot = document.getElementById('cursor-dot');
-        const ring = document.getElementById('cursor-ring');
+        // ==========================================
+        // CUSTOM CURSOR
+        // ==========================================
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorFrame = document.getElementById('cursor-frame');
         window.addEventListener('mousemove', (e) => {
-            dot.style.left = e.clientX + 'px';
-            dot.style.top = e.clientY + 'px';
-            gsap.to(ring, { x: e.clientX, y: e.clientY, duration: 0.15 });
+            cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
+            gsap.to(cursorFrame, { x: e.clientX, y: e.clientY, duration: 0.1 });
+        });
+        document.querySelectorAll('.hover-target').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorFrame.style.width = '80px'; cursorFrame.style.height = '80px';
+                cursorFrame.style.borderColor = 'var(--neon-pink)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorFrame.style.width = '50px'; cursorFrame.style.height = '50px';
+                cursorFrame.style.borderColor = 'rgba(0, 243, 255, 0.5)';
+            });
         });
 
-        // --- PRELOADER & UI ANIMATION ---
+        // ==========================================
+        // BOOT SCREEN ANIMATION
+        // ==========================================
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                const preloader = document.getElementById('preloader');
-                preloader.style.opacity = '0';
-                setTimeout(() => { preloader.style.display = 'none'; initUI(); }, 1500);
-            }, 1000);
+            const logs = document.querySelectorAll('.log-item');
+            const progress = document.getElementById('progress-bar');
+            const preloader = document.getElementById('preloader');
+            
+            const tlBoot = gsap.timeline();
+            logs.forEach((log, index) => {
+                tlBoot.to(log, { opacity: 1, duration: 0.2 }, index * 0.4)
+                      .to(progress, { width: `${(index + 1) * 20}%`, duration: 0.2 }, index * 0.4);
+            });
+            
+            tlBoot.to(preloader, { 
+                yPercent: -100, duration: 1, ease: "power4.inOut", delay: 0.5,
+                onComplete: () => {
+                    preloader.style.display = 'none';
+                    initHTMLAnimation(); // Chạy animation chữ HTML
+                }
+            });
         });
 
-        function initUI() {
+        function initHTMLAnimation() {
             const tl = gsap.timeline();
-            tl.to('#sec-1 .planet-info', { opacity: 1, duration: 1 })
-              .to('#sec-1 h1', { y: 0, opacity: 1, duration: 1.2, stagger: 0.1, ease: "power4.out" }, "-=0.5")
-              .to('#sec-1 p', { opacity: 1, duration: 1 }, "-=0.5")
-              .to('.scroll-indicator', { opacity: 1, duration: 1 }, "-=0.5");
+            tl.to('#sec-1 .badge', { opacity: 1, duration: 0.5 })
+              .to('#sec-1 h1', { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "expo.out" }, "-=0.3")
+              .to('#sec-1 p', { opacity: 1, duration: 1 }, "-=0.5");
         }
 
         document.querySelectorAll('.section:not(#sec-1)').forEach(sec => {
-            const info = sec.querySelector('.planet-info');
+            const badge = sec.querySelector('.badge');
             const titles = sec.querySelectorAll('h2');
             const p = sec.querySelector('p');
+            const btn = sec.querySelector('.cyber-btn');
 
-            const st = gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 60%" } });
-            if(info) st.to(info, { opacity: 1, duration: 1 });
-            if(titles.length) st.to(titles, { y: 0, opacity: 1, duration: 1, ease: "power4.out" }, "-=0.8");
-            if(p) st.to(p, { opacity: 1, duration: 1 }, "-=0.5");
+            const st = gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 65%" } });
+            if(badge) st.to(badge, { opacity: 1, duration: 0.5 });
+            if(titles.length) st.to(titles, { y: 0, opacity: 1, duration: 0.8, ease: "power4.out" }, "-=0.3");
+            if(p) st.to(p, { opacity: 1, duration: 0.8 }, "-=0.4");
+            if(btn) st.to(btn, { opacity: 1, duration: 0.5 }, "-=0.2");
         });
 
         // ==========================================
-        // THREE.JS - HỆ ĐA HÀNH TINH (MULTIPLE PLANETS)
+        // THREE.JS - CYBERPUNK MATRIX CORE
         // ==========================================
         const canvas = document.querySelector('#webgl-canvas');
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x030305, 0.0008); // Sương mù vũ trụ
+        scene.fog = new THREE.FogExp2(0x050505, 0.002);
 
-        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 5000);
-        camera.position.set(0, 0, 200); // Vị trí xuất phát
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 10, 150);
 
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false }); // Tắt antialias để dùng Post Processing tốt hơn
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.toneMapping = THREE.ReinhardToneMapping; // Hỗ trợ màu chói
 
-        // --- 0. BẦU TRỜI SAO (STARFIELD) ---
-        const starsGeo = new THREE.BufferGeometry();
-        const starsCount = 15000;
-        const starsPos = new Float32Array(starsCount * 3);
-        const starsColor = new Float32Array(starsCount * 3);
-        const c = new THREE.Color();
+        // --- HẬU KỲ (POST-PROCESSING) ---
+        const composer = new THREE.EffectComposer(renderer);
+        
+        // 1. Lớp Render cơ bản
+        const renderPass = new THREE.RenderPass(scene, camera);
+        composer.addPass(renderPass);
 
-        for(let i=0; i<starsCount; i++) {
-            starsPos[i*3] = (Math.random() - 0.5) * 3000;
-            starsPos[i*3+1] = (Math.random() - 0.5) * 3000;
-            starsPos[i*3+2] = 200 - Math.random() * 4000; // Trải dài từ trước ra tít phía sau
+        // 2. Hiệu ứng Glow (Bloom)
+        const bloomPass = new THREE.UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            2.0,  // Cường độ sáng
+            0.5,  // Bán kính sáng
+            0.1   // Ngưỡng phát sáng
+        );
+        composer.addPass(bloomPass);
 
-            const mix = Math.random();
-            if(mix < 0.5) c.setHex(0xffffff);
-            else if(mix < 0.7) c.setHex(0xaaccff);
-            else c.setHex(0xffccaa);
-            starsColor[i*3] = c.r; starsColor[i*3+1] = c.g; starsColor[i*3+2] = c.b;
+        // 3. Hiệu ứng Glitch (RGB Shift)
+        const rgbShiftPass = new THREE.ShaderPass(THREE.RGBShiftShader);
+        rgbShiftPass.uniforms['amount'].value = 0.0015; // Mức độ nhiễu ban đầu
+        composer.addPass(rgbShiftPass);
+
+        // --- CÁC ĐỐI TƯỢNG 3D ---
+        
+        // 1. Mặt sàn lưới Tron Legacy (GridHelper)
+        const gridHelper = new THREE.GridHelper(1000, 100, 0x00f3ff, 0x00f3ff);
+        gridHelper.position.y = -30;
+        gridHelper.material.opacity = 0.2;
+        gridHelper.material.transparent = true;
+        scene.add(gridHelper);
+
+        // Lưới trần nhà
+        const ceilingGrid = new THREE.GridHelper(1000, 100, 0xff00ea, 0xff00ea);
+        ceilingGrid.position.y = 80;
+        ceilingGrid.material.opacity = 0.1;
+        ceilingGrid.material.transparent = true;
+        scene.add(ceilingGrid);
+
+        // 2. Lõi dữ liệu (Data Core - Khối hình học ở giữa)
+        const coreGroup = new THREE.Group();
+        scene.add(coreGroup);
+
+        // Lõi trong
+        const coreGeo = new THREE.IcosahedronGeometry(20, 1);
+        const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+        const core = new THREE.Mesh(coreGeo, coreMat);
+        coreGroup.add(core);
+
+        // Vòng ngoài
+        const ringGeo = new THREE.TorusGeometry(35, 1, 16, 100);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
+        const ring1 = new THREE.Mesh(ringGeo, ringMat);
+        ring1.rotation.x = Math.PI / 2;
+        coreGroup.add(ring1);
+
+        const ringMat2 = new THREE.MeshBasicMaterial({ color: 0xff00ea });
+        const ring2 = new THREE.Mesh(ringGeo, ringMat2);
+        ring2.rotation.y = Math.PI / 2;
+        coreGroup.add(ring2);
+
+        coreGroup.position.set(0, 20, -100);
+
+        // 3. Dòng dữ liệu bay (Flying Data Cubes)
+        const cubesCount = 200;
+        const cubesGeo = new THREE.BoxGeometry(1, 1, 15);
+        const cubesMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
+        const cubesInstanced = new THREE.InstancedMesh(cubesGeo, cubesMat, cubesCount);
+        
+        const dummy = new THREE.Object3D();
+        for(let i=0; i<cubesCount; i++) {
+            dummy.position.set(
+                (Math.random() - 0.5) * 300,
+                (Math.random() - 0.5) * 100 + 20,
+                (Math.random() - 0.5) * 600 - 100
+            );
+            // Các khối chạy ngẫu nhiên màu hồng hoặc xanh
+            if(Math.random() > 0.5) cubesInstanced.setColorAt(i, new THREE.Color(0xff00ea));
+            else cubesInstanced.setColorAt(i, new THREE.Color(0x00f3ff));
+            
+            dummy.updateMatrix();
+            cubesInstanced.setMatrixAt(i, dummy.matrix);
         }
-        starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
-        starsGeo.setAttribute('color', new THREE.BufferAttribute(starsColor, 3));
-        const starsMat = new THREE.PointsMaterial({ size: 1.2, vertexColors: true, transparent: true, opacity: 0.8 });
-        const starField = new THREE.Points(starsGeo, starsMat);
-        scene.add(starField);
+        scene.add(cubesInstanced);
 
-        // --- HÀM TẠO TEXTURE PROCEDURAL CHO HÀNH TINH (Không cần load ảnh ngoài) ---
-        const createPlanetTexture = (color1, color2) => {
-            const cvs = document.createElement('canvas');
-            cvs.width = 512; cvs.height = 512;
-            const ctx = cvs.getContext('2d');
-            // Tạo noise giả
-            for(let i=0; i<512; i+=4) {
-                for(let j=0; j<512; j+=4) {
-                    ctx.fillStyle = Math.random() > 0.5 ? color1 : color2;
-                    ctx.globalAlpha = Math.random();
-                    ctx.fillRect(i, j, 4, 4);
-                }
+        // ==========================================
+        // ANIMATION & SCROLLTRIGGER INTERACTION
+        // ==========================================
+        
+        // Cập nhật hiệu ứng RGB Shift (Glitch) mạnh hơn khi đang cuộn
+        ScrollTrigger.create({
+            trigger: ".scroll-wrapper",
+            start: "top top", end: "bottom bottom",
+            onUpdate: (self) => {
+                // Vận tốc cuộn càng nhanh, nhiễu càng mạnh
+                const velocity = Math.abs(self.getVelocity());
+                gsap.to(rgbShiftPass.uniforms['amount'], {
+                    value: 0.0015 + (velocity / 50000), // Tính toán độ nhiễu
+                    duration: 0.1
+                });
             }
-            return new THREE.CanvasTexture(cvs);
-        };
-
-        // --- 1. HÀNH TINH LỬA (IGNIS) ---
-        const p1Group = new THREE.Group();
-        const p1Geo = new THREE.IcosahedronGeometry(40, 4); // Cầu lồi lõm
-        const p1Mat = new THREE.MeshStandardMaterial({ 
-            color: 0xff3300, emissive: 0xaa1100, roughness: 0.8,
-            wireframe: true // Dạng lưới dung nham
         });
-        const planet1 = new THREE.Mesh(p1Geo, p1Mat);
-        p1Group.add(planet1);
-        // Quầng lửa
-        const p1AuraGeo = new THREE.SphereGeometry(45, 32, 32);
-        const p1AuraMat = new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending });
-        p1Group.add(new THREE.Mesh(p1AuraGeo, p1AuraMat));
-        
-        p1Group.position.set(70, -10, -300); // Nằm bên phải, chiều sâu -300
-        scene.add(p1Group);
 
-        // --- 2. HÀNH TINH BĂNG CÓ VÀNH ĐAI (GLACIES) ---
-        const p2Group = new THREE.Group();
-        const p2Geo = new THREE.SphereGeometry(50, 64, 64);
-        const p2Mat = new THREE.MeshStandardMaterial({ 
-            color: 0x0044ff, roughness: 0.1, metalness: 0.5,
-            map: createPlanetTexture('#0088ff', '#0022aa')
-        });
-        const planet2 = new THREE.Mesh(p2Geo, p2Mat);
-        p2Group.add(planet2);
-
-        // Vành đai băng (Ring)
-        const ringGeo = new THREE.RingGeometry(65, 100, 64);
-        const ringMat = new THREE.MeshBasicMaterial({ 
-            color: 0x00ffff, side: THREE.DoubleSide, transparent: true, opacity: 0.5,
-            wireframe: true 
-        });
-        const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI / 1.8;
-        ring.rotation.y = Math.PI / 8;
-        p2Group.add(ring);
-
-        p2Group.position.set(-90, 20, -900); // Nằm bên trái, xa hơn
-        scene.add(p2Group);
-
-        // --- 3. HÀNH TINH SINH THÁI (TERRA-X) ---
-        const p3Group = new THREE.Group();
-        const p3Geo = new THREE.SphereGeometry(45, 64, 64);
-        const p3Mat = new THREE.MeshStandardMaterial({ 
-            color: 0x00ffaa, roughness: 0.6, metalness: 0.2,
-            map: createPlanetTexture('#22aa55', '#004422')
-        });
-        const planet3 = new THREE.Mesh(p3Geo, p3Mat);
-        p3Group.add(planet3);
-        // Khí quyển xanh lá mờ
-        const p3AtmGeo = new THREE.SphereGeometry(48, 32, 32);
-        const p3AtmMat = new THREE.MeshBasicMaterial({ color: 0x55ff55, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending });
-        p3Group.add(new THREE.Mesh(p3AtmGeo, p3AtmMat));
-
-        p3Group.position.set(80, -30, -1500); // Nằm bên phải, xa tít
-        scene.add(p3Group);
-
-        // --- 4. NGÔI SAO MẸ (SUN / CORE) ---
-        const sunGroup = new THREE.Group();
-        const sunGeo = new THREE.SphereGeometry(120, 64, 64);
-        const sunMat = new THREE.MeshBasicMaterial({ color: 0xffdd88 }); // Tự phát sáng
-        const sun = new THREE.Mesh(sunGeo, sunMat);
-        sunGroup.add(sun);
-        
-        // Vầng hào quang (Glow)
-        const sunGlowGeo = new THREE.SphereGeometry(140, 64, 64);
-        const sunGlowMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
-        sunGroup.add(new THREE.Mesh(sunGlowGeo, sunGlowMat));
-        const sunGlowOut = new THREE.SphereGeometry(180, 64, 64);
-        const sunGlowOutMat = new THREE.MeshBasicMaterial({ color: 0xff6600, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending });
-        sunGroup.add(new THREE.Mesh(sunGlowOut, sunGlowOutMat));
-
-        sunGroup.position.set(0, 0, -2400); // Nằm chính giữa, xa nhất
-        scene.add(sunGroup);
-
-        // --- ÁNH SÁNG ---
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
-        scene.add(ambientLight);
-        // Đèn chiếu từ Ngôi Sao Mẹ hắt ngược lại các hành tinh
-        const pointLight = new THREE.PointLight(0xffdd88, 3, 3000);
-        pointLight.position.set(0, 0, -2200);
-        scene.add(pointLight);
-        // Đèn phụ soi từ camera
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        dirLight.position.set(0, 0, 100);
-        scene.add(dirLight);
-
-        // ==========================================
-        // LIÊN KẾT CUỘN CHUỘT -> DI CHUYỂN CAMERA FLY-BY
-        // ==========================================
-        // Camera sẽ bay dọc theo trục Z, xuyên qua các hành tinh
+        // Di chuyển Camera xuyên qua không gian Cyberpunk
         gsap.to(camera.position, {
-            z: -2100, // Bay từ 200 đến sát mặt trời (-2100)
+            z: -250, // Lao về phía lõi
             ease: "none",
             scrollTrigger: {
-                trigger: ".scroll-container",
+                trigger: ".scroll-wrapper",
                 start: "top top", end: "bottom bottom",
-                scrub: 1.5 // Cuộn mượt
+                scrub: 1
+            }
+        });
+
+        // Xoay Lõi Dữ liệu
+        gsap.to(coreGroup.rotation, {
+            x: Math.PI * 2, y: Math.PI * 2,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".scroll-wrapper",
+                start: "top top", end: "bottom bottom",
+                scrub: 1.5
             }
         });
 
@@ -384,50 +502,56 @@
         let mouseX = 0, mouseY = 0;
         
         document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
-            mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.1;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.1;
         });
 
         function animate() {
             const time = clock.getElapsedTime();
 
-            // Các hành tinh tự xoay quanh trục
-            p1Group.rotation.y = time * 0.2;
-            p1Group.rotation.x = time * 0.1;
-            
-            planet2.rotation.y = time * 0.1;
-            ring.rotation.z = time * 0.05;
+            // Di chuyển mặt sàn tạo cảm giác đang bay thẳng tới
+            gridHelper.position.z = (time * 20) % 100;
+            ceilingGrid.position.z = (time * 20) % 100;
 
-            p3Group.rotation.y = time * 0.15;
+            // Xoay nhẹ Core
+            coreGroup.rotation.y += 0.01;
+            core.rotation.x += 0.02;
 
-            // Mặt trời bập bùng nhẹ
-            sunGroup.scale.set(
-                1 + Math.sin(time * 2) * 0.02,
-                1 + Math.cos(time * 2) * 0.02,
-                1 + Math.sin(time * 2.5) * 0.02
-            );
+            // Làm dòng dữ liệu bay về phía camera
+            const matrix = new THREE.Matrix4();
+            const position = new THREE.Vector3();
+            for(let i=0; i<cubesCount; i++) {
+                cubesInstanced.getMatrixAt(i, matrix);
+                position.setFromMatrixPosition(matrix);
+                
+                position.z += 2; // Tốc độ bay
+                if(position.z > 200) position.z = -500; // Reset nếu bay qua mặt
+                
+                dummy.position.copy(position);
+                dummy.updateMatrix();
+                cubesInstanced.setMatrixAt(i, dummy.matrix);
+            }
+            cubesInstanced.instanceMatrix.needsUpdate = true;
 
-            // Parallax camera (lắc lư nhẹ theo chuột khi đang bay)
-            // Lưu trữ vị trí z do GSAP quản lý
+            // Camera Parallax & LookAt
             const currentZ = camera.position.z;
             camera.position.x += (mouseX - camera.position.x) * 0.05;
             camera.position.y += (-mouseY - camera.position.y) * 0.05;
-            // Ép Z trở lại để không bị Parallax làm hỏng chiều sâu
             camera.position.z = currentZ; 
-            
-            camera.lookAt(0, 0, currentZ - 500); // Luôn nhìn thẳng về phía trước
+            camera.lookAt(0, 20, currentZ - 200);
 
-            renderer.render(scene, camera);
+            // Dùng COMPOSER thay vì RENDERER để xuất hiệu ứng hậu kỳ
+            composer.render();
             requestAnimationFrame(animate);
         }
         animate();
 
-        // Responsive
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
-</html>
+</html>""")
