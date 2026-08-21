@@ -1,498 +1,395 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Student Management 4.0</title>
-    
-    <script src="js/auth.js"></script>
-    <script>appAuth.checkAuth(false);</script>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <style>
-/* ==========================================================================
-   CYBERPUNK & GLASSMORPHISM UI KIT - ADVANCED CSS
-   ========================================================================== */
-
-:root {
-    --neon-cyan: #0ea5e9;
-    --neon-pink: #ec4899;
-    --neon-purple: #8b5cf6;
-    --dark-surface: rgba(24, 24, 27, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.08);
-}
-
-/* 1. NÚT BẤM CYBERPUNK (CYBER BUTTON) 
-   Hiệu ứng cắt góc, phát sáng và chớp nháy khi hover */
-.btn-cyber {
-    position: relative;
-    padding: 12px 24px;
-    background: transparent;
-    color: var(--neon-cyan);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border: none;
-    cursor: pointer;
-    overflow: hidden;
-    transition: 0.3s ease;
-    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-}
-
-.btn-cyber::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: var(--neon-cyan);
-    z-index: -1;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
-}
-
-.btn-cyber:hover {
-    color: #000;
-    text-shadow: 0 0 5px rgba(255,255,255,0.5);
-    box-shadow: 0 0 20px var(--neon-cyan);
-}
-
-.btn-cyber:hover::before {
-    transform: scaleX(1);
-    transform-origin: left;
-}
-
-/* Hiệu ứng tia điện chạy ngang nút */
-.btn-cyber::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: -100%;
-    width: 50%; height: 2px;
-    background: #fff;
-    box-shadow: 0 0 10px #fff, 0 0 20px var(--neon-cyan);
-    transition: all 0.5s ease;
-}
-
-.btn-cyber:hover::after {
-    left: 150%;
-    animation: zap 0.5s forwards;
-}
-
-@keyframes zap {
-    0% { left: -50%; opacity: 1; }
-    100% { left: 150%; opacity: 0; }
-}
-
-/* 2. Ô NHẬP LIỆU (GLOWING INPUT) */
-.cyber-input-group {
-    position: relative;
-    margin-bottom: 2rem;
-}
-
-.cyber-input {
-    width: 100%;
-    background: var(--dark-surface);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    padding: 15px 20px;
-    color: #fff;
-    font-size: 16px;
-    outline: none;
-    transition: 0.3s ease;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-}
-
-.cyber-input:focus {
-    border-color: var(--neon-purple);
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.3), inset 0 0 10px rgba(139, 92, 246, 0.1);
-}
-
-.cyber-label {
-    position: absolute;
-    top: 50%;
-    left: 20px;
-    transform: translateY(-50%);
-    color: #71717a;
-    pointer-events: none;
-    transition: 0.3s ease;
-    background: #09090b;
-    padding: 0 5px;
-}
-
-.cyber-input:focus ~ .cyber-label,
-.cyber-input:valid ~ .cyber-label {
-    top: 0;
-    font-size: 12px;
-    color: var(--neon-purple);
-    letter-spacing: 1px;
-}
-
-/* 3. HIỆU ỨNG SKELETON LOADING (Chờ tải dữ liệu) */
-.skeleton-box {
-    background: linear-gradient(90deg, rgba(39, 39, 42, 0.5) 25%, rgba(63, 63, 70, 0.8) 50%, rgba(39, 39, 42, 0.5) 75%);
-    background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite linear;
-    border-radius: 4px;
-}
-
-@keyframes skeleton-loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* 4. HIỆU ỨNG SCROLLING MƯỢT CHO BẢNG DATATABLE */
-.cyber-table-container {
-    max-height: 500px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--neon-cyan) var(--dark-surface);
-}
-
-.cyber-table tr {
-    transition: all 0.2s ease;
-    border-bottom: 1px solid var(--glass-border);
-}
-
-.cyber-table tr:hover {
-    background: rgba(14, 165, 233, 0.05);
-    transform: scale(1.01);
-    box-shadow: inset 4px 0 0 var(--neon-cyan);
-}
-
-/* 5. TOOLTIP HIỂN THỊ THÔNG TIN KHI RÊ CHUỘT */
-.cyber-tooltip {
-    position: relative;
-    display: inline-block;
-}
-
-.cyber-tooltip .tooltip-text {
-    visibility: hidden;
-    width: max-content;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    text-align: center;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--neon-pink);
-    box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
-    
-    /* Vị trí */
-    position: absolute;
-    z-index: 100;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
-}
-
-.cyber-tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* 6. HIỆU ỨNG RUNG LẮC KHI LỖI (Dùng cho thông báo nhập sai) */
-.shake-error {
-    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-    border-color: #ef4444 !important;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4) !important;
-}
-
-@keyframes shake {
-    10%, 90% { transform: translate3d(-1px, 0, 0); }
-    20%, 80% { transform: translate3d(2px, 0, 0); }
-    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-    40%, 60% { transform: translate3d(4px, 0, 0); }
-}
-
-/* 7. RADAR SCANNER (Dùng làm background cho trang thống kê) */
-.radar-bg {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 600px; height: 600px;
-    border-radius: 50%;
-    border: 1px solid rgba(14, 165, 233, 0.1);
-    background: 
-        linear-gradient(90deg, transparent 49.5%, rgba(14, 165, 233, 0.2) 50%, transparent 50.5%),
-        linear-gradient(0deg, transparent 49.5%, rgba(14, 165, 233, 0.2) 50%, transparent 50.5%);
-    pointer-events: none;
-    z-index: -2;
-}
-
-.radar-bg::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 50%; height: 50%;
-    background: conic-gradient(from 0deg, transparent 70%, rgba(14, 165, 233, 0.4) 100%);
-    transform-origin: 0 0;
-    animation: scan 4s linear infinite;
-    border-radius: 100% 0 0 0;
-}
-
-@keyframes scan {
-    100% { transform: rotate(360deg); }
-}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Website giới thiệu thương hiệu và sản phẩm">
+<title>HOANGKUN — Thương hiệu thương mại</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/header.css">
+<link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/products.css">
+<link rel="stylesheet" href="css/about.css">
+<link rel="stylesheet" href="css/services.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/responsive.css">
 </head>
-<body class="flex h-screen">
+<body>
 
-    <div id="preloader">
-        <div class="loader-ring mb-4"></div>
-        <h2 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 tracking-widest uppercase">Đang tải hệ thống...</h2>
-    </div>
+<div id="page-loader">
+    <div class="loader-logo">HK</div>
+    <div class="loader-bar"><span></span></div>
+    <p>Đang tải...</p>
+</div>
 
-    <aside class="w-64 glass-panel border-r border-white/5 p-4 flex flex-col justify-between z-20 dashboard-item opacity-0">
-        <div>
-            <h1 class="text-xl font-bold text-cyan-400 mb-8 px-2 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center"><i class="fa-solid fa-graduation-cap"></i></div> 
-                EDU 4.0
-            </h1>
-            <nav class="space-y-2">
-                <a href="#" class="block p-3 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 transition-all hover:translate-x-2"><i class="fa-solid fa-chart-pie w-6"></i> Tổng Quan</a>
-                <a href="#" class="block p-3 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all hover:translate-x-2"><i class="fa-solid fa-users w-6"></i> Sinh Viên</a>
-            </nav>
+<header class="header" id="header">
+    <div class="container header-inner">
+        <a href="index.html" class="logo">
+            <span class="logo-mark">HK</span>
+            <span class="logo-text">HOANGKUN</span>
+        </a>
+
+        <nav class="nav" id="nav">
+            <a href="index.html" class="active">Trang chủ</a>
+            <a href="about.html">Giới thiệu</a>
+            <a href="products.html">Sản phẩm</a>
+            <a href="services.html">Dịch vụ</a>
+            <a href="news.html">Tin tức</a>
+            <a href="contact.html">Liên hệ</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="icon-btn" id="searchBtn" aria-label="Tìm kiếm">⌕</button>
+            <a href="products.html" class="header-btn">Khám phá</a>
+            <button class="menu-btn" id="menuBtn">☰</button>
         </div>
-        <div class="border-t border-white/10 pt-4 mt-4">
-            <div class="flex items-center gap-3 mb-4 px-2">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold">H</div>
+    </div>
+</header>
+
+<div class="search-overlay" id="searchOverlay">
+    <button class="close-search" id="closeSearch">×</button>
+    <div class="search-box">
+        <span>⌕</span>
+        <input type="text" id="globalSearch" placeholder="Tìm kiếm sản phẩm...">
+    </div>
+</div>
+
+<main>
+
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="container hero-content">
+        <div class="hero-copy reveal">
+            <span class="eyebrow">THƯƠNG HIỆU • SẢN PHẨM • GIẢI PHÁP</span>
+            <h1>Kiến tạo những<br><strong>giá trị khác biệt.</strong></h1>
+            <p>
+                HOANGKUN mang đến những sản phẩm được chọn lọc,
+                thiết kế hiện đại và trải nghiệm chuyên nghiệp cho
+                khách hàng trong thời đại số.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="products.html" class="btn btn-primary">
+                    Khám phá sản phẩm <span>→</span>
+                </a>
+                <a href="about.html" class="btn btn-outline">
+                    Về chúng tôi
+                </a>
+            </div>
+
+            <div class="hero-trust">
                 <div>
-                    <p class="text-sm font-bold text-white">Nguyễn Việt Hoàng</p>
-                    <p class="text-xs text-cyan-400">Admin</p>
+                    <strong>10K+</strong>
+                    <span>Khách hàng</span>
                 </div>
-            </div>
-            <button onclick="appAuth.logout()" class="w-full p-3 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition text-left flex items-center gap-2">
-                <i class="fa-solid fa-power-off"></i> Đăng xuất
-            </button>
-        </div>
-    </aside>
-
-    <main class="flex-1 flex flex-col h-screen relative z-10">
-        <header class="h-20 glass-panel border-b border-white/5 px-8 flex items-center justify-between dashboard-item opacity-0">
-            <div class="w-1/3 relative">
-                <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-zinc-500"></i>
-                <input type="text" oninput="appStudent.searchStudents(this.value)" placeholder="Tìm kiếm sinh viên..." class="w-full bg-black/40 border border-zinc-800 rounded-full py-2.5 pl-11 text-white outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
-            </div>
-            <button onclick="uiManager.openModal()" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-5 py-2.5 rounded-full font-bold shadow-[0_0_15px_rgba(14,165,233,0.4)] transition-all hover:scale-105"><i class="fa-solid fa-plus mr-2"></i>Thêm SV</button>
-        </header>
-
-        <div class="flex-1 overflow-y-auto p-8" id="mainScrollArea">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="glass-panel p-6 rounded-2xl lg:col-span-2 dashboard-item opacity-0">
-                    <h3 class="text-lg font-bold text-white mb-4">Biểu Đồ Học Lực</h3>
-                    <div class="h-64"><canvas id="mainChart"></canvas></div>
+                <div>
+                    <strong>99%</strong>
+                    <span>Hài lòng</span>
                 </div>
-                <div class="glass-panel p-6 rounded-2xl flex flex-col justify-center dashboard-item opacity-0">
-                    <h3 class="text-lg font-bold mb-4 text-zinc-300">Bộ Lọc Phân Tích</h3>
-                    <label class="text-sm text-zinc-400 mb-2 block">Chuyên ngành:</label>
-                    <select onchange="appStudent.filterByMajor(this.value)" class="bg-black/50 border border-zinc-700 text-white p-3 rounded-xl outline-none focus:border-cyan-500 transition-all">
-                        <option value="ALL">Tất cả chuyên ngành</option>
-                        <option value="CNTT">Công nghệ thông tin</option>
-                        <option value="Thiết kế đồ hoạ">Thiết kế đồ hoạ</option>
-                        <option value="Kinh tế quốc tế">Kinh tế quốc tế</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="glass-panel rounded-2xl overflow-hidden dashboard-item opacity-0">
-                <div class="p-5 border-b border-white/5 bg-black/20 flex justify-between items-center">
-                    <h3 class="font-bold text-white">Danh Sách Hệ Thống</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="bg-black/40 text-zinc-400 text-sm uppercase tracking-wider">
-                            <tr><th class="p-4 font-medium">Mã SV</th><th class="p-4 font-medium">Họ Tên</th><th class="p-4 font-medium">Ngành</th><th class="p-4 font-medium">Điểm</th><th class="p-4 font-medium">Xếp loại</th><th class="p-4 font-medium text-right">Thao tác</th></tr>
-                        </thead>
-                        <tbody id="studentTableBody" class="divide-y divide-white/5 text-sm"></tbody>
-                    </table>
+                <div>
+                    <strong>24/7</strong>
+                    <span>Hỗ trợ</span>
                 </div>
             </div>
         </div>
-    </main>
 
-    <div id="studentModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm">
-        <div class="glass-panel p-8 rounded-2xl w-full max-w-md transform scale-95 opacity-0" id="modalBox">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-white" id="modalTitle">Thêm Sinh Viên</h3>
-                <button onclick="uiManager.closeModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        <div class="hero-visual reveal">
+            <div class="hero-card">
+                <div class="floating-tag tag-one">Premium</div>
+                <div class="floating-tag tag-two">New 2026</div>
+                <div class="product-orb">
+                    <div class="orb-inner">HK</div>
+                </div>
+                <div class="hero-product-info">
+                    <span>SẢN PHẨM TIÊU BIỂU</span>
+                    <h3>HK Premium Collection</h3>
+                    <a href="product-detail.html">Xem chi tiết →</a>
+                </div>
             </div>
-          <form id="studentForm" onsubmit="uiManager.submitForm(event)">
-    <input type="hidden" id="formMode" value="add">
-    
-    <div class="cyber-input-group">
-        <input type="text" id="svId" required class="cyber-input uppercase" autocomplete="off">
-        <label class="cyber-label">Mã Sinh Viên</label>
-    </div>
-
-    <div class="cyber-input-group">
-        <input type="text" id="svName" required class="cyber-input" autocomplete="off">
-        <label class="cyber-label">Họ và Tên</label>
-    </div>
-
-    <div class="cyber-input-group">
-        <select id="svMajor" required class="cyber-input">
-            <option value="CNTT">Công nghệ thông tin</option>
-            <option value="Thiết kế đồ hoạ">Thiết kế đồ hoạ</option>
-            <option value="Kinh tế quốc tế">Kinh tế quốc tế</option>
-        </select>
-        <label class="cyber-label">Chuyên Ngành</label>
-    </div>
-
-    <div class="cyber-input-group">
-        <input type="number" id="svScore" step="0.1" max="10" required class="cyber-input">
-        <label class="cyber-label">Điểm Trung Bình (0-10)</label>
-    </div>
-
-    <div class="flex gap-3 mt-8">
-        <button type="button" onclick="uiManager.closeModal()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white p-3 rounded-xl transition-all">Huỷ bỏ</button>
-        <button type="submit" class="btn-cyber flex-1">Lưu Dữ Liệu</button>
-    </div>
-</form>
         </div>
     </div>
 
-    <script src="js/student.js"></script>
-    <script>
-        // Hàm Toast Notification dùng chung (SweetAlert2 mix)
-        function showToast(msg, type='success') {
-            const Toast = Swal.mixin({
-                toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000, timerProgressBar: true,
-                customClass: { popup: 'swal-glass' }
-            });
-            Toast.fire({ icon: type, title: msg });
-        }
+    <div class="hero-scroll">
+        <span></span>
+        Cuộn để khám phá
+    </div>
+</section>
 
-        const uiManager = {
-            openModal: (data = null) => {
-                const modal = document.getElementById('studentModal');
-                const box = document.getElementById('modalBox');
-                modal.style.display = 'flex';
-                
-                // GSAP Animation cho Modal
-                gsap.to(box, { duration: 0.4, scale: 1, opacity: 1, ease: "back.out(1.5)" });
+<section class="brands">
+    <div class="container brands-inner">
+        <span>Được xây dựng cho</span>
+        <div class="brand-list">
+            <b>VISION</b>
+            <b>MODERN</b>
+            <b>NOVATECH</b>
+            <b>PREMIUM</b>
+            <b>CREATIVE</b>
+        </div>
+    </div>
+</section>
 
-                const form = document.getElementById('studentForm');
-                if(data) {
-                    document.getElementById('modalTitle').innerText = 'Sửa Thông Tin';
-                    document.getElementById('formMode').value = 'edit';
-                    document.getElementById('svId').value = data.id;
-                    document.getElementById('svId').readOnly = true;
-                    document.getElementById('svName').value = data.name;
-                    document.getElementById('svMajor').value = data.major;
-                    document.getElementById('svScore').value = data.score;
-                } else {
-                    document.getElementById('modalTitle').innerText = 'Thêm Sinh Viên';
-                    document.getElementById('formMode').value = 'add';
-                    document.getElementById('svId').readOnly = false;
-                    form.reset();
-                }
-            },
-            closeModal: () => { 
-                const box = document.getElementById('modalBox');
-                // GSAP Animation đóng Modal
-                gsap.to(box, { duration: 0.3, scale: 0.9, opacity: 0, ease: "power2.in", onComplete: () => {
-                    document.getElementById('studentModal').style.display = 'none';
-                }});
-            },
-            submitForm: (e) => {
-                e.preventDefault();
-                const mode = document.getElementById('formMode').value;
-                const data = {
-                    id: document.getElementById('svId').value.toUpperCase(),
-                    name: document.getElementById('svName').value,
-                    major: document.getElementById('svMajor').value,
-                    score: parseFloat(document.getElementById('svScore').value)
-                };
-                let success = mode === 'add' ? appStudent.addStudent(data) : appStudent.updateStudent(data.id, data);
-                if(success) { uiManager.closeModal(); updateChart(); }
-            }
-        };
+<section class="section products-section">
+    <div class="container">
+        <div class="section-head reveal">
+            <div>
+                <span class="eyebrow">SẢN PHẨM NỔI BẬT</span>
+                <h2>Những sản phẩm<br><strong>đáng để khám phá.</strong></h2>
+            </div>
+            <a href="products.html" class="view-all">Xem tất cả →</a>
+        </div>
 
-        // Ghi đè hàm xóa để dùng SweetAlert2 thay cho confirm() mặc định
-        appStudent.deleteStudent = function(id) {
-            Swal.fire({
-                title: 'Xóa sinh viên?',
-                text: `Bạn sẽ không thể khôi phục dữ liệu của ${id}!`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Đồng ý, Xóa!',
-                cancelButtonText: 'Huỷ',
-                customClass: { popup: 'swal-glass' }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.students = this.students.filter(sv => sv.id !== id);
-                    this.saveData();
-                    updateChart();
-                    showToast('Đã xóa thành công!', 'success');
-                }
-            });
-        };
+        <div class="product-grid">
 
-        appStudent.editModal = function(id) {
-            const student = this.students.find(sv => sv.id === id);
-            if(student) uiManager.openModal(student);
-        };
+            <article class="product-card reveal">
+                <div class="product-image">
+                    <span class="badge">NEW</span>
+                    <div class="product-placeholder">01</div>
+                    <button class="heart">♡</button>
+                </div>
+                <div class="product-info">
+                    <span class="category">COLLECTION</span>
+                    <h3>HK Vision One</h3>
+                    <p>Sản phẩm cao cấp thế hệ mới</p>
+                    <div class="product-bottom">
+                        <strong>1.290.000₫</strong>
+                        <a href="product-detail.html">→</a>
+                    </div>
+                </div>
+            </article>
 
-        // Cập nhật Chart.js
-        let myChart;
-        function updateChart() {
-            const students = appStudent.students;
-            const data = [
-                students.filter(sv => sv.score < 5).length,
-                students.filter(sv => sv.score >= 5 && sv.score < 6.5).length,
-                students.filter(sv => sv.score >= 6.5 && sv.score < 8).length,
-                students.filter(sv => sv.score >= 8).length
-            ];
-            
-            if(myChart) myChart.destroy();
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            
-            // Đổ màu Gradient cho cột biểu đồ
-            let gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, '#0ea5e9'); gradient.addColorStop(1, '#8b5cf6');
+            <article class="product-card reveal">
+                <div class="product-image">
+                    <span class="badge">HOT</span>
+                    <div class="product-placeholder">02</div>
+                    <button class="heart">♡</button>
+                </div>
+                <div class="product-info">
+                    <span class="category">PREMIUM</span>
+                    <h3>HK Signature</h3>
+                    <p>Thiết kế tinh tế và hiện đại</p>
+                    <div class="product-bottom">
+                        <strong>1.590.000₫</strong>
+                        <a href="product-detail.html">→</a>
+                    </div>
+                </div>
+            </article>
 
-            myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Yếu', 'Trung Bình', 'Khá', 'Giỏi'],
-                    datasets: [{ label: 'Số lượng SV', data: data, backgroundColor: gradient, borderRadius: 6, barThickness: 40 }]
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } },
-                    scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } },
-                    animation: { duration: 1500, easing: 'easeOutQuart' } // Animation lúc render Chart
-                }
-            });
-        }
+            <article class="product-card reveal">
+                <div class="product-image">
+                    <div class="product-placeholder">03</div>
+                    <button class="heart">♡</button>
+                </div>
+                <div class="product-info">
+                    <span class="category">ESSENTIAL</span>
+                    <h3>HK Essential</h3>
+                    <p>Đơn giản, tiện dụng mỗi ngày</p>
+                    <div class="product-bottom">
+                        <strong>890.000₫</strong>
+                        <a href="product-detail.html">→</a>
+                    </div>
+                </div>
+            </article>
 
-        // --- KHỞI CHẠY HIỆU ỨNG KHI LOAD TRANG (GSAP TIMELINE) ---
-        window.onload = () => {
-            updateChart();
-            
-            // Xóa Preloader và chạy animation tuần tự
-            const tl = gsap.timeline();
-            tl.to("#preloader", { duration: 0.5, opacity: 0, delay: 0.5, display: "none" })
-              .to(".dashboard-item", { 
-                  duration: 0.8, 
-                  y: 0, 
-                  opacity: 1, 
-                  stagger: 0.15, // Từng khối xuất hiện cách nhau 0.15s
-                  ease: "back.out(1.2)" 
-              }, "-=0.2");
-              
-            // Bật scrollbar cho thẻ body sau khi load xong
-            document.body.style.overflow = "auto";
-        };
-    </script>
+            <article class="product-card reveal">
+                <div class="product-image">
+                    <span class="badge">SALE</span>
+                    <div class="product-placeholder">04</div>
+                    <button class="heart">♡</button>
+                </div>
+                <div class="product-info">
+                    <span class="category">LIMITED</span>
+                    <h3>HK Limited Edition</h3>
+                    <p>Phiên bản giới hạn đặc biệt</p>
+                    <div class="product-bottom">
+                        <strong>1.990.000₫</strong>
+                        <a href="product-detail.html">→</a>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="container stats-grid">
+        <div class="stat reveal">
+            <strong data-count="10000">0</strong><span>+</span>
+            <p>Khách hàng</p>
+        </div>
+        <div class="stat reveal">
+            <strong data-count="50">0</strong><span>+</span>
+            <p>Sản phẩm</p>
+        </div>
+        <div class="stat reveal">
+            <strong data-count="15">0</strong><span>+</span>
+            <p>Đối tác</p>
+        </div>
+        <div class="stat reveal">
+            <strong data-count="99">0</strong><span>%</span>
+            <p>Hài lòng</p>
+        </div>
+    </div>
+</section>
+
+<section class="section about-section">
+    <div class="container about-grid">
+        <div class="about-visual reveal">
+            <div class="about-main-card">
+                <span>EST. 2026</span>
+                <strong>HK</strong>
+                <p>CREATE<br>THE DIFFERENCE</p>
+            </div>
+            <div class="about-small-card">
+                <strong>10+</strong>
+                <span>Năm kinh nghiệm</span>
+            </div>
+        </div>
+
+        <div class="about-content reveal">
+            <span class="eyebrow">VỀ HOANGKUN</span>
+            <h2>Không chỉ bán sản phẩm.<br><strong>Chúng tôi tạo trải nghiệm.</strong></h2>
+            <p>
+                Chúng tôi tin rằng một thương hiệu tốt không chỉ nằm ở
+                sản phẩm mà còn nằm ở cách sản phẩm kết nối với khách hàng.
+            </p>
+            <p>
+                Từ ý tưởng, thiết kế đến trải nghiệm sử dụng, mọi chi tiết
+                đều được xây dựng với mục tiêu tạo nên giá trị lâu dài.
+            </p>
+
+            <div class="about-features">
+                <div>
+                    <span>01</span>
+                    <div>
+                        <h4>Chất lượng</h4>
+                        <p>Luôn đặt chất lượng lên hàng đầu.</p>
+                    </div>
+                </div>
+                <div>
+                    <span>02</span>
+                    <div>
+                        <h4>Đổi mới</h4>
+                        <p>Không ngừng cải tiến và sáng tạo.</p>
+                    </div>
+                </div>
+                <div>
+                    <span>03</span>
+                    <div>
+                        <h4>Khách hàng</h4>
+                        <p>Lấy trải nghiệm khách hàng làm trọng tâm.</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="about.html" class="text-btn">Tìm hiểu thêm →</a>
+        </div>
+    </div>
+</section>
+
+<section class="section services-section">
+    <div class="container">
+        <div class="section-head centered reveal">
+            <span class="eyebrow">DỊCH VỤ</span>
+            <h2>Đồng hành cùng<br><strong>mọi nhu cầu.</strong></h2>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card reveal">
+                <span class="service-number">01</span>
+                <div class="service-icon">◇</div>
+                <h3>Tư vấn sản phẩm</h3>
+                <p>Đội ngũ hỗ trợ giúp bạn lựa chọn sản phẩm phù hợp.</p>
+                <a href="services.html">Khám phá →</a>
+            </div>
+
+            <div class="service-card reveal">
+                <span class="service-number">02</span>
+                <div class="service-icon">◈</div>
+                <h3>Thiết kế riêng</h3>
+                <p>Giải pháp được thiết kế theo nhu cầu của từng khách hàng.</p>
+                <a href="services.html">Khám phá →</a>
+            </div>
+
+            <div class="service-card reveal">
+                <span class="service-number">03</span>
+                <div class="service-icon">◎</div>
+                <h3>Hỗ trợ 24/7</h3>
+                <p>Luôn sẵn sàng đồng hành trước và sau khi mua hàng.</p>
+                <a href="services.html">Khám phá →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container cta-inner reveal">
+        <span class="eyebrow">BẮT ĐẦU NGAY</span>
+        <h2>Sẵn sàng khám phá<br><strong>điều khác biệt?</strong></h2>
+        <p>Khám phá bộ sưu tập sản phẩm của HOANGKUN ngay hôm nay.</p>
+        <a href="products.html" class="btn btn-light">Xem sản phẩm →</a>
+    </div>
+</section>
+
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <span class="logo-mark">HK</span>
+                    <span class="logo-text">HOANGKUN</span>
+                </a>
+                <p>
+                    Kiến tạo sản phẩm và trải nghiệm khác biệt
+                    cho thế hệ hiện đại.
+                </p>
+                <div class="socials">
+                    <a href="#">f</a>
+                    <a href="#">𝕏</a>
+                    <a href="#">◎</a>
+                    <a href="#">▶</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h4>Khám phá</h4>
+                <a href="about.html">Về chúng tôi</a>
+                <a href="products.html">Sản phẩm</a>
+                <a href="services.html">Dịch vụ</a>
+                <a href="news.html">Tin tức</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Hỗ trợ</h4>
+                <a href="faq.html">Câu hỏi thường gặp</a>
+                <a href="contact.html">Liên hệ</a>
+                <a href="#">Chính sách</a>
+                <a href="#">Điều khoản</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Liên hệ</h4>
+                <p>Hà Nội, Việt Nam</p>
+                <p>hello@hoangkun.vn</p>
+                <p>+84 123 456 789</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 HOANGKUN. All rights reserved.</span>
+            <span>Designed with passion.</span>
+        </div>
+    </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/animation.js"></script>
+<script src="js/search.js"></script>
 </body>
 </html>
