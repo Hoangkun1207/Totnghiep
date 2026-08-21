@@ -3,103 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER CORE - Digital Assets & Source Code</title>
+    <title>HOANGKUN STORE - QUANTUM CORE</title>
+    <!-- Font viễn tưởng và hiện đại -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         /* ========================================= */
-        /* BASE RESET & CYBERPUNK THEME */
+        /* RESET & THIẾT LẬP CƠ BẢN */
         /* ========================================= */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --neon-cyan: #00f3ff;
-            --neon-pink: #ff00ea;
-            --dark-bg: #050505;
+            --cyan: #00f3ff;
+            --purple: #bf00ff;
+            --pink: #ff00ea;
+            --dark: #020205;
         }
         body {
-            background-color: var(--dark-bg); color: #fff;
+            background-color: var(--dark);
+            color: #ffffff;
             font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden; -webkit-font-smoothing: antialiased;
-            cursor: none; /* Dùng chuột Cyber */
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            cursor: none; /* Ẩn chuột mặc định */
         }
 
         /* ========================================= */
-        /* SYSTEM BOOT (PRELOADER) */
+        /* UI KHỞI ĐỘNG (PRELOADER) */
         /* ========================================= */
         #preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: #000; z-index: 9999;
+            background-color: var(--dark); z-index: 9999;
             display: flex; justify-content: center; align-items: center; flex-direction: column;
-            transition: opacity 1s ease, transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: opacity 1.5s ease, transform 1.5s ease;
         }
-        .boot-screen {
-            width: 80%; max-width: 600px;
-            border: 1px solid var(--neon-cyan); padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2) inset;
-            position: relative; overflow: hidden;
+        .hexagon-loader {
+            width: 80px; height: 80px;
+            border: 2px solid var(--cyan);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            animation: spin 3s linear infinite, pulseGlow 2s alternate infinite;
+            display: flex; justify-content: center; align-items: center;
         }
-        .boot-screen::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(transparent, rgba(0,243,255,0.1), transparent);
-            transform: translateY(-100%); animation: scanline 3s linear infinite;
+        .hexagon-inner {
+            width: 40px; height: 40px; background: var(--purple);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            animation: spin reverse 2s linear infinite;
         }
-        @keyframes scanline { 100% { transform: translateY(100%); } }
-        
-        .sys-title {
-            font-family: 'Orbitron', sans-serif; color: var(--neon-cyan);
-            font-size: 2rem; margin-bottom: 15px; letter-spacing: 5px;
-            text-shadow: 0 0 10px var(--neon-cyan);
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulseGlow { 
+            0% { box-shadow: 0 0 10px var(--cyan); } 
+            100% { box-shadow: 0 0 30px var(--cyan), 0 0 50px var(--purple); } 
         }
-        .log-list { font-family: monospace; color: #0f0; font-size: 0.9rem; list-style: none; }
-        .log-item { margin-bottom: 5px; opacity: 0; }
+        .loading-text {
+            margin-top: 30px; font-family: 'Orbitron', sans-serif; font-size: 1.2rem;
+            letter-spacing: 5px; color: var(--cyan);
+            text-shadow: 0 0 10px var(--cyan);
+        }
         .progress-bar-container {
-            width: 100%; height: 10px; background: #111; margin-top: 20px;
-            border: 1px solid #333; position: relative;
+            width: 200px; height: 4px; background: #222; margin-top: 20px;
+            position: relative; overflow: hidden; border-radius: 2px;
         }
-        .progress-bar { height: 100%; width: 0%; background: var(--neon-pink); transition: width 0.1s; }
+        .progress-bar { height: 100%; width: 0%; background: var(--cyan); transition: width 0.1s; }
 
         /* ========================================= */
-        /* HUD & CURSOR */
+        /* CUSTOM CURSOR */
         /* ========================================= */
-        .cursor-crosshair {
-            width: 20px; height: 20px;
-            position: fixed; pointer-events: none; z-index: 10000;
-            transform: translate(-50%, -50%);
+        .cursor-dot {
+            width: 8px; height: 8px; background-color: #fff;
+            border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000;
+            transform: translate(-50%, -50%); box-shadow: 0 0 10px #fff;
         }
-        .cursor-crosshair::before, .cursor-crosshair::after {
-            content: ''; position: absolute; background: var(--neon-cyan);
+        .cursor-ring {
+            width: 40px; height: 40px; border: 1px solid var(--cyan);
+            border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%); transition: all 0.15s ease-out;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3) inset;
         }
-        .cursor-crosshair::before { top: 50%; left: 0; width: 100%; height: 2px; transform: translateY(-50%); }
-        .cursor-crosshair::after { left: 50%; top: 0; height: 100%; width: 2px; transform: translateX(-50%); }
-
-        .cursor-frame {
-            width: 50px; height: 50px; border: 1px solid rgba(0, 243, 255, 0.5);
-            position: fixed; pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, transform 0.1s;
-        }
-        .cursor-frame::before {
-            content: 'TARGET'; position: absolute; top: -15px; left: 5px;
-            font-family: monospace; font-size: 8px; color: var(--neon-cyan);
-        }
-
-        /* Overlay HUD cố định */
-        .hud-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 10;
-            border: 2px solid rgba(0,243,255,0.1);
-        }
-        .hud-corner {
-            position: absolute; width: 30px; height: 30px;
-            border: 2px solid var(--neon-cyan);
-        }
-        .hc-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
-        .hc-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
-        .hc-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
-        .hc-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
 
         /* ========================================= */
-        /* WEBGL CANVAS */
+        /* ÂM THANH & HUD CỐ ĐỊNH */
+        /* ========================================= */
+        .sound-toggle {
+            position: fixed; top: 30px; right: 30px; z-index: 1000;
+            font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
+            color: var(--cyan); border: 1px solid var(--cyan);
+            padding: 8px 20px; cursor: pointer; letter-spacing: 2px;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+        .sound-toggle:hover { background: rgba(0, 243, 255, 0.2); }
+        .sound-toggle.active {
+            background: var(--cyan); color: #000; box-shadow: 0 0 15px var(--cyan);
+        }
+        
+        .brand-logo {
+            position: fixed; top: 30px; left: 30px; z-index: 1000;
+            font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900;
+            color: #fff; letter-spacing: 3px; text-shadow: 0 0 10px var(--purple);
+            pointer-events: none;
+        }
+        .brand-logo span { color: var(--cyan); }
+
+        /* ========================================= */
+        /* CANVAS 3D */
         /* ========================================= */
         #webgl-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -107,7 +113,7 @@
         }
 
         /* ========================================= */
-        /* SCROLL CONTENT */
+        /* GIAO DIỆN SCROLL (GLASSMORPHISM) */
         /* ========================================= */
         .scroll-wrapper { position: relative; z-index: 5; }
         
@@ -119,139 +125,120 @@
         .flex-left { align-items: flex-start; text-align: left; }
         .flex-center { align-items: center; text-align: center; }
 
-        /* Typography */
-        .glitch-wrapper { position: relative; margin-bottom: 10px; overflow: hidden; }
+        .overflow-box { overflow: hidden; margin-bottom: 15px; }
+        
         h1, h2 {
             font-family: 'Orbitron', sans-serif; font-weight: 900;
             text-transform: uppercase; line-height: 1.1;
-            transform: translateY(120%); opacity: 0; /* GSAP Reveal */
+            transform: translateY(120%); opacity: 0;
         }
-        h1 { font-size: 6vw; color: #fff; text-shadow: 2px 2px 0px var(--neon-pink), -2px -2px 0px var(--neon-cyan); }
-        h2 { font-size: 4vw; color: var(--neon-cyan); }
+        h1 { font-size: 5vw; color: #fff; text-shadow: 0 0 20px var(--cyan); }
+        h2 { font-size: 3.5vw; color: #fff; }
         
-        .badge {
-            display: inline-block; padding: 5px 15px; background: rgba(0, 243, 255, 0.1);
-            border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
-            font-family: monospace; font-size: 1rem; letter-spacing: 2px;
+        .tagline {
+            display: inline-block; padding: 5px 15px;
+            background: rgba(191, 0, 255, 0.1);
+            border-left: 3px solid var(--purple); color: var(--cyan);
+            font-family: monospace; font-size: 1rem; letter-spacing: 3px;
             margin-bottom: 20px; opacity: 0;
         }
 
         p {
-            font-size: 1.2rem; font-weight: 500; letter-spacing: 1px; line-height: 1.6;
-            color: #b0c4de; max-width: 500px; opacity: 0;
-            background: rgba(0, 0, 0, 0.6); padding: 20px;
-            border-left: 4px solid var(--neon-pink);
-            backdrop-filter: blur(10px);
+            font-size: 1.1rem; font-weight: 500; letter-spacing: 1px; line-height: 1.8;
+            color: #ccc; max-width: 500px; opacity: 0;
+            /* Hiệu ứng kính mờ xịn xò */
+            background: rgba(10, 10, 15, 0.6); padding: 25px;
+            border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
-        /* Nút công nghệ */
-        .cyber-btn {
-            margin-top: 30px; padding: 15px 40px;
-            background: transparent; border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan); font-family: 'Orbitron', sans-serif;
-            font-size: 1rem; font-weight: 700; letter-spacing: 3px;
-            text-transform: uppercase; cursor: pointer;
-            position: relative; overflow: hidden; opacity: 0;
-            transition: 0.3s; box-shadow: 0 0 10px rgba(0,243,255,0.2) inset;
+        .scroll-indicator {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; opacity: 0;
         }
-        .cyber-btn::before {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%; background: var(--neon-cyan);
-            transition: left 0.3s; z-index: -1;
+        .mouse-icon {
+            width: 24px; height: 36px; border: 2px solid var(--cyan);
+            border-radius: 12px; position: relative;
         }
-        .cyber-btn:hover { color: #000; box-shadow: 0 0 20px var(--neon-cyan); }
-        .cyber-btn:hover::before { left: 0; }
-
-        /* Mã code chạy dọc (Trang trí) */
-        .matrix-bg {
-            position: absolute; top: 0; right: 5%; width: 300px; height: 100%;
-            font-family: monospace; font-size: 14px; color: rgba(0,255,0,0.1);
-            word-break: break-all; overflow: hidden; pointer-events: none; z-index: -1;
-            mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
-            -webkit-mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
+        .wheel-icon {
+            width: 4px; height: 8px; background: var(--pink); border-radius: 2px;
+            position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+            animation: scrollWheel 1.5s infinite;
         }
+        @keyframes scrollWheel { 100% { top: 20px; opacity: 0; } }
 
     </style>
 </head>
 <body>
 
-    <!-- MÀN HÌNH KHỞI ĐỘNG HỆ THỐNG -->
+    <!-- NHẠC NỀN (Tính năng Ẩn) -->
+    <!-- Sử dụng một bản nhạc Ambient Sci-fi miễn phí từ CDN -->
+    <audio id="bg-audio" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/02/10/audio_2db5e263fc.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- PRELOADER -->
     <div id="preloader">
-        <div class="boot-screen">
-            <div class="sys-title">SYSTEM INITIALIZATION</div>
-            <ul class="log-list" id="log-list">
-                <li class="log-item">Loading Core Modules...</li>
-                <li class="log-item">Establishing Secure Connection...</li>
-                <li class="log-item">Decrypting Digital Assets...</li>
-                <li class="log-item">Mounting WebGL Render Engine...</li>
-                <li class="log-item" style="color: var(--neon-cyan);">ACCESS GRANTED</li>
-            </ul>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-        </div>
+        <div class="hexagon-loader"><div class="hexagon-inner"></div></div>
+        <div class="loading-text" id="loading-text">KHỞI TẠO LÕI LƯỢNG TỬ</div>
+        <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
     </div>
 
-    <!-- CHUỘT CROSSHAIR -->
-    <div class="cursor-crosshair" id="cursor-dot"></div>
-    <div class="cursor-frame" id="cursor-frame"></div>
+    <!-- HUD CỐ ĐỊNH -->
+    <div class="brand-logo">HOANGKUN<span>STORE</span></div>
+    <div class="sound-toggle hover-target" id="sound-btn">SOUND: OFF</div>
 
-    <!-- HUD OVERLAY (Hiển thị góc màn hình) -->
-    <div class="hud-overlay">
-        <div class="hud-corner hc-tl"></div>
-        <div class="hud-corner hc-tr"></div>
-        <div class="hud-corner hc-bl"></div>
-        <div class="hud-corner hc-br"></div>
-    </div>
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
 
-    <!-- CANVAS 3D -->
+    <!-- CANVAS 3D TRUNG TÂM -->
     <canvas id="webgl-canvas"></canvas>
 
-    <!-- NỘI DUNG CUỘN -->
+    <!-- NỘI DUNG CUỘN CHUỘT (SCROLLEYTELLING) -->
     <div class="scroll-wrapper">
         
-        <!-- SECTION 1 -->
+        <!-- SECTION 1: SPHERE (Mạng Lưới) -->
         <div class="section flex-center" id="sec-1">
-            <div class="badge">V1.0.0 // ONLINE</div>
-            <div class="glitch-wrapper"><h1>LÕI DỮ LIỆU</h1></div>
-            <div class="glitch-wrapper"><h1>SỐ HÓA</h1></div>
-            <p style="margin: 20px auto 0; text-align: center; border-left: none; border-bottom: 4px solid var(--neon-cyan);">Hệ thống lưu trữ và phân phối mã nguồn tự động. Trải nghiệm không gian thực tế ảo dành cho sản phẩm kỹ thuật số.</p>
+            <div class="tagline">HỆ THỐNG LƯỢNG TỬ ĐỘC QUYỀN</div>
+            <div class="overflow-box"><h1>KHÔNG GIAN SỐ</h1></div>
+            <div class="overflow-box"><h1>HOANGKUN</h1></div>
+            <p style="margin: 20px auto 0; text-align: center;">Nơi cung cấp các sản phẩm kỹ thuật số, mã nguồn và hiệu ứng website đỉnh cao. Trải nghiệm sự biến đổi hình thể của dữ liệu ngay trước mắt bạn.</p>
+            <div class="scroll-indicator">
+                <span style="font-family: monospace; font-size: 0.7rem; color: var(--cyan); margin-bottom: 10px; letter-spacing: 2px;">CUỘN ĐỂ BIẾN ĐỔI</span>
+                <div class="mouse-icon"><div class="wheel-icon"></div></div>
+            </div>
         </div>
 
-        <!-- SECTION 2 -->
+        <!-- SECTION 2: CUBE (Cấu Trúc) -->
         <div class="section flex-left" id="sec-2">
-            <div class="matrix-bg" id="matrix-code"></div>
-            <div class="badge">01 // KHO LƯU TRỮ</div>
-            <div class="glitch-wrapper"><h2>MÃ NGUỒN<br>& HIỆU ỨNG</h2></div>
-            <p>Hàng ngàn dòng code được tối ưu hóa. Tích hợp trực tiếp các hiệu ứng WebGL, GSAP mượt mà nhất vào dự án của bạn chỉ với một cú click.</p>
-            <button class="cyber-btn hover-target">TRUY XUẤT NGAY</button>
+            <div class="tagline">01 // LƯU TRỮ VỮNG CHẮC</div>
+            <div class="overflow-box"><h2 style="color: var(--cyan);">CẤU TRÚC<br>KHỐI DỮ LIỆU</h2></div>
+            <p>Hàng ngàn source code và sản phẩm số được cấu trúc tối ưu. Tính tương thích cao, dễ dàng tích hợp và mở rộng cho mọi nền tảng dự án của bạn.</p>
         </div>
 
-        <!-- SECTION 3 -->
+        <!-- SECTION 3: DNA (Chuỗi Gen) -->
         <div class="section flex-right" id="sec-3">
-            <div class="badge">02 // KẾT NỐI</div>
-            <div class="glitch-wrapper"><h2 style="color: var(--neon-pink);">ĐỒNG BỘ<br>DỮ LIỆU</h2></div>
-            <p style="border-left: none; border-right: 4px solid var(--neon-cyan);">Hệ thống API tự động xử lý và kiểm tra giao dịch nhanh chóng. Tích hợp cổng thanh toán bảo mật tuyệt đối.</p>
-            <button class="cyber-btn hover-target" style="border-color: var(--neon-pink); color: var(--neon-pink);">XÁC THỰC</button>
+            <div class="tagline">02 // TÙY BIẾN LINH HOẠT</div>
+            <div class="overflow-box"><h2 style="color: var(--pink);">CHUỖI GEN<br>SẢN PHẨM</h2></div>
+            <p>Các thành phần mã nguồn có thể được tháo lắp, chỉnh sửa và biến đổi mượt mà. Phục vụ hoàn hảo cho mọi nhu cầu thiết kế từ cơ bản đến nâng cao.</p>
         </div>
 
-        <!-- SECTION 4 -->
+        <!-- SECTION 4: TORUS (Vòng lặp) -->
         <div class="section flex-center" id="sec-4">
-            <div class="badge">03 // ĐIỂM ĐẾN</div>
-            <div class="glitch-wrapper"><h2>HOÀN TẤT<br>QUY TRÌNH</h2></div>
-            <p style="margin: 0 auto; text-align: center; border-left: none; border-top: 4px solid var(--neon-pink);">Bạn đã đi đến trung tâm của lõi dữ liệu. Kết nối thành công.</p>
-            <button class="cyber-btn hover-target" style="margin-top: 40px;" onclick="window.scrollTo(0,0)">KHỞI ĐỘNG LẠI</button>
+            <div class="tagline">03 // HOẠT ĐỘNG BỀN BỈ</div>
+            <div class="overflow-box"><h2 style="color: var(--purple);">VÒNG LẶP<br>VÔ TẬN</h2></div>
+            <p style="margin: 0 auto; text-align: center;">Cập nhật liên tục. Hỗ trợ dài lâu. Sẵn sàng khởi chạy và đồng hành cùng thành công của bạn trên con đường phát triển.</p>
         </div>
 
     </div>
 
     <!-- ========================================== -->
-    <!-- IMPORTS THƯ VIỆN BẰNG CDN (Không cần cài đặt npm) -->
+    <!-- IMPORTS THƯ VIỆN (ThreeJS, GSAP, PostProcessing) -->
     <!-- ========================================== -->
-    <!-- 1. Three.js Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
-    <!-- 2. Post-Processing (Hiệu ứng phát sáng & Glitch) -->
+    <!-- Thư viện làm sáng rực rỡ (Bloom) -->
     <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
@@ -259,10 +246,6 @@
     <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
     
-    <!-- Custom Glitch / RGB Shift Shader -->
-    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/RGBShiftShader.js"></script>
-
-    <!-- 3. GSAP & Lenis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
@@ -271,221 +254,287 @@
         gsap.registerPlugin(ScrollTrigger);
 
         // ==========================================
-        // TẠO CHUỖI CODE MA TRẬN TRANG TRÍ
+        // QUẢN LÝ ÂM THANH NỀN (FEATURE MỚI)
         // ==========================================
-        const matrixDiv = document.getElementById('matrix-code');
-        let codeContent = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
-        for(let i=0; i<2000; i++) { codeContent += chars.charAt(Math.floor(Math.random() * chars.length)); }
-        matrixDiv.innerText = codeContent;
-        setInterval(() => {
-            const randomSpot = Math.floor(Math.random() * 2000);
-            const newChar = chars.charAt(Math.floor(Math.random() * chars.length));
-            codeContent = codeContent.substring(0, randomSpot) + newChar + codeContent.substring(randomSpot + 1);
-            matrixDiv.innerText = codeContent;
-        }, 50);
+        const audio = document.getElementById('bg-audio');
+        const soundBtn = document.getElementById('sound-btn');
+        audio.volume = 0.4; // Giảm âm lượng nhạc nền cho êm
+
+        soundBtn.addEventListener('click', () => {
+            if(audio.paused) {
+                audio.play();
+                soundBtn.innerText = 'SOUND: ON';
+                soundBtn.classList.add('active');
+            } else {
+                audio.pause();
+                soundBtn.innerText = 'SOUND: OFF';
+                soundBtn.classList.remove('active');
+            }
+        });
 
         // ==========================================
-        // LENIS SMOOTH SCROLL
+        // LENIS SMOOTH SCROLL & CURSOR
         // ==========================================
-        const lenis = new Lenis({ duration: 1.2, smooth: true });
+        const lenis = new Lenis({ duration: 1.5, smooth: true });
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
 
-        // ==========================================
-        // CUSTOM CURSOR
-        // ==========================================
-        const cursorDot = document.getElementById('cursor-dot');
-        const cursorFrame = document.getElementById('cursor-frame');
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
         window.addEventListener('mousemove', (e) => {
-            cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
-            gsap.to(cursorFrame, { x: e.clientX, y: e.clientY, duration: 0.1 });
+            dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+            gsap.to(ring, { x: e.clientX, y: e.clientY, duration: 0.15 });
         });
+
+        // Hover effect cho các nút/phần tử có class hover-target
         document.querySelectorAll('.hover-target').forEach(el => {
             el.addEventListener('mouseenter', () => {
-                cursorFrame.style.width = '80px'; cursorFrame.style.height = '80px';
-                cursorFrame.style.borderColor = 'var(--neon-pink)';
+                ring.style.width = '60px'; ring.style.height = '60px';
+                ring.style.borderColor = 'var(--pink)';
+                ring.style.background = 'rgba(255, 0, 234, 0.1)';
             });
             el.addEventListener('mouseleave', () => {
-                cursorFrame.style.width = '50px'; cursorFrame.style.height = '50px';
-                cursorFrame.style.borderColor = 'rgba(0, 243, 255, 0.5)';
+                ring.style.width = '40px'; ring.style.height = '40px';
+                ring.style.borderColor = 'var(--cyan)';
+                ring.style.background = 'transparent';
             });
         });
 
         // ==========================================
-        // BOOT SCREEN ANIMATION
+        // HIỆU ỨNG PRELOADER VÀ HTML
         // ==========================================
         window.addEventListener('load', () => {
-            const logs = document.querySelectorAll('.log-item');
-            const progress = document.getElementById('progress-bar');
-            const preloader = document.getElementById('preloader');
+            let progress = 0;
+            const bar = document.getElementById('progress-bar');
+            const text = document.getElementById('loading-text');
             
-            const tlBoot = gsap.timeline();
-            logs.forEach((log, index) => {
-                tlBoot.to(log, { opacity: 1, duration: 0.2 }, index * 0.4)
-                      .to(progress, { width: `${(index + 1) * 20}%`, duration: 0.2 }, index * 0.4);
-            });
-            
-            tlBoot.to(preloader, { 
-                yPercent: -100, duration: 1, ease: "power4.inOut", delay: 0.5,
-                onComplete: () => {
-                    preloader.style.display = 'none';
-                    initHTMLAnimation(); // Chạy animation chữ HTML
+            const loadInterval = setInterval(() => {
+                progress += Math.floor(Math.random() * 15) + 5;
+                if(progress >= 100) {
+                    progress = 100;
+                    clearInterval(loadInterval);
+                    text.innerText = "HỆ THỐNG SẴN SÀNG";
+                    text.style.color = 'var(--pink)';
+                    
+                    setTimeout(() => {
+                        const preloader = document.getElementById('preloader');
+                        preloader.style.opacity = '0';
+                        preloader.style.transform = 'scale(1.1)'; // Zoom nhẹ khi thoát
+                        setTimeout(() => { 
+                            preloader.style.display = 'none'; 
+                            initHTMLAnim(); 
+                        }, 1500);
+                    }, 500);
                 }
-            });
+                bar.style.width = progress + '%';
+            }, 150);
         });
 
-        function initHTMLAnimation() {
+        function initHTMLAnim() {
             const tl = gsap.timeline();
-            tl.to('#sec-1 .badge', { opacity: 1, duration: 0.5 })
-              .to('#sec-1 h1', { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "expo.out" }, "-=0.3")
-              .to('#sec-1 p', { opacity: 1, duration: 1 }, "-=0.5");
+            tl.to('#sec-1 .tagline', { opacity: 1, duration: 1 })
+              .to('#sec-1 h1', { y: 0, opacity: 1, duration: 1.2, stagger: 0.15, ease: "power4.out" }, "-=0.5")
+              .to('#sec-1 p', { opacity: 1, duration: 1 }, "-=0.8")
+              .to('.scroll-indicator', { opacity: 1, duration: 1 }, "-=0.5");
         }
 
         document.querySelectorAll('.section:not(#sec-1)').forEach(sec => {
-            const badge = sec.querySelector('.badge');
+            const tagline = sec.querySelector('.tagline');
             const titles = sec.querySelectorAll('h2');
             const p = sec.querySelector('p');
-            const btn = sec.querySelector('.cyber-btn');
 
-            const st = gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 65%" } });
-            if(badge) st.to(badge, { opacity: 1, duration: 0.5 });
-            if(titles.length) st.to(titles, { y: 0, opacity: 1, duration: 0.8, ease: "power4.out" }, "-=0.3");
-            if(p) st.to(p, { opacity: 1, duration: 0.8 }, "-=0.4");
-            if(btn) st.to(btn, { opacity: 1, duration: 0.5 }, "-=0.2");
+            const st = gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 60%" } });
+            if(tagline) st.to(tagline, { opacity: 1, duration: 1 });
+            if(titles.length) st.to(titles, { y: 0, opacity: 1, duration: 1, ease: "power4.out" }, "-=0.5");
+            if(p) st.to(p, { opacity: 1, y: -10, duration: 1 }, "-=0.5");
         });
 
         // ==========================================
-        // THREE.JS - CYBERPUNK MATRIX CORE
+        // THREE.JS - HỆ THỐNG BIẾN THỂ LƯỢNG TỬ (PARTICLE MORPHING)
         // ==========================================
+        /*
+           Đây là thuật toán hạt biến đổi (Particle Morphing) cao cấp.
+           Chúng ta sẽ tạo ra 25,000 hạt (particles) và tính toán 4 hình dáng khác nhau cho chúng:
+           1. Khối Cầu (Sphere)
+           2. Khối Lập Phương (Cube)
+           3. Chuỗi Xoắn Kép (DNA Helix)
+           4. Vòng Lặp (Torus)
+           Khi cuộn chuột, mảng tọa độ mục tiêu (target positions) sẽ thay đổi, 
+           và trong vòng lặp render, các hạt sẽ bay mượt mà đến vị trí mới.
+        */
         const canvas = document.querySelector('#webgl-canvas');
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x050505, 0.002);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.set(0, 0, 180);
 
-        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 10, 150);
-
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false }); // Tắt antialias để dùng Post Processing tốt hơn
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.toneMapping = THREE.ReinhardToneMapping; // Hỗ trợ màu chói
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ReinhardToneMapping;
 
-        // --- HẬU KỲ (POST-PROCESSING) ---
+        // --- Hậu Kỳ Phát Sáng (Unreal Bloom) ---
         const composer = new THREE.EffectComposer(renderer);
+        composer.addPass(new THREE.RenderPass(scene, camera));
         
-        // 1. Lớp Render cơ bản
-        const renderPass = new THREE.RenderPass(scene, camera);
-        composer.addPass(renderPass);
-
-        // 2. Hiệu ứng Glow (Bloom)
         const bloomPass = new THREE.UnrealBloomPass(
             new THREE.Vector2(window.innerWidth, window.innerHeight),
-            2.0,  // Cường độ sáng
-            0.5,  // Bán kính sáng
-            0.1   // Ngưỡng phát sáng
+            1.8, // Cường độ (Intensity)
+            0.6, // Bán kính (Radius)
+            0.1  // Ngưỡng (Threshold)
         );
         composer.addPass(bloomPass);
 
-        // 3. Hiệu ứng Glitch (RGB Shift)
-        const rgbShiftPass = new THREE.ShaderPass(THREE.RGBShiftShader);
-        rgbShiftPass.uniforms['amount'].value = 0.0015; // Mức độ nhiễu ban đầu
-        composer.addPass(rgbShiftPass);
+        // --- Cấu trúc Dữ Liệu Hạt ---
+        const numParticles = 25000;
+        const positions = new Float32Array(numParticles * 3); // Vị trí hiện tại
+        const colors = new Float32Array(numParticles * 3);    // Màu sắc cố định của hạt
 
-        // --- CÁC ĐỐI TƯỢNG 3D ---
-        
-        // 1. Mặt sàn lưới Tron Legacy (GridHelper)
-        const gridHelper = new THREE.GridHelper(1000, 100, 0x00f3ff, 0x00f3ff);
-        gridHelper.position.y = -30;
-        gridHelper.material.opacity = 0.2;
-        gridHelper.material.transparent = true;
-        scene.add(gridHelper);
+        // Mảng lưu trữ 4 hình dạng (Shapes)
+        const shapeSphere = new Float32Array(numParticles * 3);
+        const shapeCube = new Float32Array(numParticles * 3);
+        const shapeDNA = new Float32Array(numParticles * 3);
+        const shapeTorus = new Float32Array(numParticles * 3);
 
-        // Lưới trần nhà
-        const ceilingGrid = new THREE.GridHelper(1000, 100, 0xff00ea, 0xff00ea);
-        ceilingGrid.position.y = 80;
-        ceilingGrid.material.opacity = 0.1;
-        ceilingGrid.material.transparent = true;
-        scene.add(ceilingGrid);
+        const colorObj = new THREE.Color();
 
-        // 2. Lõi dữ liệu (Data Core - Khối hình học ở giữa)
-        const coreGroup = new THREE.Group();
-        scene.add(coreGroup);
+        for(let i = 0; i < numParticles; i++) {
+            const i3 = i * 3;
 
-        // Lõi trong
-        const coreGeo = new THREE.IcosahedronGeometry(20, 1);
-        const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
-        const core = new THREE.Mesh(coreGeo, coreMat);
-        coreGroup.add(core);
-
-        // Vòng ngoài
-        const ringGeo = new THREE.TorusGeometry(35, 1, 16, 100);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
-        const ring1 = new THREE.Mesh(ringGeo, ringMat);
-        ring1.rotation.x = Math.PI / 2;
-        coreGroup.add(ring1);
-
-        const ringMat2 = new THREE.MeshBasicMaterial({ color: 0xff00ea });
-        const ring2 = new THREE.Mesh(ringGeo, ringMat2);
-        ring2.rotation.y = Math.PI / 2;
-        coreGroup.add(ring2);
-
-        coreGroup.position.set(0, 20, -100);
-
-        // 3. Dòng dữ liệu bay (Flying Data Cubes)
-        const cubesCount = 200;
-        const cubesGeo = new THREE.BoxGeometry(1, 1, 15);
-        const cubesMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
-        const cubesInstanced = new THREE.InstancedMesh(cubesGeo, cubesMat, cubesCount);
-        
-        const dummy = new THREE.Object3D();
-        for(let i=0; i<cubesCount; i++) {
-            dummy.position.set(
-                (Math.random() - 0.5) * 300,
-                (Math.random() - 0.5) * 100 + 20,
-                (Math.random() - 0.5) * 600 - 100
-            );
-            // Các khối chạy ngẫu nhiên màu hồng hoặc xanh
-            if(Math.random() > 0.5) cubesInstanced.setColorAt(i, new THREE.Color(0xff00ea));
-            else cubesInstanced.setColorAt(i, new THREE.Color(0x00f3ff));
+            // 1. TÍNH TOÁN SHAPE: KHỐI CẦU (Sphere Surface)
+            const u = Math.random();
+            const v = Math.random();
+            const thetaSphere = 2 * Math.PI * u;
+            const phiSphere = Math.acos(2 * v - 1);
+            const radiusSphere = 60 + (Math.random() * 2); // Bán kính 60 + chút nhiễu
             
-            dummy.updateMatrix();
-            cubesInstanced.setMatrixAt(i, dummy.matrix);
+            shapeSphere[i3] = radiusSphere * Math.sin(phiSphere) * Math.cos(thetaSphere);
+            shapeSphere[i3+1] = radiusSphere * Math.sin(phiSphere) * Math.sin(thetaSphere);
+            shapeSphere[i3+2] = radiusSphere * Math.cos(phiSphere);
+
+            // Gán vị trí khởi tạo ban đầu là hình cầu
+            positions[i3] = shapeSphere[i3];
+            positions[i3+1] = shapeSphere[i3+1];
+            positions[i3+2] = shapeSphere[i3+2];
+
+            // 2. TÍNH TOÁN SHAPE: LẬP PHƯƠNG (Cube Volume)
+            // Phân bổ ngẫu nhiên trong một hộp kích thước 100x100x100
+            shapeCube[i3] = (Math.random() - 0.5) * 100;
+            shapeCube[i3+1] = (Math.random() - 0.5) * 100;
+            shapeCube[i3+2] = (Math.random() - 0.5) * 100;
+
+            // 3. TÍNH TOÁN SHAPE: CHUỖI GEN (DNA Helix)
+            const t = (i / numParticles) * Math.PI * 12; // Số vòng xoắn
+            const helixRadius = 30;
+            const strand = Math.random() > 0.5 ? 1 : -1; // 2 nhánh xoắn kép
+            const yOffset = (i / numParticles) * 200 - 100; // Trải dài theo trục Y từ -100 đến 100
+            const noise = (Math.random() - 0.5) * 5; // Nhiễu hạt để trông tự nhiên
+            
+            shapeDNA[i3] = Math.cos(t) * helixRadius * strand + noise;
+            shapeDNA[i3+1] = yOffset + noise;
+            shapeDNA[i3+2] = Math.sin(t) * helixRadius * strand + noise;
+
+            // 4. TÍNH TOÁN SHAPE: VÒNG LẶP (Torus)
+            const uTorus = Math.random() * Math.PI * 2;
+            const vTorus = Math.random() * Math.PI * 2;
+            const R = 60; // Bán kính vòng lớn
+            const r = 20; // Bán kính ống
+            
+            shapeTorus[i3] = (R + r * Math.cos(vTorus)) * Math.cos(uTorus);
+            shapeTorus[i3+1] = r * Math.sin(vTorus);
+            shapeTorus[i3+2] = (R + r * Math.cos(vTorus)) * Math.sin(uTorus);
+
+            // --- TÔ MÀU CHO CÁC HẠT ---
+            // Trộn các màu phong cách Cyber/Sci-fi (Xanh lơ, Tím, Hồng, Trắng ngọc)
+            const mix = Math.random();
+            if(mix < 0.3) colorObj.setHex(0x00f3ff); // Cyan
+            else if(mix < 0.6) colorObj.setHex(0xbf00ff); // Purple
+            else if(mix < 0.9) colorObj.setHex(0xff00ea); // Pink
+            else colorObj.setHex(0xffffff); // White
+            
+            colors[i3] = colorObj.r;
+            colors[i3+1] = colorObj.g;
+            colors[i3+2] = colorObj.b;
         }
-        scene.add(cubesInstanced);
+
+        // Khởi tạo Geometry và Material cho hệ thống hạt
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        // Vẽ một hình tròn nhỏ làm Texture cho các hạt sáng hơn
+        const getParticleTexture = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 16; canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(0.5, 'rgba(255,255,255,0.5)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(8, 8, 8, 0, Math.PI * 2); ctx.fill();
+            return new THREE.Texture(canvas);
+        };
+
+        const material = new THREE.PointsMaterial({
+            size: 1.5,
+            map: getParticleTexture(),
+            vertexColors: true,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        // --- Nền sao nhỏ li ti (Background Stars) ---
+        const bgGeo = new THREE.BufferGeometry();
+        const bgPos = new Float32Array(5000 * 3);
+        for(let i=0; i<5000; i++) {
+            bgPos[i*3] = (Math.random() - 0.5) * 1000;
+            bgPos[i*3+1] = (Math.random() - 0.5) * 1000;
+            bgPos[i*3+2] = -300 - Math.random() * 500;
+        }
+        bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
+        const bgMat = new THREE.PointsMaterial({ color: 0x555577, size: 1, transparent: true, opacity: 0.3 });
+        scene.add(new THREE.Points(bgGeo, bgMat));
 
         // ==========================================
-        // ANIMATION & SCROLLTRIGGER INTERACTION
+        // LIÊN KẾT SCROLL VỚI VIỆC ĐỔI HÌNH DÁNG (MORPHING)
         // ==========================================
         
-        // Cập nhật hiệu ứng RGB Shift (Glitch) mạnh hơn khi đang cuộn
+        let currentTargetShape = shapeSphere; // Biến lưu hình dạng đang nhắm tới
+
+        // Kích hoạt khi cuộn đến từng Section
         ScrollTrigger.create({
-            trigger: ".scroll-wrapper",
-            start: "top top", end: "bottom bottom",
-            onUpdate: (self) => {
-                // Vận tốc cuộn càng nhanh, nhiễu càng mạnh
-                const velocity = Math.abs(self.getVelocity());
-                gsap.to(rgbShiftPass.uniforms['amount'], {
-                    value: 0.0015 + (velocity / 50000), // Tính toán độ nhiễu
-                    duration: 0.1
-                });
-            }
+            trigger: "#sec-1", start: "top center", end: "bottom center",
+            onEnter: () => currentTargetShape = shapeSphere,
+            onEnterBack: () => currentTargetShape = shapeSphere
         });
 
-        // Di chuyển Camera xuyên qua không gian Cyberpunk
-        gsap.to(camera.position, {
-            z: -250, // Lao về phía lõi
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".scroll-wrapper",
-                start: "top top", end: "bottom bottom",
-                scrub: 1
-            }
+        ScrollTrigger.create({
+            trigger: "#sec-2", start: "top center", end: "bottom center",
+            onEnter: () => currentTargetShape = shapeCube,
+            onEnterBack: () => currentTargetShape = shapeCube
         });
 
-        // Xoay Lõi Dữ liệu
-        gsap.to(coreGroup.rotation, {
-            x: Math.PI * 2, y: Math.PI * 2,
+        ScrollTrigger.create({
+            trigger: "#sec-3", start: "top center", end: "bottom center",
+            onEnter: () => currentTargetShape = shapeDNA,
+            onEnterBack: () => currentTargetShape = shapeDNA
+        });
+
+        ScrollTrigger.create({
+            trigger: "#sec-4", start: "top center", end: "bottom center",
+            onEnter: () => currentTargetShape = shapeTorus,
+            onEnterBack: () => currentTargetShape = shapeTorus
+        });
+
+        // Xoay khối hạt theo thao tác cuộn (Scrub)
+        gsap.to(particles.rotation, {
+            y: Math.PI * 4,
+            x: Math.PI * 1.5,
             ease: "none",
             scrollTrigger: {
                 trigger: ".scroll-wrapper",
@@ -495,56 +544,43 @@
         });
 
         // ==========================================
-        // RENDER LOOP
+        // RENDER LOOP (XỬ LÝ THUẬT TOÁN DI CHUYỂN HẠT)
         // ==========================================
         const clock = new THREE.Clock();
         let mouseX = 0, mouseY = 0;
         
         document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX - window.innerWidth / 2) * 0.1;
-            mouseY = (e.clientY - window.innerHeight / 2) * 0.1;
+            // Parallax camera nhẹ nhàng theo chuột
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
         });
 
         function animate() {
-            const time = clock.getElapsedTime();
-
-            // Di chuyển mặt sàn tạo cảm giác đang bay thẳng tới
-            gridHelper.position.z = (time * 20) % 100;
-            ceilingGrid.position.z = (time * 20) % 100;
-
-            // Xoay nhẹ Core
-            coreGroup.rotation.y += 0.01;
-            core.rotation.x += 0.02;
-
-            // Làm dòng dữ liệu bay về phía camera
-            const matrix = new THREE.Matrix4();
-            const position = new THREE.Vector3();
-            for(let i=0; i<cubesCount; i++) {
-                cubesInstanced.getMatrixAt(i, matrix);
-                position.setFromMatrixPosition(matrix);
-                
-                position.z += 2; // Tốc độ bay
-                if(position.z > 200) position.z = -500; // Reset nếu bay qua mặt
-                
-                dummy.position.copy(position);
-                dummy.updateMatrix();
-                cubesInstanced.setMatrixAt(i, dummy.matrix);
+            // Thuật toán Lerp (Linear Interpolation) để tạo hiệu ứng chuyển hóa hình thể
+            const positionsArr = particles.geometry.attributes.position.array;
+            
+            // Chạy vòng lặp trên 25,000 hạt (75,000 toạ độ x,y,z) mỗi khung hình
+            // Công thức: vị_trí_hiện_tại += (vị_trí_đích - vị_trí_hiện_tại) * hệ_số_tốc_độ
+            for(let i = 0; i < numParticles * 3; i++) {
+                positionsArr[i] += (currentTargetShape[i] - positionsArr[i]) * 0.04;
             }
-            cubesInstanced.instanceMatrix.needsUpdate = true;
+            particles.geometry.attributes.position.needsUpdate = true; // Báo cho card đồ họa cập nhật lại vị trí
 
-            // Camera Parallax & LookAt
-            const currentZ = camera.position.z;
+            // Lõi tự xoay chầm chậm
+            particles.rotation.z += 0.001;
+
+            // Camera di chuyển theo chuột (Parallax)
             camera.position.x += (mouseX - camera.position.x) * 0.05;
             camera.position.y += (-mouseY - camera.position.y) * 0.05;
-            camera.position.z = currentZ; 
-            camera.lookAt(0, 20, currentZ - 200);
+            camera.lookAt(0, 0, 0);
 
-            // Dùng COMPOSER thay vì RENDERER để xuất hiệu ứng hậu kỳ
+            // Dùng composer để xuất ra hình ảnh có hiệu ứng phát sáng (Bloom)
             composer.render();
             requestAnimationFrame(animate);
         }
         animate();
 
+        // Xử lý Responsive
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -553,4 +589,4 @@
         });
     </script>
 </body>
-</html>""")
+</html>
