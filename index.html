@@ -3,298 +3,573 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scroll Animation - HOANGKUN Style</title>
+    <title>ATMOS Style - Cinematic Scroll Experience</title>
+    <!-- Import font chữ sang trọng -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
     <style>
-        /* CSS Cơ bản */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        /* CSS Reset & Cơ bản */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #0d0d0d;
+            background-color: #030303; 
             color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            cursor: none; /* Ẩn chuột mặc định để dùng chuột custom */
         }
 
-        /* Lớp nền Canvas 3D cố định phía sau HTML */
-        #bg-canvas {
+        /* ------------------------------------- */
+        /* UI MỞ ĐẦU (PRELOADER) */
+        /* ------------------------------------- */
+        #preloader {
             position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 0; /* Nằm dưới cùng */
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none; /* Tránh cản trở thao tác click vào nội dung */
-        }
-
-        /* Đảm bảo nội dung HTML nổi lên trên 3D */
-        .content-layer {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Phần mở đầu */
-        .hero {
-            height: 100vh;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: #030303;
+            z-index: 9999;
             display: flex;
+            justify-content: center;
+            align-items: center;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            transition: opacity 1.5s ease-out;
+        }
+        .progress-container {
+            width: 200px; height: 2px;
+            background-color: #333;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar {
+            position: absolute; top: 0; left: 0; height: 100%; width: 0%;
+            background-color: #fff;
+            transition: width 0.1s linear;
+        }
+        .preloader-text {
+            font-family: 'Cinzel', serif; font-size: 1.2rem; letter-spacing: 0.3em;
+            color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
 
-        .hero h1 {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
+        /* ------------------------------------- */
+        /* CUSTOM CURSOR */
+        /* ------------------------------------- */
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none; z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+        }
+        /* Hiệu ứng khi hover vào link */
+        .cursor-hover .cursor-dot { width: 0; height: 0; }
+        .cursor-hover .cursor-outline {
+            width: 60px; height: 60px;
+            background-color: rgba(255,255,255,0.1);
+            border-color: #fff;
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            color: #888;
-            letter-spacing: 2px;
+        /* ------------------------------------- */
+        /* THREE.JS CANVAS */
+        /* ------------------------------------- */
+        #webgl {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; pointer-events: none;
         }
 
-        .scroll-indicator {
-            position: absolute;
-            bottom: 50px;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-15px); }
-            60% { transform: translateY(-7px); }
-        }
-
-        /* Các phần nội dung cuộn */
+        /* ------------------------------------- */
+        /* NỘI DUNG SCROLL */
+        /* ------------------------------------- */
+        .scroll-container { position: relative; z-index: 1; }
+        
         .section {
-            height: 100vh;
-            display: flex;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
             justify-content: center;
-            align-items: center;
+            padding: 0 10vw;
             position: relative;
         }
 
-        .box {
-            width: 300px;
-            height: 400px;
-            background: linear-gradient(45deg, #ff6b6b, #c0392b);
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            font-weight: bold;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            opacity: 0; /* Ẩn đi để JS làm hiệu ứng hiện ra */
-            transform: translateY(100px); /* Đẩy xuống dưới 1 chút */
-        }
+        /* Layout đa dạng */
+        .center-align { align-items: center; text-align: center; }
+        .left-align { align-items: flex-start; text-align: left; }
+        .right-align { align-items: flex-end; text-align: right; }
 
-        .text-content {
-            width: 40%;
-            padding: 40px;
+        /* Typography */
+        .title-wrapper { overflow: hidden; margin-bottom: 20px; }
+        h1, h2 {
+            font-family: 'Cinzel', serif;
+            font-weight: 400; color: #fff;
+            text-shadow: 0 0 30px rgba(255,255,255,0.2);
+            /* Bọc chữ để làm hiệu ứng trượt lên (reveal) */
+            transform: translateY(100%);
             opacity: 0;
-            transform: translateX(-100px);
+        }
+        h1 { font-size: 6vw; letter-spacing: 0.15em; line-height: 1.1; }
+        h2 { font-size: 4vw; letter-spacing: 0.1em; line-height: 1.2; }
+        
+        .subtitle-wrapper { overflow: hidden; }
+        .subtitle {
+            font-family: 'Cinzel', serif; font-size: 1.5vw;
+            color: #b0b0b0; letter-spacing: 0.2em; margin-bottom: 15px;
+            transform: translateY(100%); opacity: 0;
         }
 
-        .text-content h2 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #ff6b6b;
+        p {
+            font-weight: 200; font-size: 1.1rem; letter-spacing: 0.05em;
+            line-height: 1.8; color: #a0a0a0; max-width: 500px;
+            opacity: 0; /* Cho hiệu ứng fade */
         }
-        
-        .flex-row {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            width: 80%;
+
+        /* Nút tương tác (Link) */
+        .btn-explore {
+            margin-top: 40px; padding: 15px 40px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: transparent; color: #fff;
+            font-family: 'Montserrat', sans-serif; font-size: 0.9rem;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            cursor: pointer; transition: all 0.4s ease;
+            position: relative; overflow: hidden;
+            opacity: 0;
+        }
+        .btn-explore::before {
+            content: ''; position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background-color: #fff; transition: left 0.4s ease;
+            z-index: -1;
+        }
+        .btn-explore:hover { color: #000; border-color: #fff; }
+        .btn-explore:hover::before { left: 0; }
+
+        /* Khối thống kê (dạng lưới) */
+        .stats-grid {
+            display: flex; gap: 40px; margin-top: 50px; opacity: 0;
+        }
+        .stat-item h3 {
+            font-family: 'Cinzel', serif; font-size: 3rem; color: #fff;
+            margin-bottom: 5px;
+        }
+        .stat-item span {
+            font-size: 0.8rem; letter-spacing: 0.2em; color: #888;
+            text-transform: uppercase;
+        }
+
+        /* Chỉ báo cuộn ở Section 1 */
+        .scroll-indicator {
+            position: absolute; bottom: 5vh; left: 50%;
+            transform: translateX(-50%); display: flex; flex-direction: column;
+            align-items: center; gap: 10px; opacity: 0;
+        }
+        .scroll-text {
+            font-size: 0.7rem; letter-spacing: 0.4em; color: #666;
+            text-transform: uppercase;
+        }
+        .scroll-line {
+            width: 1px; height: 60px; background-color: rgba(255,255,255,0.2);
+            position: relative; overflow: hidden;
+        }
+        .scroll-dot {
+            width: 3px; height: 3px; background-color: #fff; border-radius: 50%;
+            position: absolute; top: -10px; left: -1px;
+            animation: scrolldown 2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+        }
+        @keyframes scrolldown {
+            0% { top: -10px; opacity: 1; }
+            100% { top: 70px; opacity: 0; }
+        }
+
+        /* Line chạy ngang trang */
+        .divider {
+            width: 0%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            margin: 40px 0;
         }
 
     </style>
 </head>
 <body>
 
-    <!-- Khung vẽ 3D của Three.js -->
-    <canvas id="bg-canvas"></canvas>
-
-    <!-- Bọc toàn bộ HTML vào một lớp để nằm trên nền 3D -->
-    <div class="content-layer">
-        <!-- Section 1: Hero -->
-        <div class="hero">
-            <h1 class="hero-title">Khám Phá Hành Trình</h1>
-            <p class="hero-subtitle">Cuộn chuột để trải nghiệm đồ họa 3D</p>
-            <div class="scroll-indicator">SCROLL DOWN ↓</div>
-        </div>
-
-        <!-- Section 2: Fade Up Box -->
-        <div class="section">
-            <div class="flex-row">
-                <div class="text-content" id="text-1">
-                    <h2>Bắt Đầu</h2>
-                    <p>Mô hình 3D phía sau đang di chuyển mượt mà đồng bộ với thanh cuộn chuột của bạn.</p>
-                </div>
-                <div class="box" id="box-1">Chuyến Bay 01</div>
-            </div>
-        </div>
-
-        <!-- Section 3: Parallax / Zoom -->
-        <div class="section">
-            <div class="flex-row">
-                <div class="box" id="box-2" style="background: linear-gradient(45deg, #4facfe, #00f2fe);">Chuyến Bay 02</div>
-                <div class="text-content" id="text-2" style="transform: translateX(100px);">
-                    <h2>Tăng Tốc</h2>
-                    <p>Vị trí tọa độ không gian 3D được GSAP điều khiển chính xác đến từng pixel khi thanh cuộn thay đổi.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 4: Mới được bổ sung thêm -->
-        <div class="section">
-            <div class="flex-row" style="justify-content: center; text-align: center;">
-                <div class="text-content" id="text-3" style="width: 100%; transform: translateY(100px);">
-                    <h2 style="color: #00f2fe;">Giao Thoa WebGL & HTML</h2>
-                    <p>Giữ nguyên bộ khung đầy đủ ban đầu và tích hợp trực tiếp render 3D làm tăng chiều sâu cho trang.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="hero" style="height: 50vh;">
-            <h2>Hành trình kết thúc</h2>
-            <p>Đây là sức mạnh của HTML + CSS + JS + Three.js</p>
+    <!-- MÀN HÌNH TẢI (PRELOADER) -->
+    <div id="preloader">
+        <div class="preloader-text">KHỞI TẠO KHÔNG GIAN</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
         </div>
     </div>
 
-    <!-- Import thư viện -->
+    <!-- CHUỘT CUSTOM -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <!-- CANVAS 3D -->
+    <canvas id="webgl"></canvas>
+
+    <!-- NỘI DUNG SCROLL -->
+    <div class="scroll-container">
+        
+        <!-- SECTION 1: HERO -->
+        <div class="section center-align" id="sec-1">
+            <div class="subtitle-wrapper"><div class="subtitle">THIẾT KẾ CỦA TƯƠNG LAI</div></div>
+            <div class="title-wrapper"><h1>A T M O S P H E R E</h1></div>
+            <p>Một trải nghiệm thị giác tương tác đầy nghệ thuật, kết hợp giữa WebGL, nghệ thuật typography và hiệu ứng cuộn mượt mà.</p>
+            
+            <div class="scroll-indicator">
+                <div class="scroll-text">CUỘN XUỐNG</div>
+                <div class="scroll-line"><div class="scroll-dot"></div></div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: LEFT -->
+        <div class="section left-align" id="sec-2">
+            <div class="subtitle-wrapper"><div class="subtitle">01. CHIỀU SÂU</div></div>
+            <div class="title-wrapper"><h2>VƯỢT QUA<br>SƯƠNG MÙ</h2></div>
+            <div class="divider"></div>
+            <p>Hệ thống hàng vạn hạt phân tử ánh sáng di chuyển trong không gian 3 chiều. Khi bạn cuộn, camera sẽ bay xuyên qua tâm điểm của dải ngân hà, tạo ra cảm giác không trọng lượng.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>10K</h3>
+                    <span>Hạt Ánh Sáng</span>
+                </div>
+                <div class="stat-item">
+                    <h3>60</h3>
+                    <span>FPS Mượt Mà</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: RIGHT -->
+        <div class="section right-align" id="sec-3">
+            <div class="subtitle-wrapper"><div class="subtitle">02. CHUYỂN ĐỘNG</div></div>
+            <div class="title-wrapper"><h2>VŨ ĐIỆU CỦA<br>HÌNH HỌC</h2></div>
+            <div class="divider" style="margin-left: auto;"></div>
+            <p>Một khối hình học phức tạp trồi lên từ hư không. Vật liệu phản xạ ánh sáng môi trường, thay đổi màu sắc và cấu trúc dựa trên vị trí cuộn của bạn.</p>
+            <button class="btn-explore hover-target">KÍCH HOẠT HIỆU ỨNG</button>
+        </div>
+
+        <!-- SECTION 4: CENTER / KẾT THÚC -->
+        <div class="section center-align" id="sec-4">
+            <div class="subtitle-wrapper"><div class="subtitle">03. ĐỈNH CAO</div></div>
+            <div class="title-wrapper"><h2>TRẢI NGHIỆM<br>HOÀN MỸ</h2></div>
+            <p style="margin: 0 auto;">Nghệ thuật không chỉ là những gì bạn nhìn thấy, mà là cách bạn tương tác với nó. Hoàn thành chuyến bay thị giác.</p>
+            <button class="btn-explore hover-target" style="margin-top: 30px;">TRỞ VỀ TRẠM</button>
+        </div>
+
+    </div>
+
+    <!-- CÁC THƯ VIỆN CẦN THIẾT -->
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP & ScrollTrigger -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Lenis: Thư viện Smooth Scroll (Cuộn mượt như bơ) -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
 
     <script>
         // ==========================================
-        // 1. CẤU HÌNH THREE.JS 
+        // 0. ĐĂNG KÝ GSAP
         // ==========================================
-        const canvas = document.querySelector('#bg-canvas');
+        gsap.registerPlugin(ScrollTrigger);
+
+        // ==========================================
+        // 1. SMOOTH SCROLLING (LENIS)
+        // ==========================================
+        // Lenis giúp việc cuộn bằng chuột giữa mượt mà hơn hẳn mặc định
+        const lenis = new Lenis({
+            duration: 1.5,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing siêu mượt
+            smooth: true,
+        });
+        
+        // Tích hợp Lenis vào vòng lặp của GSAP
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+
+        // ==========================================
+        // 2. TẠO CUSTOM CURSOR
+        // ==========================================
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        
+        window.addEventListener('mousemove', (e) => {
+            // Cập nhật vị trí tức thời cho dot
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+            
+            // Dùng GSAP để làm outline di chuyển có độ trễ nhẹ (hiệu ứng nam châm)
+            gsap.to(cursorOutline, {
+                x: e.clientX, y: e.clientY,
+                duration: 0.15, ease: "power2.out"
+            });
+        });
+
+        // Đổi style chuột khi hover vào các nút
+        const hoverTargets = document.querySelectorAll('.hover-target');
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => { document.body.classList.add('cursor-hover'); });
+            target.addEventListener('mouseleave', () => { document.body.classList.remove('cursor-hover'); });
+        });
+
+        // ==========================================
+        // 3. XỬ LÝ PRELOADER (TẢI TRANG)
+        // ==========================================
+        const progressBar = document.getElementById('progress-bar');
+        const preloader = document.getElementById('preloader');
+        let progress = 0;
+        
+        const loadInterval = setInterval(() => {
+            progress += Math.floor(Math.random() * 10) + 5;
+            if(progress >= 100) {
+                progress = 100;
+                clearInterval(loadInterval);
+                // Giữ preloader 1 chút rồi làm mờ đi
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => { 
+                        preloader.style.display = 'none'; 
+                        // Kích hoạt animation xuất hiện của Section 1
+                        initHeroAnimation();
+                    }, 1500);
+                }, 500);
+            }
+            progressBar.style.width = progress + '%';
+        }, 100);
+
+        // ==========================================
+        // 4. ANIMATION CHO NỘI DUNG HTML (TYPOGRAPHY)
+        // ==========================================
+        
+        // Animation lúc mở đầu trang
+        function initHeroAnimation() {
+            const tlHero = gsap.timeline();
+            tlHero.to('#sec-1 .subtitle', { y: 0, opacity: 1, duration: 1, ease: "power4.out" })
+                  .to('#sec-1 h1', { y: 0, opacity: 1, duration: 1.2, ease: "power4.out" }, "-=0.8")
+                  .to('#sec-1 p', { opacity: 1, duration: 1 }, "-=0.6")
+                  .to('.scroll-indicator', { opacity: 1, duration: 1 }, "-=0.5");
+        }
+
+        // Animation cuộn cho các Section còn lại
+        const sections = document.querySelectorAll('.section:not(#sec-1)');
+        sections.forEach((sec) => {
+            const subtitle = sec.querySelector('.subtitle');
+            const titles = sec.querySelectorAll('h2');
+            const p = sec.querySelector('p');
+            const divider = sec.querySelector('.divider');
+            const extras = sec.querySelectorAll('.btn-explore, .stats-grid');
+
+            const tlSec = gsap.timeline({
+                scrollTrigger: {
+                    trigger: sec,
+                    start: "top 70%", // Chạy khi mép trên của section tới 70% màn hình
+                }
+            });
+
+            if(subtitle) tlSec.to(subtitle, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" });
+            if(titles.length > 0) tlSec.to(titles, { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "power4.out" }, "-=0.6");
+            if(divider) tlSec.to(divider, { width: "100%", duration: 1, ease: "power3.inOut" }, "-=0.8");
+            if(p) tlSec.to(p, { opacity: 1, y: -10, duration: 0.8 }, "-=0.5");
+            if(extras.length > 0) tlSec.to(extras, { opacity: 1, y: -10, duration: 0.8, stagger: 0.2 }, "-=0.5");
+        });
+
+        // ==========================================
+        // 5. CÀI ĐẶT THREE.JS (HIỆU ỨNG 3D KHÔNG GIAN)
+        // ==========================================
+        const canvas = document.querySelector('#webgl');
         const scene = new THREE.Scene();
+        // Sương mù cho chiều sâu
+        scene.fog = new THREE.FogExp2(0x030303, 0.005);
 
-        // Thiết lập Camera
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.z = 5;
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.z = 300;
 
-        // Thiết lập Renderer nền trong suốt
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Tạo mô hình 3D (Khối TorusKnot đan chéo)
-        const geometry = new THREE.TorusKnotGeometry(1, 0.3, 120, 32);
-        const material = new THREE.MeshStandardMaterial({ 
-            color: 0x4facfe, 
-            wireframe: true // Chế độ khung lưới
+        // -- TẠO ĐƯỜNG HẦM HẠT (PARTICLES) --
+        const particlesCount = 10000; // 10 ngàn hạt
+        const particlesGeo = new THREE.BufferGeometry();
+        const posArray = new Float32Array(particlesCount * 3);
+        const colorArray = new Float32Array(particlesCount * 3);
+        const baseColor = new THREE.Color();
+
+        for(let i = 0; i < particlesCount; i++) {
+            // Phân bổ dạng hình trụ xoắn
+            const r = 20 + Math.random() * 80;
+            const theta = Math.random() * Math.PI * 2;
+            const z = (Math.random() - 0.5) * 1000; // Rải dài từ -500 đến 500
+
+            posArray[i*3] = Math.cos(theta) * r;
+            posArray[i*3+1] = Math.sin(theta) * r;
+            posArray[i*3+2] = z;
+
+            // Màu sắc: Trộn giữa trắng và vàng/cam nhạt (sang trọng)
+            if(Math.random() > 0.5) {
+                baseColor.setHex(0xffffff); // Trắng
+            } else {
+                baseColor.setHex(0xd4af37); // Vàng kim (Gold) nhạt
+            }
+            colorArray[i*3] = baseColor.r;
+            colorArray[i*3+1] = baseColor.g;
+            colorArray[i*3+2] = baseColor.b;
+        }
+
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeo.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+
+        // Nạp texture ngôi sao mờ ảo (Tạo từ canvas bằng code để khỏi cần file ảnh ngoài)
+        const getStarTexture = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 32; canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath(); ctx.arc(16, 16, 16, 0, Math.PI * 2); ctx.fill();
+            const texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+            return texture;
+        };
+
+        const particlesMat = new THREE.PointsMaterial({
+            size: 1.5,
+            map: getStarTexture(),
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            depthWrite: false
         });
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
 
-        // Vị trí mặc định ban đầu ở góc phải
-        mesh.position.x = 2;
-        mesh.position.y = -1;
+        const particleMesh = new THREE.Points(particlesGeo, particlesMat);
+        scene.add(particleMesh);
 
-        // Thêm ánh sáng
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0xffffff, 1);
-        pointLight.position.set(5, 5, 5);
+        // -- TẠO KHỐI HÌNH HỌC (OBJECT TÂM ĐIỂM Ở SECTION 3) --
+        // Khối đa diện đều Icosahedron
+        const objGeo = new THREE.IcosahedronGeometry(25, 1);
+        const objMat = new THREE.MeshPhysicalMaterial({
+            color: 0x111111, // Đen xám
+            metalness: 0.9,
+            roughness: 0.1,
+            wireframe: true, // Hiển thị dạng khung dây cực ngầu
+            transparent: true,
+            opacity: 0
+        });
+        const mainObject = new THREE.Mesh(objGeo, objMat);
+        // Đặt ở tọa độ xa lúc đầu
+        mainObject.position.set(60, -20, -100); 
+        scene.add(mainObject);
+
+        // Ánh sáng cho vật thể
+        const pointLight = new THREE.PointLight(0xd4af37, 2, 300);
+        pointLight.position.set(0, 0, 0);
         scene.add(pointLight);
 
-        // Vòng lặp Render 3D liên tục (cho animation tự động)
+        // ==========================================
+        // 6. LIÊN KẾT 3D VỚI THANH CUỘN (SCROLLTRIGGER)
+        // ==========================================
+        
+        // 1. Camera bay xuyên đường hầm hạt
+        gsap.to(camera.position, {
+            z: -400,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".scroll-container",
+                start: "top top", end: "bottom bottom",
+                scrub: 1
+            }
+        });
+
+        // 2. Đường hầm xoắn ốc
+        gsap.to(particleMesh.rotation, {
+            z: Math.PI * 1.5,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".scroll-container",
+                start: "top top", end: "bottom bottom",
+                scrub: 1
+            }
+        });
+
+        // 3. Sự xuất hiện của Khối hình học ở Section 3
+        const tlObject = gsap.timeline({
+            scrollTrigger: {
+                trigger: "#sec-3",
+                start: "top 80%", end: "bottom 20%",
+                scrub: 1
+            }
+        });
+        // Vật thể rõ dần, tiến lại gần màn hình bên trái (vì text ở bên phải), xoay vòng
+        tlObject.to(objMat, { opacity: 1, duration: 1 }, 0)
+                .to(mainObject.position, { x: -40, z: 100, y: 0, duration: 2 }, 0)
+                .to(mainObject.rotation, { x: Math.PI*2, y: Math.PI*2, duration: 2 }, 0)
+                .to(objMat, { wireframe: false, duration: 0.5 }, 1); // Từ khung dây biến thành khối đặc
+
+        // Vật thể bay ra giữa ở Section 4
+        gsap.to(mainObject.position, {
+            x: 0, z: 200, // Bay sát vào camera
+            scrollTrigger: {
+                trigger: "#sec-4",
+                start: "top bottom", end: "center center",
+                scrub: 1
+            }
+        });
+
+        // ==========================================
+        // 7. RENDER LOOP MẶC ĐỊNH
+        // ==========================================
+        const clock = new THREE.Clock();
+        
+        // Hiệu ứng chuột tương tác với hệ thống hạt (Parallax)
+        let mouseX = 0; let mouseY = 0;
+        let targetX = 0; let targetY = 0;
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - windowHalfX);
+            mouseY = (event.clientY - windowHalfY);
+        });
+
         function animate() {
-            requestAnimationFrame(animate);
-            // Hiệu ứng xoay nhè nhẹ ngay cả khi không cuộn chuột
-            mesh.rotation.x += 0.002;
-            mesh.rotation.y += 0.003;
+            const elapsedTime = clock.getElapsedTime();
+
+            // Khối vật thể tự xoay nhẹ
+            mainObject.rotation.x += 0.002;
+            mainObject.rotation.y += 0.003;
+
+            // Camera di chuyển theo chuột (Parallax nhẹ)
+            targetX = mouseX * 0.05;
+            targetY = mouseY * 0.05;
+            camera.position.x += (targetX - camera.position.x) * 0.02;
+            camera.position.y += (-targetY - camera.position.y) * 0.02;
+
             renderer.render(scene, camera);
+            requestAnimationFrame(animate);
         }
         animate();
 
-        // Xử lý khi màn hình bị resize
+        // Responsive khi thay đổi kích thước cửa sổ
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // ==========================================
-        // 2. CẤU HÌNH GSAP & SCROLLTRIGGER
-        // ==========================================
-        gsap.registerPlugin(ScrollTrigger);
-
-        // --- Hiệu ứng tương tác cho HTML hiện tại ---
-        gsap.to("#box-1", {
-            scrollTrigger: { trigger: "#box-1", start: "top 80%", end: "top 30%", scrub: 1 },
-            opacity: 1, y: 0, rotation: 10, duration: 1
-        });
-
-        gsap.to("#text-1", {
-            scrollTrigger: { trigger: "#text-1", start: "top 80%", scrub: 1 },
-            opacity: 1, x: 0
-        });
-
-        gsap.to("#box-2", {
-            scrollTrigger: { trigger: "#box-2", start: "top 90%", end: "top 40%", scrub: 1 },
-            opacity: 1, y: 0, scale: 1.2, duration: 1
-        });
-
-        gsap.to("#text-2", {
-            scrollTrigger: { trigger: "#text-2", start: "top 80%", scrub: 1 },
-            opacity: 1, x: 0
-        });
-
-        gsap.to("#text-3", {
-            scrollTrigger: { trigger: "#text-3", start: "top 80%", scrub: 1 },
-            opacity: 1, y: 0
-        });
-
-        // --- Hiệu ứng tương tác cho Mô Hình 3D (Three.js) ---
-        // Khi cuộn hết chiều dài trang (body), mô hình 3D sẽ di chuyển và xoay theo
-        gsap.to(mesh.position, {
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 1.5 // Độ trễ làm mượt của model 3D
-            },
-            x: -2, // Chuyển động sang trái
-            y: 2,  // Chuyển động lên trên
-        });
-
-        gsap.to(mesh.rotation, {
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 1.5
-            },
-            z: Math.PI * 2, // Xoay thêm 1 vòng quanh trục Z khi cuộn
-        });
-
-        // Đổi màu sắc mô hình theo tiến trình cuộn
-        gsap.to(mesh.material.color, {
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: true
-            },
-            r: 255/255, 
-            g: 107/255, 
-            b: 107/255 // Chuyển màu dần sang màu đỏ #ff6b6b
-        });
     </script>
 </body>
 </html>
