@@ -3,590 +3,543 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOANGKUN STORE - QUANTUM CORE</title>
-    <!-- Font viễn tưởng và hiện đại -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>MegaTech - Siêu Thị Điện Máy Trực Tuyến</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* ========================================= */
-        /* RESET & THIẾT LẬP CƠ BẢN */
-        /* ========================================= */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ================= CƠ BẢN ================= */
         :root {
-            --cyan: #00f3ff;
-            --purple: #bf00ff;
-            --pink: #ff00ea;
-            --dark: #020205;
+            --primary: #e11d48; --primary-hover: #be123c;
+            --dark: #0f172a; --light: #f8fafc; --gray: #64748b;
+            --border: #e2e8f0; --success: #10b981; --warning: #f59e0b;
         }
-        body {
-            background-color: var(--dark);
-            color: #ffffff;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            cursor: none; /* Ẩn chuột mặc định */
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: var(--light); color: var(--dark); overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
 
-        /* ========================================= */
-        /* UI KHỞI ĐỘNG (PRELOADER) */
-        /* ========================================= */
-        #preloader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: var(--dark); z-index: 9999;
-            display: flex; justify-content: center; align-items: center; flex-direction: column;
-            transition: opacity 1.5s ease, transform 1.5s ease;
-        }
-        .hexagon-loader {
-            width: 80px; height: 80px;
-            border: 2px solid var(--cyan);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            animation: spin 3s linear infinite, pulseGlow 2s alternate infinite;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .hexagon-inner {
-            width: 40px; height: 40px; background: var(--purple);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            animation: spin reverse 2s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulseGlow { 
-            0% { box-shadow: 0 0 10px var(--cyan); } 
-            100% { box-shadow: 0 0 30px var(--cyan), 0 0 50px var(--purple); } 
-        }
-        .loading-text {
-            margin-top: 30px; font-family: 'Orbitron', sans-serif; font-size: 1.2rem;
-            letter-spacing: 5px; color: var(--cyan);
-            text-shadow: 0 0 10px var(--cyan);
-        }
-        .progress-bar-container {
-            width: 200px; height: 4px; background: #222; margin-top: 20px;
-            position: relative; overflow: hidden; border-radius: 2px;
-        }
-        .progress-bar { height: 100%; width: 0%; background: var(--cyan); transition: width 0.1s; }
+        /* ================= TOP BAR ================= */
+        .top-bar { background: var(--dark); color: #cbd5e1; font-size: 13px; padding: 8px 5%; display: flex; justify-content: space-between; }
+        .top-bar-left span { margin-right: 15px; }
+        .top-bar-right a { margin-left: 15px; transition: color 0.3s; }
+        .top-bar-right a:hover { color: var(--primary); }
 
-        /* ========================================= */
-        /* CUSTOM CURSOR */
-        /* ========================================= */
-        .cursor-dot {
-            width: 8px; height: 8px; background-color: #fff;
-            border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000;
-            transform: translate(-50%, -50%); box-shadow: 0 0 10px #fff;
-        }
-        .cursor-ring {
-            width: 40px; height: 40px; border: 1px solid var(--cyan);
-            border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); transition: all 0.15s ease-out;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3) inset;
-        }
-
-        /* ========================================= */
-        /* ÂM THANH & HUD CỐ ĐỊNH */
-        /* ========================================= */
-        .sound-toggle {
-            position: fixed; top: 30px; right: 30px; z-index: 1000;
-            font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
-            color: var(--cyan); border: 1px solid var(--cyan);
-            padding: 8px 20px; cursor: pointer; letter-spacing: 2px;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
-            transition: all 0.3s;
-        }
-        .sound-toggle:hover { background: rgba(0, 243, 255, 0.2); }
-        .sound-toggle.active {
-            background: var(--cyan); color: #000; box-shadow: 0 0 15px var(--cyan);
-        }
+        /* ================= NAVBAR ================= */
+        header.main-header { background: #fff; padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-size: 30px; font-weight: 900; color: var(--primary); }
+        .logo span { color: var(--dark); }
         
-        .brand-logo {
-            position: fixed; top: 30px; left: 30px; z-index: 1000;
-            font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900;
-            color: #fff; letter-spacing: 3px; text-shadow: 0 0 10px var(--purple);
-            pointer-events: none;
-        }
-        .brand-logo span { color: var(--cyan); }
+        .search-container { flex: 1; max-width: 500px; margin: 0 30px; display: flex; position: relative; }
+        .search-container input { width: 100%; padding: 12px 20px; border: 2px solid var(--border); border-radius: 25px; outline: none; transition: border 0.3s; }
+        .search-container input:focus { border-color: var(--primary); }
+        .search-container button { position: absolute; right: 5px; top: 5px; bottom: 5px; width: 40px; border: none; background: var(--primary); color: #fff; border-radius: 50%; cursor: pointer; }
 
-        /* ========================================= */
-        /* CANVAS 3D */
-        /* ========================================= */
-        #webgl-canvas {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; outline: none;
-        }
+        .header-actions { display: flex; gap: 20px; align-items: center; }
+        .action-item { position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; font-size: 14px; }
+        .action-item i { font-size: 20px; margin-bottom: 5px; color: var(--dark); transition: color 0.3s; }
+        .action-item:hover i { color: var(--primary); }
+        .badge { position: absolute; top: -5px; right: 5px; background: var(--primary); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
-        /* ========================================= */
-        /* GIAO DIỆN SCROLL (GLASSMORPHISM) */
-        /* ========================================= */
-        .scroll-wrapper { position: relative; z-index: 5; }
+        /* ================= HERO SLIDER ================= */
+        .slider-container { position: relative; height: 60vh; overflow: hidden; background: #000; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out; display: flex; align-items: center; justify-content: center; text-align: center; color: #fff; background-size: cover; background-position: center; }
+        .slide.active { opacity: 1; z-index: 1; }
+        .slide::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+        .slide-content { position: relative; z-index: 2; max-width: 800px; padding: 20px; transform: translateY(20px); transition: transform 0.8s; }
+        .slide.active .slide-content { transform: translateY(0); }
+        .slide h2 { font-size: 4rem; margin-bottom: 10px; text-transform: uppercase; }
+        .slide p { font-size: 1.5rem; margin-bottom: 25px; }
+        .btn-shop { padding: 12px 35px; background: var(--primary); color: #fff; font-size: 16px; font-weight: bold; border-radius: 30px; border: none; cursor: pointer; transition: background 0.3s; }
+        .btn-shop:hover { background: var(--primary-hover); }
         
-        .section {
-            min-height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; padding: 0 10vw; position: relative;
-        }
-        .flex-right { align-items: flex-end; text-align: right; }
-        .flex-left { align-items: flex-start; text-align: left; }
-        .flex-center { align-items: center; text-align: center; }
+        .slider-controls { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 5; transform: translateY(-50%); }
+        .slider-controls button { background: rgba(255,255,255,0.3); border: none; width: 50px; height: 50px; border-radius: 50%; color: #fff; font-size: 20px; cursor: pointer; transition: background 0.3s; }
+        .slider-controls button:hover { background: var(--primary); }
 
-        .overflow-box { overflow: hidden; margin-bottom: 15px; }
+        /* ================= DỊCH VỤ ================= */
+        .services { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 40px 5%; background: #fff; margin-bottom: 40px; }
+        .service-item { display: flex; align-items: center; gap: 15px; }
+        .service-item i { font-size: 35px; color: var(--primary); }
+        .service-item h4 { font-size: 16px; margin-bottom: 5px; }
+        .service-item p { font-size: 13px; color: var(--gray); }
+
+        /* ================= FLASH SALE (COUNTDOWN) ================= */
+        .flash-sale { background: linear-gradient(to right, #0f172a, #1e293b); color: #fff; padding: 40px 5%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-radius: 10px; mx: 5%; }
+        .timer-box { display: flex; gap: 15px; margin-top: 10px; }
+        .time-block { background: var(--primary); padding: 10px 15px; border-radius: 8px; text-align: center; min-width: 60px; }
+        .time-block span { display: block; font-size: 24px; font-weight: bold; }
+        .time-block small { font-size: 12px; }
+
+        /* ================= SẢN PHẨM ================= */
+        .section-title { text-align: center; font-size: 32px; margin-bottom: 30px; position: relative; padding-bottom: 15px; }
+        .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background: var(--primary); }
         
-        h1, h2 {
-            font-family: 'Orbitron', sans-serif; font-weight: 900;
-            text-transform: uppercase; line-height: 1.1;
-            transform: translateY(120%); opacity: 0;
-        }
-        h1 { font-size: 5vw; color: #fff; text-shadow: 0 0 20px var(--cyan); }
-        h2 { font-size: 3.5vw; color: #fff; }
+        .filter-group { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .btn-filter { padding: 8px 20px; border: 1px solid var(--border); background: #fff; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-filter.active, .btn-filter:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; padding: 0 5%; margin-bottom: 60px; }
+        .product-card { background: #fff; border-radius: 12px; padding: 15px; border: 1px solid var(--border); transition: transform 0.3s, box-shadow 0.3s; position: relative; group; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .product-image { width: 100%; height: 220px; object-fit: contain; margin-bottom: 15px; cursor: pointer; }
+        .product-category { font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+        .product-name { font-size: 16px; font-weight: 700; margin: 8px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 43px; }
+        .product-price { color: var(--primary); font-size: 18px; font-weight: 800; }
+        .old-price { color: var(--gray); text-decoration: line-through; font-size: 14px; margin-left: 10px; }
         
-        .tagline {
-            display: inline-block; padding: 5px 15px;
-            background: rgba(191, 0, 255, 0.1);
-            border-left: 3px solid var(--purple); color: var(--cyan);
-            font-family: monospace; font-size: 1rem; letter-spacing: 3px;
-            margin-bottom: 20px; opacity: 0;
-        }
+        .card-actions { margin-top: 15px; display: flex; gap: 10px; }
+        .btn-add-cart { flex: 1; padding: 10px; background: var(--dark); color: #fff; border: none; border-radius: 6px; cursor: pointer; transition: background 0.3s; font-weight: bold; }
+        .btn-add-cart:hover { background: var(--primary); }
+        .btn-quick-view { padding: 10px; background: var(--light); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; color: var(--dark); }
+        .btn-quick-view:hover { background: var(--border); }
 
-        p {
-            font-size: 1.1rem; font-weight: 500; letter-spacing: 1px; line-height: 1.8;
-            color: #ccc; max-width: 500px; opacity: 0;
-            /* Hiệu ứng kính mờ xịn xò */
-            background: rgba(10, 10, 15, 0.6); padding: 25px;
-            border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
+        /* ================= FOOTER ================= */
+        footer { background: var(--dark); color: #94a3b8; padding: 60px 5% 20px; }
+        .footer-content { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-col h3 { color: #fff; margin-bottom: 20px; font-size: 18px; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .newsletter-form { display: flex; margin-top: 20px; }
+        .newsletter-form input { flex: 1; padding: 10px; border: none; outline: none; border-radius: 4px 0 0 4px; }
+        .newsletter-form button { padding: 10px 20px; background: var(--primary); border: none; color: #fff; border-radius: 0 4px 4px 0; cursor: pointer; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid #334155; }
 
-        .scroll-indicator {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center; opacity: 0;
-        }
-        .mouse-icon {
-            width: 24px; height: 36px; border: 2px solid var(--cyan);
-            border-radius: 12px; position: relative;
-        }
-        .wheel-icon {
-            width: 4px; height: 8px; background: var(--pink); border-radius: 2px;
-            position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
-            animation: scrollWheel 1.5s infinite;
-        }
-        @keyframes scrollWheel { 100% { top: 20px; opacity: 0; } }
+        /* ================= MODALS & TOASTS ================= */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+        
+        /* Cửa sổ giỏ hàng */
+        .cart-sidebar { position: fixed; top: 0; right: -500px; width: 450px; max-width: 100%; height: 100vh; background: #fff; z-index: 1000; transition: right 0.4s ease; display: flex; flex-direction: column; }
+        .cart-sidebar.active { right: 0; }
+        .cart-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .cart-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .cart-footer { padding: 20px; border-top: 1px solid var(--border); background: var(--light); }
+        .cart-item { display: flex; gap: 15px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .cart-item img { width: 80px; height: 80px; object-fit: contain; border: 1px solid var(--border); border-radius: 8px; padding: 5px; }
+        .qty-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; border: 1px solid var(--border); width: fit-content; border-radius: 4px; }
+        .qty-box button { background: none; border: none; width: 30px; height: 30px; cursor: pointer; font-size: 16px; }
+        
+        /* Cửa sổ xem nhanh (Quick View) */
+        .quick-view-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; width: 800px; max-width: 90%; border-radius: 12px; z-index: 1000; display: none; opacity: 0; transition: all 0.3s; padding: 30px; }
+        .quick-view-modal.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); gap: 30px; }
+        .qv-image { width: 50%; object-fit: contain; }
+        .qv-details { width: 50%; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--gray); }
+
+        /* Cửa sổ Đăng nhập */
+        .login-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; width: 400px; padding: 30px; border-radius: 12px; z-index: 1000; display: none; }
+        .login-modal.active { display: block; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; }
+
+        /* Toast Notifications (Thông báo nổi) */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #fff; border-left: 4px solid var(--success); box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 15px 20px; border-radius: 4px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
     </style>
 </head>
 <body>
 
-    <!-- NHẠC NỀN (Tính năng Ẩn) -->
-    <!-- Sử dụng một bản nhạc Ambient Sci-fi miễn phí từ CDN -->
-    <audio id="bg-audio" loop preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2022/02/10/audio_2db5e263fc.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- PRELOADER -->
-    <div id="preloader">
-        <div class="hexagon-loader"><div class="hexagon-inner"></div></div>
-        <div class="loading-text" id="loading-text">KHỞI TẠO LÕI LƯỢNG TỬ</div>
-        <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <span><i class="fas fa-envelope"></i> hotro@megatech.vn</span>
+            <span><i class="fas fa-phone-alt"></i> Hotline: 1800 6789</span>
+        </div>
+        <div class="top-bar-right">
+            <a href="#">Theo dõi đơn hàng</a>
+            <a href="#">Hệ thống cửa hàng</a>
+            <a href="#">VN | EN</a>
+        </div>
     </div>
 
-    <!-- HUD CỐ ĐỊNH -->
-    <div class="brand-logo">HOANGKUN<span>STORE</span></div>
-    <div class="sound-toggle hover-target" id="sound-btn">SOUND: OFF</div>
-
-    <!-- CUSTOM CURSOR -->
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-ring" id="cursor-ring"></div>
-
-    <!-- CANVAS 3D TRUNG TÂM -->
-    <canvas id="webgl-canvas"></canvas>
-
-    <!-- NỘI DUNG CUỘN CHUỘT (SCROLLEYTELLING) -->
-    <div class="scroll-wrapper">
+    <header class="main-header">
+        <a href="#" class="logo"><i class="fas fa-bolt"></i> Mega<span>Tech</span></a>
         
-        <!-- SECTION 1: SPHERE (Mạng Lưới) -->
-        <div class="section flex-center" id="sec-1">
-            <div class="tagline">HỆ THỐNG LƯỢNG TỬ ĐỘC QUYỀN</div>
-            <div class="overflow-box"><h1>KHÔNG GIAN SỐ</h1></div>
-            <div class="overflow-box"><h1>HOANGKUN</h1></div>
-            <p style="margin: 20px auto 0; text-align: center;">Nơi cung cấp các sản phẩm kỹ thuật số, mã nguồn và hiệu ứng website đỉnh cao. Trải nghiệm sự biến đổi hình thể của dữ liệu ngay trước mắt bạn.</p>
-            <div class="scroll-indicator">
-                <span style="font-family: monospace; font-size: 0.7rem; color: var(--cyan); margin-bottom: 10px; letter-spacing: 2px;">CUỘN ĐỂ BIẾN ĐỔI</span>
-                <div class="mouse-icon"><div class="wheel-icon"></div></div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Bạn muốn tìm mua gì hôm nay? (VD: iPhone, Dell...)" onkeyup="handleSearch()">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+
+        <div class="header-actions">
+            <div class="action-item" onclick="toggleLogin()">
+                <i class="far fa-user"></i>
+                <span>Tài khoản</span>
+            </div>
+            <div class="action-item" onclick="toggleCart()">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Giỏ hàng</span>
+                <span class="badge" id="cart-badge">0</span>
             </div>
         </div>
+    </header>
 
-        <!-- SECTION 2: CUBE (Cấu Trúc) -->
-        <div class="section flex-left" id="sec-2">
-            <div class="tagline">01 // LƯU TRỮ VỮNG CHẮC</div>
-            <div class="overflow-box"><h2 style="color: var(--cyan);">CẤU TRÚC<br>KHỐI DỮ LIỆU</h2></div>
-            <p>Hàng ngàn source code và sản phẩm số được cấu trúc tối ưu. Tính tương thích cao, dễ dàng tích hợp và mở rộng cho mọi nền tảng dự án của bạn.</p>
+    <div class="slider-container">
+        <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1920&q=80');">
+            <div class="slide-content">
+                <h2>Laptop Gaming Thế Hệ Mới</h2>
+                <p>Hiệu năng vượt trội - Chinh phục mọi tựa game AAA</p>
+                <button class="btn-shop" onclick="document.getElementById('products').scrollIntoView()">Mua Ngay Kẻo Lỡ</button>
+            </div>
         </div>
-
-        <!-- SECTION 3: DNA (Chuỗi Gen) -->
-        <div class="section flex-right" id="sec-3">
-            <div class="tagline">02 // TÙY BIẾN LINH HOẠT</div>
-            <div class="overflow-box"><h2 style="color: var(--pink);">CHUỖI GEN<br>SẢN PHẨM</h2></div>
-            <p>Các thành phần mã nguồn có thể được tháo lắp, chỉnh sửa và biến đổi mượt mà. Phục vụ hoàn hảo cho mọi nhu cầu thiết kế từ cơ bản đến nâng cao.</p>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1616348436168-de43ad0db179?auto=format&fit=crop&w=1920&q=80');">
+            <div class="slide-content">
+                <h2>Siêu Phẩm Smartphone 2026</h2>
+                <p>Camera AI 200MP - Viền Titanium siêu nhẹ</p>
+                <button class="btn-shop" onclick="document.getElementById('products').scrollIntoView()">Khám Phá Ngay</button>
+            </div>
         </div>
-
-        <!-- SECTION 4: TORUS (Vòng lặp) -->
-        <div class="section flex-center" id="sec-4">
-            <div class="tagline">03 // HOẠT ĐỘNG BỀN BỈ</div>
-            <div class="overflow-box"><h2 style="color: var(--purple);">VÒNG LẶP<br>VÔ TẬN</h2></div>
-            <p style="margin: 0 auto; text-align: center;">Cập nhật liên tục. Hỗ trợ dài lâu. Sẵn sàng khởi chạy và đồng hành cùng thành công của bạn trên con đường phát triển.</p>
+        <div class="slider-controls">
+            <button onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+            <button onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></button>
         </div>
-
     </div>
 
-    <!-- ========================================== -->
-    <!-- IMPORTS THƯ VIỆN (ThreeJS, GSAP, PostProcessing) -->
-    <!-- ========================================== -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Thư viện làm sáng rực rỡ (Bloom) -->
-    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <section class="services">
+        <div class="service-item">
+            <i class="fas fa-shipping-fast"></i>
+            <div>
+                <h4>Miễn phí vận chuyển</h4>
+                <p>Cho đơn hàng từ 500k</p>
+            </div>
+        </div>
+        <div class="service-item">
+            <i class="fas fa-sync-alt"></i>
+            <div>
+                <h4>Đổi trả 30 ngày</h4>
+                <p>Lỗi là đổi mới ngay</p>
+            </div>
+        </div>
+        <div class="service-item">
+            <i class="fas fa-shield-alt"></i>
+            <div>
+                <h4>Bảo hành chính hãng</h4>
+                <p>Cam kết 100% Auth</p>
+            </div>
+        </div>
+        <div class="service-item">
+            <i class="fas fa-headset"></i>
+            <div>
+                <h4>Hỗ trợ 24/7</h4>
+                <p>Hotline miễn phí</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="flash-sale">
+        <div>
+            <h2 style="font-size: 28px; margin-bottom: 10px;"><i class="fas fa-bolt" style="color: #fbbf24;"></i> FLASH SALE GIỜ VÀNG</h2>
+            <p>Nhanh tay săn ngay các sản phẩm giảm giá cực sốc. Số lượng có hạn!</p>
+        </div>
+        <div class="timer-box">
+            <div class="time-block"><span id="hours">00</span><small>Giờ</small></div>
+            <div class="time-block"><span id="mins">00</span><small>Phút</small></div>
+            <div class="time-block"><span id="secs">00</span><small>Giây</small></div>
+        </div>
+    </div>
+
+    <section id="products">
+        <h2 class="section-title">Sản Phẩm Đang Bán Chạy</h2>
+        
+        <div class="filter-group">
+            <button class="btn-filter active" onclick="filterData('all')">Tất cả sản phẩm</button>
+            <button class="btn-filter" onclick="filterData('laptop')">Laptop - PC</button>
+            <button class="btn-filter" onclick="filterData('phone')">Điện thoại</button>
+            <button class="btn-filter" onclick="filterData('watch')">Smartwatch</button>
+            <button class="btn-filter" onclick="filterData('accessory')">Phụ kiện</button>
+        </div>
+
+        <div class="product-grid" id="product-list">
+            </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <a href="#" class="logo" style="color: #fff; margin-bottom: 15px; display: block;"><i class="fas fa-bolt"></i> Mega<span>Tech</span></a>
+                <p style="line-height: 1.6;">Hệ thống bán lẻ điện thoại, máy tính, phụ kiện thông minh chính hãng uy tín nhất Việt Nam.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Nhập email nhận khuyến mãi...">
+                    <button>Đăng ký</button>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Về Chúng Tôi</h3>
+                <ul>
+                    <li><a href="#">Giới thiệu MegaTech</a></li>
+                    <li><a href="#">Tuyển dụng</a></li>
+                    <li><a href="#">Điều khoản sử dụng</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Hỗ Trợ Khách Hàng</h3>
+                <ul>
+                    <li><a href="#">Chính sách bảo hành</a></li>
+                    <li><a href="#">Chính sách đổi trả</a></li>
+                    <li><a href="#">Hướng dẫn mua trả góp</a></li>
+                    <li><a href="#">Giao hàng & Thanh toán</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Kết Nối Với Chúng Tôi</h3>
+                <div style="display: flex; gap: 15px; font-size: 24px; margin-bottom: 20px;">
+                    <a href="#"><i class="fab fa-facebook" style="color: #3b5998;"></i></a>
+                    <a href="#"><i class="fab fa-youtube" style="color: #ff0000;"></i></a>
+                    <a href="#"><i class="fab fa-tiktok" style="color: #fff;"></i></a>
+                </div>
+                <p>Chứng nhận bởi:</p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Bo_Cong_Thuong_logo.png/320px-Bo_Cong_Thuong_logo.png" alt="BCT" style="width: 120px; opacity: 0.5; margin-top: 10px;">
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MegaTech. Xây dựng bởi trợ lý AI. Dành cho mục đích học tập.</p>
+        </div>
+    </footer>
+
+    <div class="overlay" id="global-overlay" onclick="closeAllModals()"></div>
+
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Giỏ hàng của bạn</h3>
+            <i class="fas fa-times" style="font-size: 20px; cursor: pointer;" onclick="toggleCart()"></i>
+        </div>
+        <div class="cart-body" id="cart-items">
+            </div>
+        <div class="cart-footer">
+            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+                <span>Tổng cộng:</span>
+                <span id="cart-total" style="color: var(--primary);">0 ₫</span>
+            </div>
+            <button style="width: 100%; padding: 15px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;" onclick="alert('Đang kết nối cổng thanh toán VNPay/Momo...')">Thanh Toán Ngay</button>
+        </div>
+    </div>
+
+    <div class="login-modal" id="login-modal">
+        <i class="fas fa-times close-modal" onclick="toggleLogin()"></i>
+        <h2 style="margin-bottom: 20px; text-align: center;">Đăng Nhập</h2>
+        <div class="form-group">
+            <label>Tài khoản (Email)</label>
+            <input type="email" placeholder="Nhập email của bạn">
+        </div>
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <input type="password" placeholder="Nhập mật khẩu">
+        </div>
+        <button style="width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px;">Đăng Nhập</button>
+        <p style="text-align: center; margin-top: 15px; font-size: 14px;">Chưa có tài khoản? <a href="#" style="color: var(--primary);">Đăng ký ngay</a></p>
+    </div>
+
+    <div class="quick-view-modal" id="quick-view">
+        <i class="fas fa-times close-modal" onclick="closeAllModals()"></i>
+        <img src="" id="qv-img" class="qv-image">
+        <div class="qv-details">
+            <h2 id="qv-name" style="margin-bottom: 15px;">Tên</h2>
+            <p id="qv-desc" style="color: var(--gray); margin-bottom: 20px; line-height: 1.6;">Mô tả</p>
+            <h3 id="qv-price" style="color: var(--primary); font-size: 24px; margin-bottom: 20px;">Giá</h3>
+            <button id="qv-btn" class="btn-add-cart" style="width: 100%; padding: 15px; font-size: 16px;"><i class="fas fa-cart-plus"></i> Thêm vào giỏ</button>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
 
     <script>
-        gsap.registerPlugin(ScrollTrigger);
+        // 1. Dữ liệu sản phẩm chuyên sâu hơn
+        const db = [
+            { id: 101, name: "Laptop ASUS ROG Strix G16 (2024)", price: 42990000, oldPrice: 45000000, cat: "laptop", img: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=60", desc: "CPU Intel Core i9 Gen 14, RTX 4070 8GB, Màn hình 16 inch QHD+ 240Hz. Tản nhiệt kim loại lỏng." },
+            { id: 102, name: "iPhone 15 Pro Max 256GB Chính Hãng VN/A", price: 29500000, oldPrice: 34990000, cat: "phone", img: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=500&q=60", desc: "Chất liệu Titanium siêu nhẹ, viền siêu mỏng. Chip A17 Pro chơi game mượt mà." },
+            { id: 103, name: "Đồng hồ Apple Watch Ultra 2", price: 21990000, oldPrice: null, cat: "watch", img: "https://images.unsplash.com/photo-1696446700622-45e05a549d44?auto=format&fit=crop&w=500&q=60", desc: "Màn hình sáng nhất từ trước tới nay. Pin lên đến 36 giờ. Phù hợp cho các hoạt động thể thao mạo hiểm." },
+            { id: 104, name: "Tai nghe Sony WH-1000XM5 Chống ồn", price: 7490000, oldPrice: 8500000, cat: "accessory", img: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=500&q=60", desc: "Công nghệ chống ồn chủ động đỉnh cao, thiết kế mới nhẹ hơn, ôm tai thoải mái hơn." },
+            { id: 105, name: "MacBook Air M3 15-inch 2024", price: 32990000, oldPrice: null, cat: "laptop", img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=60", desc: "Mỏng nhẹ tuyệt đối, sức mạnh đột phá với chip M3. Thời lượng pin 18 giờ." },
+            { id: 106, name: "Samsung Galaxy S24 Ultra 512GB", price: 34990000, oldPrice: 37990000, cat: "phone", img: "https://images.unsplash.com/photo-1706692744359-598d9cc15df1?auto=format&fit=crop&w=500&q=60", desc: "Tích hợp Galaxy AI thông minh, dịch thuật trực tiếp, camera siêu zoom." },
+            { id: 107, name: "Chuột Gaming Logitech G Pro X Superlight", price: 2890000, oldPrice: 3500000, cat: "accessory", img: "https://images.unsplash.com/photo-1615663245857-ac93bb7c3f7b?auto=format&fit=crop&w=500&q=60", desc: "Chuột không dây siêu nhẹ chỉ 63g, cảm biến HERO 25K siêu chính xác." },
+            { id: 108, name: "Đồng hồ Garmin Fenix 7 Sapphire", price: 22490000, oldPrice: null, cat: "watch", img: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=500&q=60", desc: "Theo dõi sức khỏe chuyên sâu, bản đồ TOPO, kính Sapphire chống xước tuyệt đối." }
+        ];
 
-        // ==========================================
-        // QUẢN LÝ ÂM THANH NỀN (FEATURE MỚI)
-        // ==========================================
-        const audio = document.getElementById('bg-audio');
-        const soundBtn = document.getElementById('sound-btn');
-        audio.volume = 0.4; // Giảm âm lượng nhạc nền cho êm
+        // Format tiền
+        const fmtMoney = num => num.toLocaleString('vi-VN') + ' ₫';
 
-        soundBtn.addEventListener('click', () => {
-            if(audio.paused) {
-                audio.play();
-                soundBtn.innerText = 'SOUND: ON';
-                soundBtn.classList.add('active');
-            } else {
-                audio.pause();
-                soundBtn.innerText = 'SOUND: OFF';
-                soundBtn.classList.remove('active');
+        // Khởi tạo giỏ hàng từ LocalStorage (F5 không mất)
+        let cart = JSON.parse(localStorage.getItem('megaCart')) || [];
+        updateCartCount();
+
+        // 2. Render Dữ liệu
+        function renderUI(data) {
+            const list = document.getElementById('product-list');
+            list.innerHTML = '';
+            
+            if(data.length === 0) {
+                list.innerHTML = '<h3 style="grid-column: 1/-1; text-align: center; margin: 50px 0;">Không tìm thấy sản phẩm phù hợp.</h3>';
+                return;
             }
-        });
 
-        // ==========================================
-        // LENIS SMOOTH SCROLL & CURSOR
-        // ==========================================
-        const lenis = new Lenis({ duration: 1.5, smooth: true });
-        lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-        gsap.ticker.lagSmoothing(0);
-
-        const dot = document.getElementById('cursor-dot');
-        const ring = document.getElementById('cursor-ring');
-        window.addEventListener('mousemove', (e) => {
-            dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
-            gsap.to(ring, { x: e.clientX, y: e.clientY, duration: 0.15 });
-        });
-
-        // Hover effect cho các nút/phần tử có class hover-target
-        document.querySelectorAll('.hover-target').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                ring.style.width = '60px'; ring.style.height = '60px';
-                ring.style.borderColor = 'var(--pink)';
-                ring.style.background = 'rgba(255, 0, 234, 0.1)';
+            data.forEach(p => {
+                let oldPriceHtml = p.oldPrice ? `<span class="old-price">${fmtMoney(p.oldPrice)}</span>` : '';
+                list.innerHTML += `
+                    <div class="product-card">
+                        <img src="${p.img}" class="product-image" onclick="openQuickView(${p.id})">
+                        <div class="product-category">${p.cat}</div>
+                        <h3 class="product-name" onclick="openQuickView(${p.id})" style="cursor:pointer">${p.name}</h3>
+                        <div class="product-price">${fmtMoney(p.price)} ${oldPriceHtml}</div>
+                        <div class="card-actions">
+                            <button class="btn-add-cart" onclick="addToCart(${p.id})"><i class="fas fa-cart-plus"></i> Mua</button>
+                            <button class="btn-quick-view" onclick="openQuickView(${p.id})"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                `;
             });
-            el.addEventListener('mouseleave', () => {
-                ring.style.width = '40px'; ring.style.height = '40px';
-                ring.style.borderColor = 'var(--cyan)';
-                ring.style.background = 'transparent';
+        }
+        renderUI(db); // Khởi chạy ban đầu
+
+        // 3. Lọc & Tìm kiếm
+        function filterData(cat) {
+            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            if(cat === 'all') renderUI(db);
+            else renderUI(db.filter(p => p.cat === cat));
+        }
+
+        function handleSearch() {
+            const kw = document.getElementById('searchInput').value.toLowerCase();
+            renderUI(db.filter(p => p.name.toLowerCase().includes(kw)));
+        }
+
+        // 4. Giỏ hàng Nâng cao (Có lưu LocalStorage)
+        function addToCart(id) {
+            const item = db.find(x => x.id === id);
+            const exist = cart.find(x => x.id === id);
+            if(exist) exist.qty++;
+            else cart.push({...item, qty: 1});
+            
+            saveCart();
+            showToast(`Đã thêm <b>${item.name}</b> vào giỏ!`);
+        }
+
+        function changeQty(id, delta) {
+            const idx = cart.findIndex(x => x.id === id);
+            if(idx !== -1) {
+                cart[idx].qty += delta;
+                if(cart[idx].qty <= 0) cart.splice(idx, 1);
+                saveCart();
+                renderCart();
+            }
+        }
+
+        function saveCart() {
+            localStorage.setItem('megaCart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const total = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cart-badge').innerText = total;
+        }
+
+        function renderCart() {
+            const box = document.getElementById('cart-items');
+            box.innerHTML = '';
+            let totalMoney = 0;
+            
+            if(cart.length === 0) {
+                box.innerHTML = '<div style="text-align:center; color: #94a3b8; margin-top:50px;"><i class="fas fa-box-open" style="font-size: 40px; margin-bottom:15px"></i><p>Giỏ hàng trống</p></div>';
+            }
+
+            cart.forEach(c => {
+                totalMoney += c.price * c.qty;
+                box.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${c.img}">
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 14px; margin-bottom: 5px;">${c.name}</h4>
+                            <div style="color: var(--primary); font-weight: bold;">${fmtMoney(c.price)}</div>
+                            <div class="qty-box">
+                                <button onclick="changeQty(${c.id}, -1)">-</button>
+                                <span>${c.qty}</span>
+                                <button onclick="changeQty(${c.id}, 1)">+</button>
+                            </div>
+                        </div>
+                        <i class="fas fa-trash-alt" style="color: var(--primary); cursor:pointer; align-self: center;" onclick="changeQty(${c.id}, -${c.qty})"></i>
+                    </div>
+                `;
             });
-        });
-
-        // ==========================================
-        // HIỆU ỨNG PRELOADER VÀ HTML
-        // ==========================================
-        window.addEventListener('load', () => {
-            let progress = 0;
-            const bar = document.getElementById('progress-bar');
-            const text = document.getElementById('loading-text');
-            
-            const loadInterval = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 5;
-                if(progress >= 100) {
-                    progress = 100;
-                    clearInterval(loadInterval);
-                    text.innerText = "HỆ THỐNG SẴN SÀNG";
-                    text.style.color = 'var(--pink)';
-                    
-                    setTimeout(() => {
-                        const preloader = document.getElementById('preloader');
-                        preloader.style.opacity = '0';
-                        preloader.style.transform = 'scale(1.1)'; // Zoom nhẹ khi thoát
-                        setTimeout(() => { 
-                            preloader.style.display = 'none'; 
-                            initHTMLAnim(); 
-                        }, 1500);
-                    }, 500);
-                }
-                bar.style.width = progress + '%';
-            }, 150);
-        });
-
-        function initHTMLAnim() {
-            const tl = gsap.timeline();
-            tl.to('#sec-1 .tagline', { opacity: 1, duration: 1 })
-              .to('#sec-1 h1', { y: 0, opacity: 1, duration: 1.2, stagger: 0.15, ease: "power4.out" }, "-=0.5")
-              .to('#sec-1 p', { opacity: 1, duration: 1 }, "-=0.8")
-              .to('.scroll-indicator', { opacity: 1, duration: 1 }, "-=0.5");
+            document.getElementById('cart-total').innerText = fmtMoney(totalMoney);
         }
 
-        document.querySelectorAll('.section:not(#sec-1)').forEach(sec => {
-            const tagline = sec.querySelector('.tagline');
-            const titles = sec.querySelectorAll('h2');
-            const p = sec.querySelector('p');
-
-            const st = gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 60%" } });
-            if(tagline) st.to(tagline, { opacity: 1, duration: 1 });
-            if(titles.length) st.to(titles, { y: 0, opacity: 1, duration: 1, ease: "power4.out" }, "-=0.5");
-            if(p) st.to(p, { opacity: 1, y: -10, duration: 1 }, "-=0.5");
-        });
-
-        // ==========================================
-        // THREE.JS - HỆ THỐNG BIẾN THỂ LƯỢNG TỬ (PARTICLE MORPHING)
-        // ==========================================
-        /*
-           Đây là thuật toán hạt biến đổi (Particle Morphing) cao cấp.
-           Chúng ta sẽ tạo ra 25,000 hạt (particles) và tính toán 4 hình dáng khác nhau cho chúng:
-           1. Khối Cầu (Sphere)
-           2. Khối Lập Phương (Cube)
-           3. Chuỗi Xoắn Kép (DNA Helix)
-           4. Vòng Lặp (Torus)
-           Khi cuộn chuột, mảng tọa độ mục tiêu (target positions) sẽ thay đổi, 
-           và trong vòng lặp render, các hạt sẽ bay mượt mà đến vị trí mới.
-        */
-        const canvas = document.querySelector('#webgl-canvas');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.set(0, 0, 180);
-
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.toneMapping = THREE.ReinhardToneMapping;
-
-        // --- Hậu Kỳ Phát Sáng (Unreal Bloom) ---
-        const composer = new THREE.EffectComposer(renderer);
-        composer.addPass(new THREE.RenderPass(scene, camera));
-        
-        const bloomPass = new THREE.UnrealBloomPass(
-            new THREE.Vector2(window.innerWidth, window.innerHeight),
-            1.8, // Cường độ (Intensity)
-            0.6, // Bán kính (Radius)
-            0.1  // Ngưỡng (Threshold)
-        );
-        composer.addPass(bloomPass);
-
-        // --- Cấu trúc Dữ Liệu Hạt ---
-        const numParticles = 25000;
-        const positions = new Float32Array(numParticles * 3); // Vị trí hiện tại
-        const colors = new Float32Array(numParticles * 3);    // Màu sắc cố định của hạt
-
-        // Mảng lưu trữ 4 hình dạng (Shapes)
-        const shapeSphere = new Float32Array(numParticles * 3);
-        const shapeCube = new Float32Array(numParticles * 3);
-        const shapeDNA = new Float32Array(numParticles * 3);
-        const shapeTorus = new Float32Array(numParticles * 3);
-
-        const colorObj = new THREE.Color();
-
-        for(let i = 0; i < numParticles; i++) {
-            const i3 = i * 3;
-
-            // 1. TÍNH TOÁN SHAPE: KHỐI CẦU (Sphere Surface)
-            const u = Math.random();
-            const v = Math.random();
-            const thetaSphere = 2 * Math.PI * u;
-            const phiSphere = Math.acos(2 * v - 1);
-            const radiusSphere = 60 + (Math.random() * 2); // Bán kính 60 + chút nhiễu
-            
-            shapeSphere[i3] = radiusSphere * Math.sin(phiSphere) * Math.cos(thetaSphere);
-            shapeSphere[i3+1] = radiusSphere * Math.sin(phiSphere) * Math.sin(thetaSphere);
-            shapeSphere[i3+2] = radiusSphere * Math.cos(phiSphere);
-
-            // Gán vị trí khởi tạo ban đầu là hình cầu
-            positions[i3] = shapeSphere[i3];
-            positions[i3+1] = shapeSphere[i3+1];
-            positions[i3+2] = shapeSphere[i3+2];
-
-            // 2. TÍNH TOÁN SHAPE: LẬP PHƯƠNG (Cube Volume)
-            // Phân bổ ngẫu nhiên trong một hộp kích thước 100x100x100
-            shapeCube[i3] = (Math.random() - 0.5) * 100;
-            shapeCube[i3+1] = (Math.random() - 0.5) * 100;
-            shapeCube[i3+2] = (Math.random() - 0.5) * 100;
-
-            // 3. TÍNH TOÁN SHAPE: CHUỖI GEN (DNA Helix)
-            const t = (i / numParticles) * Math.PI * 12; // Số vòng xoắn
-            const helixRadius = 30;
-            const strand = Math.random() > 0.5 ? 1 : -1; // 2 nhánh xoắn kép
-            const yOffset = (i / numParticles) * 200 - 100; // Trải dài theo trục Y từ -100 đến 100
-            const noise = (Math.random() - 0.5) * 5; // Nhiễu hạt để trông tự nhiên
-            
-            shapeDNA[i3] = Math.cos(t) * helixRadius * strand + noise;
-            shapeDNA[i3+1] = yOffset + noise;
-            shapeDNA[i3+2] = Math.sin(t) * helixRadius * strand + noise;
-
-            // 4. TÍNH TOÁN SHAPE: VÒNG LẶP (Torus)
-            const uTorus = Math.random() * Math.PI * 2;
-            const vTorus = Math.random() * Math.PI * 2;
-            const R = 60; // Bán kính vòng lớn
-            const r = 20; // Bán kính ống
-            
-            shapeTorus[i3] = (R + r * Math.cos(vTorus)) * Math.cos(uTorus);
-            shapeTorus[i3+1] = r * Math.sin(vTorus);
-            shapeTorus[i3+2] = (R + r * Math.cos(vTorus)) * Math.sin(uTorus);
-
-            // --- TÔ MÀU CHO CÁC HẠT ---
-            // Trộn các màu phong cách Cyber/Sci-fi (Xanh lơ, Tím, Hồng, Trắng ngọc)
-            const mix = Math.random();
-            if(mix < 0.3) colorObj.setHex(0x00f3ff); // Cyan
-            else if(mix < 0.6) colorObj.setHex(0xbf00ff); // Purple
-            else if(mix < 0.9) colorObj.setHex(0xff00ea); // Pink
-            else colorObj.setHex(0xffffff); // White
-            
-            colors[i3] = colorObj.r;
-            colors[i3+1] = colorObj.g;
-            colors[i3+2] = colorObj.b;
+        // 5. Hệ thống Modal & Overlay
+        const overlay = document.getElementById('global-overlay');
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('active');
+            overlay.classList.toggle('active');
+            renderCart();
         }
 
-        // Khởi tạo Geometry và Material cho hệ thống hạt
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-        // Vẽ một hình tròn nhỏ làm Texture cho các hạt sáng hơn
-        const getParticleTexture = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = 16; canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-            const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
-            grad.addColorStop(0, 'rgba(255,255,255,1)');
-            grad.addColorStop(0.5, 'rgba(255,255,255,0.5)');
-            grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grad;
-            ctx.beginPath(); ctx.arc(8, 8, 8, 0, Math.PI * 2); ctx.fill();
-            return new THREE.Texture(canvas);
-        };
-
-        const material = new THREE.PointsMaterial({
-            size: 1.5,
-            map: getParticleTexture(),
-            vertexColors: true,
-            transparent: true,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
-        });
-
-        const particles = new THREE.Points(geometry, material);
-        scene.add(particles);
-
-        // --- Nền sao nhỏ li ti (Background Stars) ---
-        const bgGeo = new THREE.BufferGeometry();
-        const bgPos = new Float32Array(5000 * 3);
-        for(let i=0; i<5000; i++) {
-            bgPos[i*3] = (Math.random() - 0.5) * 1000;
-            bgPos[i*3+1] = (Math.random() - 0.5) * 1000;
-            bgPos[i*3+2] = -300 - Math.random() * 500;
+        function toggleLogin() {
+            document.getElementById('login-modal').classList.toggle('active');
+            overlay.classList.toggle('active');
         }
-        bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
-        const bgMat = new THREE.PointsMaterial({ color: 0x555577, size: 1, transparent: true, opacity: 0.3 });
-        scene.add(new THREE.Points(bgGeo, bgMat));
 
-        // ==========================================
-        // LIÊN KẾT SCROLL VỚI VIỆC ĐỔI HÌNH DÁNG (MORPHING)
-        // ==========================================
-        
-        let currentTargetShape = shapeSphere; // Biến lưu hình dạng đang nhắm tới
-
-        // Kích hoạt khi cuộn đến từng Section
-        ScrollTrigger.create({
-            trigger: "#sec-1", start: "top center", end: "bottom center",
-            onEnter: () => currentTargetShape = shapeSphere,
-            onEnterBack: () => currentTargetShape = shapeSphere
-        });
-
-        ScrollTrigger.create({
-            trigger: "#sec-2", start: "top center", end: "bottom center",
-            onEnter: () => currentTargetShape = shapeCube,
-            onEnterBack: () => currentTargetShape = shapeCube
-        });
-
-        ScrollTrigger.create({
-            trigger: "#sec-3", start: "top center", end: "bottom center",
-            onEnter: () => currentTargetShape = shapeDNA,
-            onEnterBack: () => currentTargetShape = shapeDNA
-        });
-
-        ScrollTrigger.create({
-            trigger: "#sec-4", start: "top center", end: "bottom center",
-            onEnter: () => currentTargetShape = shapeTorus,
-            onEnterBack: () => currentTargetShape = shapeTorus
-        });
-
-        // Xoay khối hạt theo thao tác cuộn (Scrub)
-        gsap.to(particles.rotation, {
-            y: Math.PI * 4,
-            x: Math.PI * 1.5,
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".scroll-wrapper",
-                start: "top top", end: "bottom bottom",
-                scrub: 1.5
-            }
-        });
-
-        // ==========================================
-        // RENDER LOOP (XỬ LÝ THUẬT TOÁN DI CHUYỂN HẠT)
-        // ==========================================
-        const clock = new THREE.Clock();
-        let mouseX = 0, mouseY = 0;
-        
-        document.addEventListener('mousemove', (e) => {
-            // Parallax camera nhẹ nhàng theo chuột
-            mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
-            mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
-        });
-
-        function animate() {
-            // Thuật toán Lerp (Linear Interpolation) để tạo hiệu ứng chuyển hóa hình thể
-            const positionsArr = particles.geometry.attributes.position.array;
+        function openQuickView(id) {
+            const item = db.find(x => x.id === id);
+            document.getElementById('qv-img').src = item.img;
+            document.getElementById('qv-name').innerText = item.name;
+            document.getElementById('qv-desc').innerText = item.desc;
+            document.getElementById('qv-price').innerText = fmtMoney(item.price);
+            document.getElementById('qv-btn').onclick = function() {
+                addToCart(id); closeAllModals();
+            };
             
-            // Chạy vòng lặp trên 25,000 hạt (75,000 toạ độ x,y,z) mỗi khung hình
-            // Công thức: vị_trí_hiện_tại += (vị_trí_đích - vị_trí_hiện_tại) * hệ_số_tốc_độ
-            for(let i = 0; i < numParticles * 3; i++) {
-                positionsArr[i] += (currentTargetShape[i] - positionsArr[i]) * 0.04;
-            }
-            particles.geometry.attributes.position.needsUpdate = true; // Báo cho card đồ họa cập nhật lại vị trí
-
-            // Lõi tự xoay chầm chậm
-            particles.rotation.z += 0.001;
-
-            // Camera di chuyển theo chuột (Parallax)
-            camera.position.x += (mouseX - camera.position.x) * 0.05;
-            camera.position.y += (-mouseY - camera.position.y) * 0.05;
-            camera.lookAt(0, 0, 0);
-
-            // Dùng composer để xuất ra hình ảnh có hiệu ứng phát sáng (Bloom)
-            composer.render();
-            requestAnimationFrame(animate);
+            document.getElementById('quick-view').classList.add('active');
+            overlay.classList.add('active');
         }
-        animate();
 
-        // Xử lý Responsive
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
-        });
+        function closeAllModals() {
+            document.getElementById('cart-sidebar').classList.remove('active');
+            document.getElementById('login-modal').classList.remove('active');
+            document.getElementById('quick-view').classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        // 6. Toast Notification (Thông báo xịn xò)
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: var(--success); font-size: 20px;"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // 7. Slider Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        function changeSlide(dir) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + dir + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        setInterval(() => changeSlide(1), 5000); // Tự động trượt sau 5 giây
+
+        // 8. Countdown Timer Logic
+        function startTimer() {
+            let endTime = new Date();
+            endTime.setHours(endTime.getHours() + 5); // Đếm ngược 5 tiếng từ lúc mở web
+            
+            setInterval(function() {
+                let now = new Date().getTime();
+                let distance = endTime - now;
+                
+                let h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let s = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById("hours").innerText = h < 10 ? "0" + h : h;
+                document.getElementById("mins").innerText = m < 10 ? "0" + m : m;
+                document.getElementById("secs").innerText = s < 10 ? "0" + s : s;
+            }, 1000);
+        }
+        startTimer();
+
     </script>
 </body>
 </html>
