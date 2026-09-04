@@ -3650,8 +3650,7 @@ img{display:block;max-width:100%}
         width:100%;
         justify-content:space-between;
     }
-} code cũ kia h mún đổi thẻ này lại thôi này cho vào css nha bạn đừng đổi html ko lại lỗi h mún thêm hover đẹp chút viền rgb lấp lánh như mấy code tui đưa bữa trước nha và thêm tí hiệu ứng khi bấm vô cái input á kiểu to to lên mượt mà nha 
-
+} 
 .smart-search-row{
     display:grid;
     grid-template-columns: 2fr 1.2fr 1.2fr auto; /* Adjust ratios */
