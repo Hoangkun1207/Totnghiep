@@ -2220,6 +2220,385 @@ img{display:block;max-width:100%}
     .floating-tools{right:14px;bottom:78px}
     .chat-box{right:10px;bottom:15px}
 }
+
+    /* ================= PART 7 - PRODUCT EXPERIENCE ================= */
+
+.scroll-progress{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:3px;
+    z-index:99999;
+    background:rgba(255,255,255,.04);
+}
+.scroll-progress span{
+    display:block;
+    width:0;
+    height:100%;
+    background:linear-gradient(90deg,var(--primary),var(--primary2),var(--pink));
+    box-shadow:0 0 15px var(--primary2);
+    transition:width .08s linear;
+}
+
+.quick-view-box{
+    width:min(850px,calc(100vw - 25px));
+    max-height:90vh;
+    overflow:auto;
+}
+
+.quick-view-layout{
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:28px;
+    padding:10px;
+}
+
+.quick-product-visual{
+    position:relative;
+    min-height:360px;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+    border:1px solid var(--border);
+    border-radius:24px;
+    background:
+        radial-gradient(circle at 30% 20%,rgba(124,92,255,.28),transparent 45%),
+        radial-gradient(circle at 70% 80%,rgba(0,212,255,.18),transparent 40%),
+        rgba(255,255,255,.03);
+}
+
+.quick-product-visual:before{
+    content:"";
+    position:absolute;
+    width:250px;
+    height:250px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:50%;
+    animation:quickSpin 14s linear infinite;
+}
+
+.quick-product-icon{
+    position:relative;
+    z-index:2;
+    font-size:130px;
+    filter:drop-shadow(0 20px 30px rgba(0,0,0,.35));
+    animation:quickFloat 3.5s ease-in-out infinite;
+}
+
+@keyframes quickFloat{
+    50%{transform:translateY(-14px) rotate(4deg)}
+}
+
+@keyframes quickSpin{
+    to{transform:rotate(360deg)}
+}
+
+.quick-product-info{
+    padding:12px 8px;
+}
+
+.quick-category{
+    display:inline-block;
+    margin-bottom:10px;
+    color:var(--primary2);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1.5px;
+}
+
+.quick-product-info h2{
+    margin:0;
+    font-size:30px;
+}
+
+.quick-rating{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:15px 0;
+}
+
+.quick-stars{
+    color:#ffc94a;
+    letter-spacing:2px;
+}
+
+.quick-rating span{
+    color:var(--muted);
+    font-size:11px;
+}
+
+.quick-price{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:18px 0;
+}
+
+.quick-price strong{
+    color:var(--primary2);
+    font-size:25px;
+}
+
+.quick-price del{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.quick-description{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.8;
+}
+
+.quick-specs{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:20px 0;
+}
+
+.quick-spec{
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:rgba(255,255,255,.025);
+}
+
+.quick-spec span{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    margin-bottom:5px;
+}
+
+.quick-spec b{
+    font-size:11px;
+}
+
+.quick-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.quick-actions .btn{
+    flex:1;
+}
+
+.product-card{
+    cursor:pointer;
+}
+
+.product-card .quick-view-btn{
+    position:absolute;
+    left:50%;
+    bottom:78px;
+    z-index:5;
+    padding:9px 13px;
+    border:1px solid var(--border);
+    border-radius:50px;
+    background:rgba(13,19,35,.88);
+    backdrop-filter:blur(10px);
+    color:var(--text);
+    font-size:10px;
+    white-space:nowrap;
+    opacity:0;
+    transform:translate(-50%,15px);
+    transition:.3s;
+}
+
+.product-card:hover .quick-view-btn{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+.compare-box{
+    width:min(750px,calc(100vw - 25px));
+}
+
+.compare-selects{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin:20px 0 12px;
+}
+
+.compare-selects select{
+    width:100%;
+    height:48px;
+    padding:0 12px;
+    outline:none;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:var(--bg2);
+    color:var(--text);
+}
+
+.compare-run{
+    width:100%;
+}
+
+.compare-result{
+    margin-top:20px;
+}
+
+.compare-table{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border:1px solid var(--border);
+    border-radius:15px;
+}
+
+.compare-table th,
+.compare-table td{
+    padding:13px 10px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    font-size:11px;
+}
+
+.compare-table th{
+    color:var(--muted);
+    font-weight:600;
+}
+
+.compare-table td{
+    font-weight:700;
+}
+
+.compare-product-icon{
+    font-size:30px;
+}
+
+.recent-section{
+    padding-top:20px;
+}
+
+.recent-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+}
+
+.recent-card{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:15px;
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:var(--card);
+    cursor:pointer;
+    transition:.3s;
+}
+
+.recent-card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(0,212,255,.45);
+    box-shadow:0 15px 35px rgba(0,0,0,.16);
+}
+
+.recent-icon{
+    width:55px;
+    height:55px;
+    display:grid;
+    place-items:center;
+    flex:none;
+    border-radius:15px;
+    background:rgba(124,92,255,.12);
+    font-size:28px;
+}
+
+.recent-info{
+    min-width:0;
+}
+
+.recent-info b{
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:11px;
+}
+
+.recent-info span{
+    display:block;
+    margin-top:6px;
+    color:var(--primary2);
+    font-size:11px;
+    font-weight:700;
+}
+
+.recent-empty{
+    grid-column:1/-1;
+    padding:28px;
+    border:1px dashed var(--border);
+    border-radius:18px;
+    color:var(--muted);
+    text-align:center;
+    font-size:12px;
+}
+
+.text-action{
+    padding:9px 12px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:rgba(255,255,255,.03);
+    color:var(--muted);
+    font-size:10px;
+}
+
+.text-action:hover{
+    color:var(--pink);
+    border-color:rgba(255,80,140,.35);
+}
+
+@media(max-width:850px){
+    .quick-view-layout{
+        grid-template-columns:1fr;
+    }
+
+    .quick-product-visual{
+        min-height:220px;
+    }
+
+    .quick-product-icon{
+        font-size:90px;
+    }
+
+    .recent-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:550px){
+    .quick-specs,
+    .compare-selects{
+        grid-template-columns:1fr;
+    }
+
+    .quick-product-info h2{
+        font-size:23px;
+    }
+
+    .quick-actions{
+        flex-direction:column;
+    }
+
+    .recent-grid{
+        grid-template-columns:1fr;
+    }
+
+    .product-card .quick-view-btn{
+        opacity:1;
+        bottom:72px;
+        transform:translate(-50%,0);
+    }
+}
+    
 </style>
 </head>
 <body>
@@ -2964,6 +3343,65 @@ img{display:block;max-width:100%}
     </div>
 </div>
 
+    <!-- ================= PART 7 - PRODUCT EXPERIENCE ================= -->
+
+<div class="modal" id="quickViewModal">
+    <div class="modal-box quick-view-box">
+        <button class="modal-close" data-close="quickViewModal">×</button>
+        <div id="quickViewContent"></div>
+    </div>
+</div>
+
+<div class="modal" id="compareModal">
+    <div class="modal-box compare-box">
+        <button class="modal-close" data-close="compareModal">×</button>
+
+        <div class="modal-title">
+            <div class="eyebrow">SO SÁNH THÔNG MINH</div>
+            <h2>So sánh sản phẩm.</h2>
+            <p>Chọn 2 sản phẩm để xem sự khác biệt.</p>
+        </div>
+
+        <div class="compare-selects">
+            <select id="compareProduct1"></select>
+            <select id="compareProduct2"></select>
+        </div>
+
+        <button class="btn btn-primary compare-run" id="runCompare">
+            ⚖ So sánh ngay
+        </button>
+
+        <div class="compare-result" id="compareResult">
+            <div class="empty-text">
+                Chọn hai sản phẩm để bắt đầu so sánh.
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="section recent-section" id="recentSection">
+    <div class="section-head reveal">
+        <div>
+            <span class="eyebrow">LỊCH SỬ KHÁM PHÁ</span>
+            <h2>Sản phẩm <span>bạn vừa xem</span></h2>
+        </div>
+
+        <button class="text-action" id="clearRecent">
+            Xóa lịch sử
+        </button>
+    </div>
+
+    <div class="recent-grid" id="recentProducts">
+        <div class="recent-empty">
+            👀 Hãy xem sản phẩm để lịch sử xuất hiện tại đây.
+        </div>
+    </div>
+</section>
+
+<div class="scroll-progress">
+    <span id="scrollProgressBar"></span>
+</div>
+    
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
@@ -4723,6 +5161,442 @@ filterProducts();
 console.log(
     "%cPREMIUM FEATURES LOADED ✓",
     "color:#00d4ff;font-size:14px;font-weight:bold"
+);
+
+    /* ================= PART 7 - PRODUCT EXPERIENCE ================= */
+
+const productExtra={
+    1:{
+        rating:"4.9",
+        reviews:"1.248 đánh giá",
+        description:"Thiết bị cao cấp với hiệu năng mạnh mẽ, thiết kế hiện đại và trải nghiệm sử dụng mượt mà.",
+        specs:["Hiệu năng cao","Màn hình Premium","Camera AI","Pin bền bỉ"]
+    },
+    2:{
+        rating:"4.8",
+        reviews:"856 đánh giá",
+        description:"Âm thanh sống động, thiết kế thoải mái và phù hợp cho giải trí mỗi ngày.",
+        specs:["Âm thanh Hi-Fi","Chống ồn","Bluetooth","Pin dài lâu"]
+    },
+    3:{
+        rating:"4.9",
+        reviews:"2.036 đánh giá",
+        description:"Laptop gaming mạnh mẽ dành cho chơi game, sáng tạo nội dung và công việc hiệu năng cao.",
+        specs:["Gaming mạnh mẽ","RGB","Màn hình tốc độ cao","Tản nhiệt tốt"]
+    },
+    4:{
+        rating:"4.7",
+        reviews:"634 đánh giá",
+        description:"Thiết bị đeo thông minh giúp theo dõi hoạt động và hỗ trợ cuộc sống hiện đại.",
+        specs:["Theo dõi sức khỏe","Nhiều chế độ tập","Thông báo thông minh","Thiết kế hiện đại"]
+    }
+};
+
+let recentProducts=JSON.parse(
+    localStorage.getItem("hk_recent_products")||"[]"
+);
+
+function getProductExtra(productId){
+    return productExtra[productId]||{
+        rating:"4.8",
+        reviews:"500 đánh giá",
+        description:"Sản phẩm chất lượng cao với thiết kế hiện đại và trải nghiệm tuyệt vời.",
+        specs:["Chất lượng cao","Thiết kế đẹp","Công nghệ mới","Bảo hành tốt"]
+    };
+}
+
+/* ================= RECENT PRODUCTS ================= */
+
+function saveRecentProduct(productId){
+    recentProducts=recentProducts.filter(
+        id=>Number(id)!==Number(productId)
+    );
+
+    recentProducts.unshift(Number(productId));
+    recentProducts=recentProducts.slice(0,4);
+
+    localStorage.setItem(
+        "hk_recent_products",
+        JSON.stringify(recentProducts)
+    );
+
+    renderRecentProducts();
+}
+
+function renderRecentProducts(){
+    const container=$("#recentProducts");
+
+    if(!container)return;
+
+    const list=recentProducts
+        .map(id=>products.find(item=>item.id===Number(id)))
+        .filter(Boolean);
+
+    if(!list.length){
+        container.innerHTML=`
+            <div class="recent-empty">
+                👀 Hãy xem sản phẩm để lịch sử xuất hiện tại đây.
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML=list.map(product=>`
+        <div class="recent-card" onclick="openQuickView(${product.id})">
+            <div class="recent-icon">${product.icon}</div>
+
+            <div class="recent-info">
+                <b>${product.name}</b>
+                <span>${formatMoney(product.price)}</span>
+            </div>
+        </div>
+    `).join("");
+}
+
+$("#clearRecent")?.addEventListener("click",()=>{
+    recentProducts=[];
+    localStorage.removeItem("hk_recent_products");
+    renderRecentProducts();
+
+    showToast(
+        "Đã xóa lịch sử",
+        "Sản phẩm vừa xem đã được xóa",
+        "info"
+    );
+});
+
+/* ================= QUICK VIEW ================= */
+
+function openQuickView(productId){
+    const product=products.find(
+        item=>item.id===Number(productId)
+    );
+
+    if(!product)return;
+
+    const extra=getProductExtra(product.id);
+
+    saveRecentProduct(product.id);
+
+    const discount=product.oldPrice
+        ?Math.round(
+            (1-product.price/product.oldPrice)*100
+        )
+        :0;
+
+    $("#quickViewContent").innerHTML=`
+        <div class="quick-view-layout">
+            <div class="quick-product-visual">
+                ${discount
+                    ?`<span class="sale-badge">-${discount}%</span>`
+                    :""
+                }
+
+                <div class="quick-product-icon">
+                    ${product.icon}
+                </div>
+            </div>
+
+            <div class="quick-product-info">
+                <span class="quick-category">
+                    ${product.category}
+                </span>
+
+                <h2>${product.name}</h2>
+
+                <div class="quick-rating">
+                    <div class="quick-stars">★★★★★</div>
+                    <span>
+                        ${extra.rating} • ${extra.reviews}
+                    </span>
+                </div>
+
+                <div class="quick-price">
+                    <strong>
+                        ${formatMoney(product.price)}
+                    </strong>
+
+                    ${product.oldPrice
+                        ?`<del>${formatMoney(product.oldPrice)}</del>`
+                        :""
+                    }
+                </div>
+
+                <p class="quick-description">
+                    ${extra.description}
+                </p>
+
+                <div class="quick-specs">
+                    ${extra.specs.map((spec,index)=>`
+                        <div class="quick-spec">
+                            <span>
+                                ${["TÍNH NĂNG","CÔNG NGHỆ","TRẢI NGHIỆM","BẢO HÀNH"][index]}
+                            </span>
+                            <b>${spec}</b>
+                        </div>
+                    `).join("")}
+                </div>
+
+                <div class="quick-actions">
+                    <button
+                        class="btn btn-primary"
+                        onclick="quickAddToCart(${product.id})"
+                    >
+                        🛒 Thêm vào giỏ
+                    </button>
+
+                    <button
+                        class="btn"
+                        onclick="quickToggleWishlist(${product.id})"
+                    >
+                        ♡ Yêu thích
+                    </button>
+
+                    <button
+                        class="btn"
+                        onclick="openCompareWith(${product.id})"
+                    >
+                        ⚖ So sánh
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    openModal("quickViewModal");
+}
+
+function quickAddToCart(productId){
+    addToCart(productId);
+    closeModal("quickViewModal");
+}
+
+function quickToggleWishlist(productId){
+    toggleWishlist(productId);
+}
+
+function addQuickViewButtons(){
+    $$(".product-card").forEach(card=>{
+        if(card.querySelector(".quick-view-btn"))return;
+
+        const id=Number(card.dataset.id);
+
+        if(!id)return;
+
+        const button=document.createElement("button");
+
+        button.className="quick-view-btn";
+        button.textContent="👁 Xem nhanh";
+
+        button.addEventListener("click",e=>{
+            e.stopPropagation();
+            openQuickView(id);
+        });
+
+        card.appendChild(button);
+
+        card.addEventListener("dblclick",()=>{
+            openQuickView(id);
+        });
+    });
+}
+
+/* ================= COMPARE ================= */
+
+function populateCompareSelects(){
+    const select1=$("#compareProduct1");
+    const select2=$("#compareProduct2");
+
+    if(!select1||!select2)return;
+
+    const options=products.map(product=>`
+        <option value="${product.id}">
+            ${product.name}
+        </option>
+    `).join("");
+
+    select1.innerHTML=options;
+    select2.innerHTML=options;
+
+    if(products.length>1){
+        select2.selectedIndex=1;
+    }
+}
+
+function openCompareWith(productId){
+    closeModal("quickViewModal");
+
+    populateCompareSelects();
+
+    $("#compareProduct1").value=productId;
+
+    const another=products.find(
+        product=>product.id!==Number(productId)
+    );
+
+    if(another){
+        $("#compareProduct2").value=another.id;
+    }
+
+    openModal("compareModal");
+}
+
+function renderCompare(){
+    const id1=Number($("#compareProduct1").value);
+    const id2=Number($("#compareProduct2").value);
+
+    const product1=products.find(item=>item.id===id1);
+    const product2=products.find(item=>item.id===id2);
+
+    if(!product1||!product2)return;
+
+    if(product1.id===product2.id){
+        showToast(
+            "Chọn sản phẩm khác",
+            "Vui lòng chọn hai sản phẩm khác nhau",
+            "error"
+        );
+        return;
+    }
+
+    const extra1=getProductExtra(product1.id);
+    const extra2=getProductExtra(product2.id);
+
+    $("#compareResult").innerHTML=`
+        <table class="compare-table">
+            <tr>
+                <th>Thông tin</th>
+                <th>${product1.icon} ${product1.name}</th>
+                <th>${product2.icon} ${product2.name}</th>
+            </tr>
+
+            <tr>
+                <th>Giá</th>
+                <td>${formatMoney(product1.price)}</td>
+                <td>${formatMoney(product2.price)}</td>
+            </tr>
+
+            <tr>
+                <th>Danh mục</th>
+                <td>${product1.category}</td>
+                <td>${product2.category}</td>
+            </tr>
+
+            <tr>
+                <th>Đánh giá</th>
+                <td>⭐ ${extra1.rating}/5</td>
+                <td>⭐ ${extra2.rating}/5</td>
+            </tr>
+
+            <tr>
+                <th>Tính năng</th>
+                <td>${extra1.specs[0]}</td>
+                <td>${extra2.specs[0]}</td>
+            </tr>
+
+            <tr>
+                <th>Ưu đãi</th>
+                <td>
+                    ${product1.oldPrice
+                        ?`Giảm ${Math.round((1-product1.price/product1.oldPrice)*100)}%`
+                        :"Giá tốt"
+                    }
+                </td>
+
+                <td>
+                    ${product2.oldPrice
+                        ?`Giảm ${Math.round((1-product2.price/product2.oldPrice)*100)}%`
+                        :"Giá tốt"
+                    }
+                </td>
+            </tr>
+        </table>
+    `;
+}
+
+$("#runCompare")?.addEventListener(
+    "click",
+    renderCompare
+);
+
+/* ================= CLICK PRODUCT ================= */
+
+function enableProductQuickView(){
+    $$(".product-card").forEach(card=>{
+        const id=Number(card.dataset.id);
+
+        if(!id)return;
+
+        card.addEventListener("click",e=>{
+            if(
+                e.target.closest("button")||
+                e.target.closest("a")
+            ){
+                return;
+            }
+
+            openQuickView(id);
+        });
+    });
+}
+
+/* ================= SCROLL PROGRESS ================= */
+
+function updateScrollProgress(){
+    const scrollTop=
+        window.pageYOffset||
+        document.documentElement.scrollTop;
+
+    const maxScroll=
+        document.documentElement.scrollHeight-
+        window.innerHeight;
+
+    const progress=maxScroll>0
+        ?(scrollTop/maxScroll)*100
+        :0;
+
+    const bar=$("#scrollProgressBar");
+
+    if(bar){
+        bar.style.width=progress+"%";
+    }
+}
+
+window.addEventListener(
+    "scroll",
+    updateScrollProgress,
+    {passive:true}
+);
+
+updateScrollProgress();
+
+/* ================= ESC CLOSE ================= */
+
+document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){
+        ["quickViewModal","compareModal"].forEach(id=>{
+            const modal=$("#"+id);
+
+            if(
+                modal&&
+                modal.classList.contains("active")
+            ){
+                closeModal(id);
+            }
+        });
+    }
+});
+
+/* ================= PART 7 INIT ================= */
+
+populateCompareSelects();
+addQuickViewButtons();
+enableProductQuickView();
+renderRecentProducts();
+
+console.log(
+    "%cPART 7 PRODUCT EXPERIENCE LOADED ✓",
+    "color:#7c5cff;font-size:14px;font-weight:bold"
 );
     
 </script>
