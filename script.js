@@ -2150,10 +2150,30 @@ let wheelRotation=0;
 
 $("#openLuckyWheel")?.addEventListener("click",()=>{
     openModal("luckyModal");
+    
+    // Kiểm tra nếu người dùng đã quay rồi thì hiển thị lại kết quả cũ
+    if(localStorage.getItem("hk_has_spun") === "true"){
+        const savedCode = localStorage.getItem("hk_lucky_voucher");
+        $("#spinLuckyWheel").textContent = "ĐÓNG VÀ MUA SẮM";
+        // Nếu có code đã lưu, tìm tên phần thưởng tương ứng
+        if(savedCode) {
+            const reward = luckyRewards.find(r => r.code === savedCode) || {name: savedCode};
+            $("#luckyStatus").innerHTML = `🎉 Bạn đã trúng <b>${reward.name}</b> rồi!`;
+        }
+    } else {
+        $("#spinLuckyWheel").textContent = "🎡 QUAY NGAY";
+        $("#luckyStatus").textContent = "Nhấn nút để thử vận may!";
+    }
 });
 
 $("#spinLuckyWheel")?.addEventListener("click",()=>{
     if(luckySpinning)return;
+
+    // Nếu đã quay rồi thì bấm nút này sẽ đóng popup lại thay vì quay tiếp
+    if(localStorage.getItem("hk_has_spun") === "true"){
+        closeModal("luckyModal");
+        return;
+    }
 
     luckySpinning=true;
 
@@ -2175,13 +2195,14 @@ $("#spinLuckyWheel")?.addEventListener("click",()=>{
     setTimeout(()=>{
         luckySpinning=false;
         button.disabled=false;
-        button.textContent="🎡 QUAY LẠI";
+        
+        // Đổi chữ hiển thị để người dùng không bấm quay lại vô hạn
+        button.textContent="ĐÓNG VÀ MUA SẮM";
         status.innerHTML=`🎉 Chúc mừng! Bạn nhận được <b>${reward.name}</b>`;
 
-        localStorage.setItem(
-            "hk_lucky_voucher",
-            reward.code
-        );
+        // Lưu mã voucher và cờ báo hiệu đã quay vào trình duyệt
+        localStorage.setItem("hk_lucky_voucher", reward.code);
+        localStorage.setItem("hk_has_spun", "true");
 
         createConfetti(80);
 
