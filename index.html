@@ -6,135 +6,156 @@
     <title>MegaTech - Siêu Thị Điện Máy Trực Tuyến</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* ================= CƠ BẢN ================= */
+        /* ================= CƠ BẢN (GIAO DIỆN DARK MODE MỚI) ================= */
         :root {
-            --primary: #e11d48; --primary-hover: #be123c;
-            --dark: #0f172a; --light: #f8fafc; --gray: #64748b;
-            --border: #e2e8f0; --success: #10b981; --warning: #f59e0b;
+            --primary: #6366f1; /* Màu Indigo / Neon */
+            --primary-hover: #4f46e5;
+            --dark: #0b0f19; /* Nền tối sâu */
+            --light: #1e293b; /* Nền khối sáng hơn */
+            --text-main: #f1f5f9;
+            --gray: #94a3b8;
+            --border: #334155; 
+            --success: #10b981; 
+            --warning: #f59e0b;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: var(--light); color: var(--dark); overflow-x: hidden; }
+        body { background: var(--dark); color: var(--text-main); overflow-x: hidden; }
         a { text-decoration: none; color: inherit; }
         ul { list-style: none; }
 
         /* ================= TOP BAR ================= */
-        .top-bar { background: var(--dark); color: #cbd5e1; font-size: 13px; padding: 8px 5%; display: flex; justify-content: space-between; }
+        .top-bar { background: #000; color: var(--gray); font-size: 13px; padding: 10px 5%; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); }
         .top-bar-left span { margin-right: 15px; }
         .top-bar-right a { margin-left: 15px; transition: color 0.3s; }
         .top-bar-right a:hover { color: var(--primary); }
 
-        /* ================= NAVBAR ================= */
-        header.main-header { background: #fff; padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .logo { font-size: 30px; font-weight: 900; color: var(--primary); }
-        .logo span { color: var(--dark); }
+        /* ================= NAVBAR (GLASSMORPHISM) ================= */
+        header.main-header { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(12px); padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-size: 30px; font-weight: 900; color: var(--primary); text-shadow: 0 0 10px rgba(99, 102, 241, 0.3); }
+        .logo span { color: var(--text-main); }
         
         .search-container { flex: 1; max-width: 500px; margin: 0 30px; display: flex; position: relative; }
-        .search-container input { width: 100%; padding: 12px 20px; border: 2px solid var(--border); border-radius: 25px; outline: none; transition: border 0.3s; }
-        .search-container input:focus { border-color: var(--primary); }
-        .search-container button { position: absolute; right: 5px; top: 5px; bottom: 5px; width: 40px; border: none; background: var(--primary); color: #fff; border-radius: 50%; cursor: pointer; }
+        .search-container input { width: 100%; padding: 12px 20px; background: var(--dark); border: 1px solid var(--border); border-radius: 25px; outline: none; color: white; transition: all 0.3s; }
+        .search-container input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+        .search-container button { position: absolute; right: 5px; top: 5px; bottom: 5px; width: 40px; border: none; background: var(--primary); color: #fff; border-radius: 50%; cursor: pointer; transition: background 0.3s; }
+        .search-container button:hover { background: var(--primary-hover); }
 
         .header-actions { display: flex; gap: 20px; align-items: center; }
-        .action-item { position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; font-size: 14px; }
-        .action-item i { font-size: 20px; margin-bottom: 5px; color: var(--dark); transition: color 0.3s; }
-        .action-item:hover i { color: var(--primary); }
-        .badge { position: absolute; top: -5px; right: 5px; background: var(--primary); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+        .action-item { position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; font-size: 14px; color: var(--gray); transition: color 0.3s; }
+        .action-item i { font-size: 20px; margin-bottom: 5px; color: var(--text-main); transition: color 0.3s; }
+        .action-item:hover, .action-item:hover i { color: var(--primary); }
+        .badge { position: absolute; top: -5px; right: 5px; background: var(--primary); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
 
         /* ================= HERO SLIDER ================= */
         .slider-container { position: relative; height: 60vh; overflow: hidden; background: #000; }
         .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out; display: flex; align-items: center; justify-content: center; text-align: center; color: #fff; background-size: cover; background-position: center; }
         .slide.active { opacity: 1; z-index: 1; }
-        .slide::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+        .slide::before { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(0,0,0,0.3), rgba(11, 15, 25, 1)); }
         .slide-content { position: relative; z-index: 2; max-width: 800px; padding: 20px; transform: translateY(20px); transition: transform 0.8s; }
         .slide.active .slide-content { transform: translateY(0); }
-        .slide h2 { font-size: 4rem; margin-bottom: 10px; text-transform: uppercase; }
-        .slide p { font-size: 1.5rem; margin-bottom: 25px; }
-        .btn-shop { padding: 12px 35px; background: var(--primary); color: #fff; font-size: 16px; font-weight: bold; border-radius: 30px; border: none; cursor: pointer; transition: background 0.3s; }
-        .btn-shop:hover { background: var(--primary-hover); }
+        .slide h2 { font-size: 4rem; margin-bottom: 10px; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .slide p { font-size: 1.5rem; margin-bottom: 25px; color: #cbd5e1; }
+        .btn-shop { padding: 12px 35px; background: linear-gradient(45deg, var(--primary), #a855f7); color: #fff; font-size: 16px; font-weight: bold; border-radius: 30px; border: none; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
+        .btn-shop:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4); }
         
         .slider-controls { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 5; transform: translateY(-50%); }
-        .slider-controls button { background: rgba(255,255,255,0.3); border: none; width: 50px; height: 50px; border-radius: 50%; color: #fff; font-size: 20px; cursor: pointer; transition: background 0.3s; }
-        .slider-controls button:hover { background: var(--primary); }
+        .slider-controls button { background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); width: 50px; height: 50px; border-radius: 50%; color: #fff; font-size: 20px; cursor: pointer; transition: all 0.3s; }
+        .slider-controls button:hover { background: var(--primary); border-color: var(--primary); }
 
         /* ================= DỊCH VỤ ================= */
-        .services { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 40px 5%; background: #fff; margin-bottom: 40px; }
+        .services { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 40px 5%; background: var(--light); margin-bottom: 40px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .service-item { display: flex; align-items: center; gap: 15px; }
-        .service-item i { font-size: 35px; color: var(--primary); }
+        .service-item i { font-size: 35px; color: var(--primary); text-shadow: 0 0 15px rgba(99, 102, 241, 0.5); }
         .service-item h4 { font-size: 16px; margin-bottom: 5px; }
         .service-item p { font-size: 13px; color: var(--gray); }
 
         /* ================= FLASH SALE (COUNTDOWN) ================= */
-        .flash-sale { background: linear-gradient(to right, #0f172a, #1e293b); color: #fff; padding: 40px 5%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-radius: 10px; mx: 5%; }
+        .flash-sale { background: linear-gradient(135deg, #1e1b4b, #312e81); color: #fff; padding: 40px 5%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-radius: 15px; mx: 5%; border: 1px solid #4338ca; box-shadow: 0 10px 30px rgba(49, 46, 129, 0.3); }
         .timer-box { display: flex; gap: 15px; margin-top: 10px; }
-        .time-block { background: var(--primary); padding: 10px 15px; border-radius: 8px; text-align: center; min-width: 60px; }
-        .time-block span { display: block; font-size: 24px; font-weight: bold; }
-        .time-block small { font-size: 12px; }
+        .time-block { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 8px; text-align: center; min-width: 65px; backdrop-filter: blur(5px); }
+        .time-block span { display: block; font-size: 26px; font-weight: bold; color: #fbbf24; }
+        .time-block small { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* ================= SẢN PHẨM ================= */
-        .section-title { text-align: center; font-size: 32px; margin-bottom: 30px; position: relative; padding-bottom: 15px; }
-        .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background: var(--primary); }
+        .section-title { text-align: center; font-size: 32px; margin-bottom: 30px; position: relative; padding-bottom: 15px; color: var(--text-main); }
+        .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: var(--primary); border-radius: 2px; }
         
-        .filter-group { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .btn-filter { padding: 8px 20px; border: 1px solid var(--border); background: #fff; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .btn-filter.active, .btn-filter:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .filter-group { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+        .btn-filter { padding: 10px 25px; border: 1px solid var(--border); background: var(--light); color: var(--gray); border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-filter.active, .btn-filter:hover { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); }
 
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; padding: 0 5%; margin-bottom: 60px; }
-        .product-card { background: #fff; border-radius: 12px; padding: 15px; border: 1px solid var(--border); transition: transform 0.3s, box-shadow 0.3s; position: relative; group; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-        .product-image { width: 100%; height: 220px; object-fit: contain; margin-bottom: 15px; cursor: pointer; }
+        .product-card { background: var(--light); border-radius: 15px; padding: 15px; border: 1px solid var(--border); transition: all 0.3s; position: relative; }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.5); border-color: rgba(99, 102, 241, 0.5); }
+        .product-image { width: 100%; height: 220px; object-fit: contain; margin-bottom: 15px; cursor: pointer; background: #fff; border-radius: 10px; padding: 10px; }
         .product-category { font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
-        .product-name { font-size: 16px; font-weight: 700; margin: 8px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 43px; }
-        .product-price { color: var(--primary); font-size: 18px; font-weight: 800; }
-        .old-price { color: var(--gray); text-decoration: line-through; font-size: 14px; margin-left: 10px; }
+        .product-name { font-size: 16px; font-weight: 700; margin: 8px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 43px; color: var(--text-main); }
+        .product-price { color: var(--primary); font-size: 18px; font-weight: 800; text-shadow: 0 0 5px rgba(99, 102, 241, 0.2); }
+        .old-price { color: var(--gray); text-decoration: line-through; font-size: 14px; margin-left: 10px; text-shadow: none; }
         
         .card-actions { margin-top: 15px; display: flex; gap: 10px; }
-        .btn-add-cart { flex: 1; padding: 10px; background: var(--dark); color: #fff; border: none; border-radius: 6px; cursor: pointer; transition: background 0.3s; font-weight: bold; }
-        .btn-add-cart:hover { background: var(--primary); }
-        .btn-quick-view { padding: 10px; background: var(--light); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; color: var(--dark); }
-        .btn-quick-view:hover { background: var(--border); }
+        .btn-add-cart { flex: 1; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.3s; font-weight: bold; }
+        .btn-add-cart:hover { background: var(--primary-hover); }
+        .btn-quick-view { padding: 10px; background: var(--dark); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; color: var(--text-main); transition: all 0.3s; }
+        .btn-quick-view:hover { background: var(--border); color: #fff; }
+
+        /* ================= NEW BEAUTIFUL FORM SECTION ================= */
+        .contact-section { padding: 60px 5%; background: var(--dark); position: relative; margin-bottom: 20px; }
+        .contact-wrapper { max-width: 900px; margin: 0 auto; background: var(--light); padding: 40px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; }
+        .contact-info h3 { font-size: 28px; color: var(--text-main); margin-bottom: 15px; }
+        .contact-info p { color: var(--gray); margin-bottom: 25px; line-height: 1.6; }
+        .contact-info ul li { margin-bottom: 15px; display: flex; align-items: center; gap: 15px; color: var(--text-main); }
+        .contact-info ul li i { width: 40px; height: 40px; background: rgba(99, 102, 241, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 18px; }
+        
+        .styled-form .form-group { margin-bottom: 20px; position: relative; }
+        .styled-form input, .styled-form textarea { width: 100%; padding: 15px 20px; background: var(--dark); border: 1px solid var(--border); border-radius: 10px; color: white; outline: none; transition: all 0.3s; font-size: 15px; }
+        .styled-form input:focus, .styled-form textarea:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(99, 102, 241, 0.2); }
+        .styled-form textarea { resize: vertical; min-height: 120px; }
+        .btn-submit { width: 100%; padding: 15px; background: linear-gradient(45deg, var(--primary), #a855f7); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4); }
 
         /* ================= FOOTER ================= */
-        footer { background: var(--dark); color: #94a3b8; padding: 60px 5% 20px; }
+        footer { background: #000; color: var(--gray); padding: 60px 5% 20px; border-top: 1px solid rgba(255,255,255,0.05); }
         .footer-content { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
-        .footer-col h3 { color: #fff; margin-bottom: 20px; font-size: 18px; }
+        .footer-col h3 { color: var(--text-main); margin-bottom: 20px; font-size: 18px; }
         .footer-col ul li { margin-bottom: 12px; }
         .footer-col ul li a:hover { color: var(--primary); }
         .newsletter-form { display: flex; margin-top: 20px; }
-        .newsletter-form input { flex: 1; padding: 10px; border: none; outline: none; border-radius: 4px 0 0 4px; }
-        .newsletter-form button { padding: 10px 20px; background: var(--primary); border: none; color: #fff; border-radius: 0 4px 4px 0; cursor: pointer; }
-        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid #334155; }
+        .newsletter-form input { flex: 1; padding: 12px; background: var(--light); border: 1px solid var(--border); color: white; outline: none; border-radius: 8px 0 0 8px; }
+        .newsletter-form button { padding: 12px 20px; background: var(--primary); border: none; color: #fff; border-radius: 0 8px 8px 0; cursor: pointer; font-weight: bold; }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--border); }
 
-        /* ================= MODALS & TOASTS ================= */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
+        /* ================= MODALS & TOASTS (Cập nhật màu sắc) ================= */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(3px); z-index: 999; display: none; }
         .overlay.active { display: block; }
         
-        /* Cửa sổ giỏ hàng */
-        .cart-sidebar { position: fixed; top: 0; right: -500px; width: 450px; max-width: 100%; height: 100vh; background: #fff; z-index: 1000; transition: right 0.4s ease; display: flex; flex-direction: column; }
+        .cart-sidebar { position: fixed; top: 0; right: -500px; width: 450px; max-width: 100%; height: 100vh; background: var(--light); border-left: 1px solid var(--border); z-index: 1000; transition: right 0.4s ease; display: flex; flex-direction: column; }
         .cart-sidebar.active { right: 0; }
-        .cart-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .cart-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; color: white; background: rgba(0,0,0,0.2); }
         .cart-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .cart-footer { padding: 20px; border-top: 1px solid var(--border); background: var(--light); }
+        .cart-footer { padding: 20px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); }
         .cart-item { display: flex; gap: 15px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .cart-item img { width: 80px; height: 80px; object-fit: contain; border: 1px solid var(--border); border-radius: 8px; padding: 5px; }
-        .qty-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; border: 1px solid var(--border); width: fit-content; border-radius: 4px; }
-        .qty-box button { background: none; border: none; width: 30px; height: 30px; cursor: pointer; font-size: 16px; }
+        .cart-item img { width: 80px; height: 80px; object-fit: contain; border: 1px solid var(--border); border-radius: 8px; padding: 5px; background: #fff; }
+        .qty-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; border: 1px solid var(--border); width: fit-content; border-radius: 6px; background: var(--dark); }
+        .qty-box button { background: none; border: none; width: 30px; height: 30px; cursor: pointer; font-size: 16px; color: white; }
         
-        /* Cửa sổ xem nhanh (Quick View) */
-        .quick-view-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; width: 800px; max-width: 90%; border-radius: 12px; z-index: 1000; display: none; opacity: 0; transition: all 0.3s; padding: 30px; }
+        .quick-view-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: var(--light); width: 800px; max-width: 90%; border-radius: 15px; border: 1px solid var(--border); z-index: 1000; display: none; opacity: 0; transition: all 0.3s; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
         .quick-view-modal.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); gap: 30px; }
-        .qv-image { width: 50%; object-fit: contain; }
-        .qv-details { width: 50%; }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--gray); }
+        .qv-image { width: 50%; object-fit: contain; background: #fff; border-radius: 10px; padding: 20px; }
+        .qv-details { width: 50%; color: var(--text-main); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--gray); transition: color 0.3s; }
+        .close-modal:hover { color: white; }
 
-        /* Cửa sổ Đăng nhập */
-        .login-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; width: 400px; padding: 30px; border-radius: 12px; z-index: 1000; display: none; }
+        .login-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--light); width: 400px; padding: 30px; border-radius: 15px; border: 1px solid var(--border); z-index: 1000; display: none; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
         .login-modal.active { display: block; }
+        .login-modal h2 { color: white; }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--gray); }
+        .form-group input { width: 100%; padding: 12px; background: var(--dark); border: 1px solid var(--border); border-radius: 8px; color: white; outline: none; }
+        .form-group input:focus { border-color: var(--primary); }
 
-        /* Toast Notifications (Thông báo nổi) */
         #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: #fff; border-left: 4px solid var(--success); box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 15px 20px; border-radius: 4px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards; }
+        .toast { background: var(--light); border-left: 4px solid var(--primary); box-shadow: 0 10px 15px rgba(0,0,0,0.3); padding: 15px 20px; border-radius: 8px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards; color: white; border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
@@ -254,6 +275,39 @@
             </div>
     </section>
 
+    <section class="contact-section">
+        <div class="contact-wrapper">
+            <div class="contact-info">
+                <h3>Trở Thành Đối Tác Của MegaTech</h3>
+                <p>Chúng tôi luôn tìm kiếm những nhà cung cấp phần mềm, thiết bị kỹ thuật số và đại lý phân phối với mức chiết khấu cực kỳ hấp dẫn. Hãy để lại thông tin để bắt đầu!</p>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> <span>Trụ sở: 123 Tòa Nhà Công Nghệ, Hà Nội</span></li>
+                    <li><i class="fas fa-phone-alt"></i> <span>Hotline Đối tác: 0988.xxx.xxx</span></li>
+                    <li><i class="fas fa-envelope"></i> <span>Email: partner@megatech.vn</span></li>
+                </ul>
+            </div>
+            
+            <div class="styled-form">
+                <form onsubmit="event.preventDefault(); showToast('Đã gửi thông tin thành công! Chúng tôi sẽ liên hệ sớm.'); this.reset();">
+                    <div class="form-group">
+                        <input type="text" placeholder="Họ và tên / Tên đơn vị" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <input type="tel" placeholder="Số điện thoại" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Địa chỉ Email" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Bạn muốn hợp tác mảng nào? (Ví dụ: Cung cấp mã nguồn, phân phối sản phẩm số...)" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Gửi Yêu Cầu Hợp Tác</button>
+                </form>
+            </div>
+        </div>
+    </section>
     <footer>
         <div class="footer-content">
             <div class="footer-col">
@@ -308,7 +362,7 @@
         <div class="cart-body" id="cart-items">
             </div>
         <div class="cart-footer">
-            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 15px; color: white;">
                 <span>Tổng cộng:</span>
                 <span id="cart-total" style="color: var(--primary);">0 ₫</span>
             </div>
@@ -327,8 +381,8 @@
             <label>Mật khẩu</label>
             <input type="password" placeholder="Nhập mật khẩu">
         </div>
-        <button style="width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px;">Đăng Nhập</button>
-        <p style="text-align: center; margin-top: 15px; font-size: 14px;">Chưa có tài khoản? <a href="#" style="color: var(--primary);">Đăng ký ngay</a></p>
+        <button style="width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">Đăng Nhập</button>
+        <p style="text-align: center; margin-top: 15px; font-size: 14px; color: var(--gray);">Chưa có tài khoản? <a href="#" style="color: var(--primary);">Đăng ký ngay</a></p>
     </div>
 
     <div class="quick-view-modal" id="quick-view">
@@ -451,7 +505,7 @@
                     <div class="cart-item">
                         <img src="${c.img}">
                         <div style="flex: 1;">
-                            <h4 style="font-size: 14px; margin-bottom: 5px;">${c.name}</h4>
+                            <h4 style="font-size: 14px; margin-bottom: 5px; color: white;">${c.name}</h4>
                             <div style="color: var(--primary); font-weight: bold;">${fmtMoney(c.price)}</div>
                             <div class="qty-box">
                                 <button onclick="changeQty(${c.id}, -1)">-</button>
@@ -459,7 +513,7 @@
                                 <button onclick="changeQty(${c.id}, 1)">+</button>
                             </div>
                         </div>
-                        <i class="fas fa-trash-alt" style="color: var(--primary); cursor:pointer; align-self: center;" onclick="changeQty(${c.id}, -${c.qty})"></i>
+                        <i class="fas fa-trash-alt" style="color: #ef4444; cursor:pointer; align-self: center; font-size: 18px;" onclick="changeQty(${c.id}, -${c.qty})"></i>
                     </div>
                 `;
             });
@@ -505,7 +559,7 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.innerHTML = `<i class="fas fa-check-circle" style="color: var(--success); font-size: 20px;"></i> <span>${msg}</span>`;
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: var(--primary); font-size: 20px;"></i> <span>${msg}</span>`;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
