@@ -1186,6 +1186,7 @@ img{display:block;max-width:100%}
     display:flex;
     align-items:center;
     gap:12px;
+    margin-bottom:0;
 }
 .search-result-icon{
     width:45px;
@@ -1405,7 +1406,7 @@ img{display:block;max-width:100%}
     font-size:55px;
     opacity:.65;
 }
-.empty-state h3{
+    .empty-state h3{
     font-size:17px;
 }
 .empty-state p{
@@ -2219,7 +2220,6 @@ img{display:block;max-width:100%}
     .floating-tools{right:14px;bottom:78px}
     .chat-box{right:10px;bottom:15px}
 }
-    
 </style>
 </head>
 <body>
@@ -2456,9 +2456,8 @@ img{display:block;max-width:100%}
         </div>
         <p class="section-desc">Một trải nghiệm mua sắm mới, nơi thiết kế, công nghệ và tương tác được kết hợp trong cùng một website.</p>
     </div>
-</section>
 
-        <div class="about-grid reveal">
+    <div class="about-grid reveal">
         <div class="about-visual">
             <div class="about-glow"></div>
             <div class="about-box about-main">
@@ -2570,6 +2569,98 @@ img{display:block;max-width:100%}
             <div class="review-user">
                 <div class="avatar">T</div>
                 <div><b>Tuấn Trần</b><span>Khách hàng mới</span></div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- STORE EXTRA (Khám phá thông minh) -->
+<section class="store-extra section" id="discover">
+    <div class="section-heading reveal">
+        <div>
+            <span class="eyebrow">KHÁM PHÁ THÔNG MINH</span>
+            <h2 class="section-title">Tìm đúng sản phẩm <span>bạn cần</span></h2>
+        </div>
+    </div>
+
+    <div class="filter-box reveal">
+        <div class="filter-search">
+            <span>⌕</span>
+            <input type="text" id="productFilterInput" placeholder="Tìm kiếm trong cửa hàng...">
+        </div>
+
+        <select id="categoryFilter">
+            <option value="all">Tất cả danh mục</option>
+            <option value="SMARTPHONE">Điện thoại</option>
+            <option value="AUDIO">Âm thanh</option>
+            <option value="GAMING">Gaming</option>
+            <option value="WEARABLE">Thiết bị đeo</option>
+            <option value="ACCESSORY">Phụ kiện</option>
+            <option value="FASHION">Thời trang</option>
+        </select>
+
+        <select id="priceFilter">
+            <option value="all">Tất cả mức giá</option>
+            <option value="under-2m">Dưới 2 triệu</option>
+            <option value="2m-5m">2 - 5 triệu</option>
+            <option value="5m-20m">5 - 20 triệu</option>
+            <option value="over-20m">Trên 20 triệu</option>
+        </select>
+
+        <button class="btn filter-reset" id="resetFilter">↻ Đặt lại</button>
+    </div>
+
+    <div class="filter-result-info reveal">
+        <span id="filterResultText">Đang hiển thị tất cả sản phẩm</span>
+    </div>
+</section>
+
+<!-- VOUCHER SECTION -->
+<section class="voucher-section section">
+    <div class="section-heading reveal">
+        <div>
+            <span class="eyebrow">ƯU ĐÃI ĐỘC QUYỀN</span>
+            <h2 class="section-title">Voucher <span>siêu hấp dẫn</span></h2>
+        </div>
+    </div>
+
+    <div class="voucher-grid">
+        <article class="voucher-card reveal">
+            <div class="voucher-percent">10<span>%</span></div>
+            <div class="voucher-info">
+                <span>THÀNH VIÊN MỚI</span>
+                <h3>Giảm tối đa 500.000₫</h3>
+                <p>Đơn hàng từ 2.000.000₫</p>
+                <div class="voucher-code">
+                    <b>WELCOME10</b>
+                    <button onclick="copyVoucher('WELCOME10')">Sao chép</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="voucher-card reveal">
+            <div class="voucher-percent">15<span>%</span></div>
+            <div class="voucher-info">
+                <span>FLASH SALE</span>
+                <h3>Giảm tối đa 1.000.000₫</h3>
+                <p>Áp dụng sản phẩm được chọn</p>
+                <div class="voucher-code">
+                    <b>FLASH15</b>
+                    <button onclick="copyVoucher('FLASH15')">Sao chép</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="voucher-card reveal">
+            <div class="voucher-percent">FREE</div>
+            <div class="voucher-info">
+                <span>VẬN CHUYỂN</span>
+                <h3>Miễn phí giao hàng</h3>
+                <p>Cho đơn hàng từ 500.000₫</p>
+                <div class="voucher-code">
+                    <b>FREESHIP</b>
+                    <button onclick="copyVoucher('FREESHIP')">Sao chép</button>
+                </div>
             </div>
         </article>
     </div>
@@ -2982,96 +3073,6 @@ img{display:block;max-width:100%}
         <button type="submit">➤</button>
     </form>
 </div>
-
-<section class="store-extra section" id="discover">
-    <div class="section-heading reveal">
-        <div>
-            <span class="eyebrow">KHÁM PHÁ THÔNG MINH</span>
-            <h2>Tìm đúng sản phẩm <span>bạn cần</span></h2>
-        </div>
-    </div>
-
-    <div class="filter-box reveal">
-        <div class="filter-search">
-            <span>⌕</span>
-            <input type="text" id="productFilterInput" placeholder="Tìm kiếm trong cửa hàng...">
-        </div>
-
-        <select id="categoryFilter">
-            <option value="all">Tất cả danh mục</option>
-            <option value="SMARTPHONE">Điện thoại</option>
-            <option value="AUDIO">Âm thanh</option>
-            <option value="GAMING">Gaming</option>
-            <option value="WEARABLE">Thiết bị đeo</option>
-            <option value="ACCESSORY">Phụ kiện</option>
-            <option value="FASHION">Thời trang</option>
-        </select>
-
-        <select id="priceFilter">
-            <option value="all">Tất cả mức giá</option>
-            <option value="under-2m">Dưới 2 triệu</option>
-            <option value="2m-5m">2 - 5 triệu</option>
-            <option value="5m-20m">5 - 20 triệu</option>
-            <option value="over-20m">Trên 20 triệu</option>
-        </select>
-
-        <button class="btn filter-reset" id="resetFilter">↻ Đặt lại</button>
-    </div>
-
-    <div class="filter-result-info reveal">
-        <span id="filterResultText">Đang hiển thị tất cả sản phẩm</span>
-    </div>
-</section>
-
-<section class="voucher-section section">
-    <div class="section-heading reveal">
-        <div>
-            <span class="eyebrow">ƯU ĐÃI ĐỘC QUYỀN</span>
-            <h2>Voucher <span>siêu hấp dẫn</span></h2>
-        </div>
-    </div>
-
-    <div class="voucher-grid">
-        <article class="voucher-card reveal">
-            <div class="voucher-percent">10<span>%</span></div>
-            <div class="voucher-info">
-                <span>THÀNH VIÊN MỚI</span>
-                <h3>Giảm tối đa 500.000₫</h3>
-                <p>Đơn hàng từ 2.000.000₫</p>
-                <div class="voucher-code">
-                    <b>WELCOME10</b>
-                    <button onclick="copyVoucher('WELCOME10')">Sao chép</button>
-                </div>
-            </div>
-        </article>
-
-        <article class="voucher-card reveal">
-            <div class="voucher-percent">15<span>%</span></div>
-            <div class="voucher-info">
-                <span>FLASH SALE</span>
-                <h3>Giảm tối đa 1.000.000₫</h3>
-                <p>Áp dụng sản phẩm được chọn</p>
-                <div class="voucher-code">
-                    <b>FLASH15</b>
-                    <button onclick="copyVoucher('FLASH15')">Sao chép</button>
-                </div>
-            </div>
-        </article>
-
-        <article class="voucher-card reveal">
-            <div class="voucher-percent">FREE</div>
-            <div class="voucher-info">
-                <span>VẬN CHUYỂN</span>
-                <h3>Miễn phí giao hàng</h3>
-                <p>Cho đơn hàng từ 500.000₫</p>
-                <div class="voucher-code">
-                    <b>FREESHIP</b>
-                    <button onclick="copyVoucher('FREESHIP')">Sao chép</button>
-                </div>
-            </div>
-        </article>
-    </div>
-</section>
     
 <script>
 /* ================= CONFIG ================= */
