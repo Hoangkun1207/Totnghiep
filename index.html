@@ -151,8 +151,75 @@
             <button class="btn btn-dark" id="showAllProducts">Xem tất cả →</button>
         </div>
 
-        <!-- SẢN PHẨM SẼ ĐƯỢC RENDER VÀO ĐÂY BẰNG JAVASCRIPT -->
-        <div class="products" id="productGrid"></div>
+        <div class="products" id="productGrid">
+            <article class="product-card reveal" data-id="1" data-name="Galaxy Ultra X" data-price="24990000">
+                <div class="product-image">
+                    <span class="sale-tag">-20%</span>
+                    <button class="icon-btn product-heart">♡</button>
+                    <div class="product-art">📱</div>
+                </div>
+                <div class="product-info">
+                    <span class="product-category">SMARTPHONE</span>
+                    <h3 class="product-name">Galaxy Ultra X Pro</h3>
+                    <div class="rating">★★★★★ <em>(128)</em></div>
+                    <div class="product-bottom">
+                        <div class="price"><strong>24.990.000₫</strong><del>29.990.000₫</del></div>
+                        <button class="add-cart">+</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="product-card reveal" data-id="2" data-name="Tai nghe Air Sound Pro" data-price="3490000">
+                <div class="product-image">
+                    <span class="sale-tag">HOT</span>
+                    <button class="icon-btn product-heart">♡</button>
+                    <div class="product-art">🎧</div>
+                </div>
+                <div class="product-info">
+                    <span class="product-category">AUDIO</span>
+                    <h3 class="product-name">Air Sound Pro Max</h3>
+                    <div class="rating">★★★★★ <em>(245)</em></div>
+                    <div class="product-bottom">
+                        <div class="price"><strong>3.490.000₫</strong></div>
+                        <button class="add-cart">+</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="product-card reveal" data-id="3" data-name="Gaming Laptop RGB" data-price="32990000">
+                <div class="product-image">
+                    <span class="sale-tag">NEW</span>
+                    <button class="icon-btn product-heart">♡</button>
+                    <div class="product-art">💻</div>
+                </div>
+                <div class="product-info">
+                    <span class="product-category">GAMING</span>
+                    <h3 class="product-name">Gaming Laptop RGB X</h3>
+                    <div class="rating">★★★★★ <em>(89)</em></div>
+                    <div class="product-bottom">
+                        <div class="price"><strong>32.990.000₫</strong></div>
+                        <button class="add-cart">+</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="product-card reveal" data-id="4" data-name="Smart Watch Infinity" data-price="4990000">
+                <div class="product-image">
+                    <span class="sale-tag">-15%</span>
+                    <button class="icon-btn product-heart">♡</button>
+                    <div class="product-art">⌚</div>
+                </div>
+                <div class="product-info">
+                    <span class="product-category">WEARABLE</span>
+                    <h3 class="product-name">Smart Watch Infinity</h3>
+                    <div class="rating">★★★★★ <em>(310)</em></div>
+                    <div class="product-bottom">
+                        <div class="price"><strong>4.990.000₫</strong><del>5.890.000₫</del></div>
+                        <button class="add-cart">+</button>
+                    </div>
+                </div>
+            </article>
+        </div>
     </section>
 
     <!-- FLASH SALE BANNER -->
@@ -192,135 +259,44 @@
         <div class="flash-products" id="flashProducts"></div>
     </section>
 
-    <!-- ================= SMART DISCOVERY ================= -->
-    <section class="section smart-discovery" id="discover">
-        <div class="smart-bg">
-            <span class="smart-orb orb-1"></span>
-            <span class="smart-orb orb-2"></span>
-            <span class="smart-grid"></span>
-        </div>
-
-        <div class="smart-header reveal">
-            <div class="smart-title-wrap">
-                <div class="section-badge">
-                    <span class="badge-dot"></span>
-                    KHÁM PHÁ THÔNG MINH
-                </div>
-
-                <h2>Tìm đúng sản phẩm <span>bạn cần</span></h2>
-
-                <p>
-                    Khám phá những sản phẩm nổi bật với hệ thống tìm kiếm nhanh,
-                    bộ lọc thông minh và ưu đãi dành riêng cho bạn.
-                </p>
-            </div>
-
-            <div class="smart-stats">
-                <div class="smart-stat">
-                    <strong id="smartProductCount">04</strong>
-                    <span>Sản phẩm</span>
-                </div>
-                <div class="smart-stat">
-                    <strong>24/7</strong>
-                    <span>Hỗ trợ</span>
-                </div>
-                <div class="smart-stat">
-                    <strong>99%</strong>
-                    <span>Hài lòng</span>
-                </div>
+    <!-- DISCOVER / FILTER -->
+    <section class="store-extra section" id="discover">
+        <div class="section-heading reveal">
+            <div>
+                <span class="eyebrow">KHÁM PHÁ THÔNG MINH</span>
+                <h2 class="section-title">Tìm đúng sản phẩm <span>bạn cần</span></h2>
             </div>
         </div>
 
-        <div class="smart-search-card reveal">
-            <div class="smart-search-top">
-                <div class="smart-search-icon">⌕</div>
-
-                <div class="smart-search-title">
-                    <b>Tìm kiếm sản phẩm</b>
-                    <span>Nhập tên sản phẩm hoặc chọn danh mục bên dưới</span>
-                </div>
-
-                <div class="smart-live-status">
-                    <span></span>
-                    Hệ thống đang hoạt động
-                </div>
+        <div class="filter-box reveal">
+            <div class="filter-search">
+                <span>⌕</span>
+                <input type="text" id="productFilterInput" placeholder="Tìm kiếm trong cửa hàng...">
             </div>
 
-            <div class="smart-search-row">
-                <div class="smart-input-wrap">
-                    <span class="search-main-icon">⌕</span>
-                    <input
-                        type="text"
-                        id="smartSearchInput"
-                        placeholder="Bạn đang tìm kiếm sản phẩm gì?"
-                        autocomplete="off"
-                    >
-                    <button class="clear-smart-search" id="clearSmartSearch">×</button>
+            <select id="categoryFilter">
+                <option value="all">Tất cả danh mục</option>
+                <option value="SMARTPHONE">Điện thoại</option>
+                <option value="AUDIO">Âm thanh</option>
+                <option value="GAMING">Gaming</option>
+                <option value="WEARABLE">Thiết bị đeo</option>
+                <option value="ACCESSORY">Phụ kiện</option>
+                <option value="FASHION">Thời trang</option>
+            </select>
 
-                    <div class="smart-suggestions" id="smartSuggestions"></div>
-                </div>
+            <select id="priceFilter">
+                <option value="all">Tất cả mức giá</option>
+                <option value="under-2m">Dưới 2 triệu</option>
+                <option value="2m-5m">2 - 5 triệu</option>
+                <option value="5m-20m">5 - 20 triệu</option>
+                <option value="over-20m">Trên 20 triệu</option>
+            </select>
 
-                <div class="smart-select-wrap">
-                    <span>▦</span>
-                    <select id="smartCategory">
-                        <option value="all">Tất cả danh mục</option>
-                        <option value="SMARTPHONE">Điện thoại</option>
-                        <option value="AUDIO">Âm thanh</option>
-                        <option value="GAMING">Gaming</option>
-                        <option value="WEARABLE">Thiết bị đeo</option>
-                        <option value="ACCESSORY">Phụ kiện</option>
-                        <option value="FASHION">Thời trang</option>
-                    </select>
-                </div>
-
-                <div class="smart-select-wrap price-select">
-                    <span>₫</span>
-                    <select id="smartPrice">
-                        <option value="all">Tất cả mức giá</option>
-                        <option value="under500">Dưới 500.000₫</option>
-                        <option value="500to1000">500.000₫ - 1.000.000₫</option>
-                        <option value="over1000">Trên 1.000.000₫</option>
-                    </select>
-                </div>
-
-                <button class="smart-search-btn" id="smartSearchBtn">
-                    <span>⌕</span>
-                    <b>Tìm kiếm</b>
-                </button>
-            </div>
-
-            <div class="smart-search-bottom">
-                <div class="smart-tags">
-                    <span>Gợi ý:</span>
-                    <button data-search="Gaming">Gaming</button>
-                    <button data-search="Premium">Premium</button>
-                    <button data-search="Tai nghe">Tai nghe</button>
-                    <button data-search="Bàn phím">Bàn phím</button>
-                </div>
-
-                <button class="smart-reset" id="smartReset">
-                    ↻ Đặt lại bộ lọc
-                </button>
-            </div>
+            <button class="btn filter-reset" id="resetFilter">↻ Đặt lại</button>
         </div>
 
-        <div class="smart-result-bar reveal">
-            <div class="result-info">
-                <div class="result-icon">✦</div>
-                <div>
-                    <b id="smartResultText">Khám phá sản phẩm dành cho bạn</b>
-                    <span id="smartResultSubtext">Sử dụng tìm kiếm để tìm sản phẩm nhanh hơn</span>
-                </div>
-            </div>
-
-            <div class="result-actions">
-                <span class="result-count">
-                    <b id="smartResultCount">0</b> sản phẩm
-                </span>
-                <button id="scrollToProductResults">
-                    Xem kết quả →
-                </button>
-            </div>
+        <div class="filter-result-info reveal">
+            <span id="filterResultText">Đang hiển thị tất cả sản phẩm</span>
         </div>
     </section>
 
@@ -1058,7 +1034,6 @@
     </form>
 </div>
 
-<script src="product.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
